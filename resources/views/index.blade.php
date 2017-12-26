@@ -7,13 +7,16 @@
     <link rel="stylesheet" href="css/app.css">
   </head>
   <body>
-    <div class="container">
+    <!--[if lte IE 9]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+    <![endif]-->
+    <div class="container mt1">
       <nav>
-        <a href="#">Home</a>
-        <span>|</span>
-        <a href="{{ route('login') }}">Log in</a>
-        <span>|</span>
-        <a href="{{ route('signup') }}">Sign up</a>
+        <ul>
+          <li class="di mr1"><a href="#">Home</a></li>
+          <li class="di mr1"><a href="{{ route('login') }}">Log in</a></li>
+          <li class="di mr1"><a href="{{ route('signup') }}">Sign up</a></li>
+        </ul>
       </nav>
     </div>
   </body>
