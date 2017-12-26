@@ -10,14 +10,18 @@
     <!--[if lte IE 9]>
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
     <![endif]-->
-    <div class="container mt1">
+    <section class="container mt1">
       <nav>
         <ul>
-          <li class="di mr1"><a href="#">Home</a></li>
-          <li class="di mr1"><a href="{{ route('login') }}">Log in</a></li>
-          <li class="di mr1"><a href="{{ route('signup') }}">Sign up</a></li>
+          <li class="inline mr1"><a href="#">Home</a></li>
+          <li class="inline mr1"><a href="{{ route('login') }}">Log in</a></li>
+          <li class="inline mr1"><a href="{{ route('signup') }}">Sign up</a></li>
         </ul>
       </nav>
-    </div>
+    </section>
+
+    <section class="container mt1">
+      @yield('content')
+    </section>
   </body>
 </html>

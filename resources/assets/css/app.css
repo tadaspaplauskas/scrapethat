@@ -1,19 +1,9 @@
-.di {
-    display: inline;
-}
+.inline { display: inline }
 
-.mt1 {
-    margin-top: 1rem;
-}
+.mt1 { margin-top: 1rem }
 
-.mr1 {
-    margin-right: 1rem;
-}
+.mr1 { margin-right: 1rem }
 
-.mb1 {
-    margin-bottom: 1rem;
-}
+.mb1 { margin-bottom: 1rem }
 
-.ml1 {
-    margin-left: 1rem;
-}
+.ml1 { margin-left: 1rem }
