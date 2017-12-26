@@ -10,7 +10,7 @@
     <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus>
 
     @if ($errors->has('email'))
-        <p class="border border-red">
+        <p class="red">
             <strong>{{ $errors->first('email') }}</strong>
         </p>
     @endif
@@ -19,7 +19,7 @@
         <input id="password" type="password" class="" name="password" required>
 
         @if ($errors->has('password'))
-            <p class="border border-red">
+            <p class="red">
                 <strong>{{ $errors->first('password') }}</strong>
             </p>
         @endif

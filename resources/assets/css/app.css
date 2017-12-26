@@ -5,5 +5,4 @@
 
 .inline { display: inline }
 
-.border-red { background-color: #990000 }
-.border { border: 1px solid }
+.red { color: #990000 }
