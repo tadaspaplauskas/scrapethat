@@ -18,11 +18,14 @@
         <nav>
             <ul>
             <li class="inline mr1"><a href="{{ route('index') }}">/</a></li>
-            <li class="inline mr1"><a href="{{ route('home') }}">Home</a></li>
             @guest
                 <li class="inline mr1"><a href="{{ route('login') }}">Log in</a></li>
                 <li class="inline mr1"><a href="{{ route('register') }}">Sign up</a></li>
             @endguest
+            @auth
+                <li class="inline mr1"><a href="{{ route('home') }}">Home</a></li>
+                <li class="inline mr1"><a href="{{ route('logout') }}">Log out</a></li>
+            @endauth
             </ul>
         </nav>
     </section>
