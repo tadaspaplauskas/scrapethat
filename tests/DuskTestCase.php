@@ -41,9 +41,8 @@ abstract class DuskTestCase extends BaseTestCase
         );
     }
 
-    public function browse(\Closure $callback)
+    public function tearDown()
     {
-        parent::browse($callback);
         static::$browsers->first()->driver->manage()->deleteAllCookies();
     }
 }
