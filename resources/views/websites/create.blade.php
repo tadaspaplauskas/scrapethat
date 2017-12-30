@@ -3,6 +3,10 @@
 @section('content')
 <h1>Crawl new website</h1>
 
+<p>
+    Before runing any analysis, we have to crawl website for data. Let's do it right now.
+</p>
+
 <form method="POST" action="{{ route('login') }}">
     
     {{ csrf_field() }}
@@ -40,10 +44,7 @@
         </p>
     @endif
     
-    <button type="submit" class="block">Log in</button>
+    <button type="submit" class="block">Crawl</button>
 
-    <p>
-        <a href="{{ route('password.request') }}">Forgot Your Password?</a>
-    </p>
 </form>
 @endsection
