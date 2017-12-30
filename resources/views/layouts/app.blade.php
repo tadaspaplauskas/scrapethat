@@ -34,9 +34,7 @@
       @yield('content')
     </section>
 
-    <footer class="container">
-        todo
-    </footer>    
+    <footer class="container"><!-- TODO?.. --></footer>    
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
