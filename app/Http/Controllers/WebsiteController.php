@@ -28,7 +28,7 @@ class WebsiteController extends Controller
      */
     public function create()
     {
-        return view('websites.index', ['websites' => auth()->user()->websites]);
+        return view('websites.create');
     }
 
     /**

@@ -19,16 +19,16 @@
     @endif
 
     <label for="email" class="">E-Mail Address</label>
-    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus>
+    <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus>
 
     <label for="password" class="">Password</label>
-    <input id="password" type="password" class="" name="password" required>
+    <input type="password" id="password" name="password" required>
     
     <label>
         <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
     </label>
 
-    <button type="submit" class="btn btn-primary">Log in</button>
+    <button type="submit" class="block">Log in</button>
 
     <p>
         <a href="{{ route('password.request') }}">Forgot Your Password?</a>
