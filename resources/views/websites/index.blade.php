@@ -5,8 +5,10 @@
 @section('content')
 
     @forelse ($websites as $website)
-        <article class="">
-            <a href="{{ route('snapshots.index', $website) }}"><h3>{{ $website->name }}</h3></a>
+        <article class="m0 center column one-half">
+            <h3>
+                <a href="{{ route('snapshots.index', $website) }}">{{ $website->name }}</a>
+            </h3>
             <p>
                 <small>Created at <time>{{ $website->created_at }}</time></small>
             </p>

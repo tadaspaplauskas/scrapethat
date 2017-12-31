@@ -844,6 +844,8 @@ there.
 /* Larger than Desktop HD */
 @media (min-width: 1200px) {}
 
+.m0 { margin: 0 }
+.m1 { margin: 1rem }
 .mt1 { margin-top: 1rem }
 .mr1 { margin-right: 1rem }
 .mb1 { margin-bottom: 1rem }
@@ -858,7 +860,4 @@ there.
 
 .center { text-align: center }
 
-.flexbox {
-    display: flex;
-    flex-wrap: wrap;
-}
+.flexbox { display: flex; flex-wrap: wrap; }
