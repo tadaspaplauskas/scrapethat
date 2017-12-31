@@ -855,3 +855,10 @@ there.
 .red { color: #990000 }
 
 .full-width { width: 100% }
+
+.center { text-align: center }
+
+.flexbox {
+    display: flex;
+    flex-wrap: wrap;
+}

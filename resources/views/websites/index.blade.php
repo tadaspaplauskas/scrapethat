@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
+@section('title', 'Crawled websites')
+
 @section('content')
-<h1>Crawled websites</h1>
 
     @forelse ($websites as $website)
-        <article>
-            <a>{{ $website->name }}</a>
-            <a>{{ $website->url }}</a>
+        <article class="">
+            <a href="{{ route('snapshots.index', $website) }}"><h3>{{ $website->name }}</h3></a>
             <p>
-                <small>Created at {{ $website->created_at }}</small>
+                <small>Created at <time>{{ $website->created_at }}</time></small>
             </p>
         </article>
     @empty

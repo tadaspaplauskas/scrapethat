@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title')</title>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -30,8 +30,10 @@
         </nav>
     </header>
 
-    <main class="container mt1">
-      @yield('content')
+    <main class="container">
+        <h1>@yield('title')</h1>
+
+        @yield('content')
     </main>
 
     <footer class="container"><!-- TODO?.. --></footer>    
