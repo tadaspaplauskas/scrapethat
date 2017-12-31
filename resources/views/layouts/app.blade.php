@@ -31,7 +31,7 @@
     </header>
 
     <main class="container">
-        <h1>@yield('title')</h1>
+        <h2>@yield('title')</h2>
 
         @yield('content')
     </main>

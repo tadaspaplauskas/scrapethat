@@ -6,9 +6,9 @@
 
     @forelse ($websites as $website)
         <article class="m0 center column one-half">
-            <h3>
+            <h5>
                 <a href="{{ route('snapshots.index', $website) }}">{{ $website->name }}</a>
-            </h3>
+            </h5>
             <p>
                 <small>Created at <time>{{ $website->created_at }}</time></small>
             </p>
