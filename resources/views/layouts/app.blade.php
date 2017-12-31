@@ -14,7 +14,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-    <section class="container mt1">
+    <header class="container mt1">
         <nav>
             <ul>
             <li class="inline mr1"><a href="{{ route('index') }}">/</a></li>
@@ -28,11 +28,11 @@
             @endauth
             </ul>
         </nav>
-    </section>
+    </header>
 
-    <section class="container mt1">
+    <main class="container mt1">
       @yield('content')
-    </section>
+    </main>
 
     <footer class="container"><!-- TODO?.. --></footer>    
 
