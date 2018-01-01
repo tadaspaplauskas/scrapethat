@@ -10,7 +10,7 @@
                 <a href="{{ route('snapshots.index', $website) }}">{{ $website->name }}</a>
             </h5>
             <p>
-                <small>Created at <time>{{ $website->created_at }}</time></small>
+                <small>Created {{ $website->created_at->diffForHumans() }}</small>
             </p>
         </article>
     @empty
