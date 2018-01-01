@@ -23,7 +23,7 @@
                 <li class="inline mr1"><a href="{{ route('register') }}">Sign up</a></li>
             @endguest
             @auth
-                <li class="inline mr1"><a href="{{ route('websites.index') }}">Websites</a></li>
+                <li class="inline mr1"><a href="{{ route('snapshots.index') }}">Snapshots</a></li>
                 <li class="inline mr1"><a href="{{ route('logout') }}">Log out</a></li>
             @endauth
             </ul>

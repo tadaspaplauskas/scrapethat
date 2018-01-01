@@ -15,7 +15,9 @@ class CreateSnapshotsTable extends Migration
     {
         Schema::create('snapshots', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('website_id')->unsigned();
+            $table->integer('user_id')->unsigned();
+            $table->string('name')->unsigned();
+            $table->string('url');
             $table->smallinteger('pages')->unsigned();
             $table->timestamps();
         });

@@ -2,11 +2,11 @@
 
 use Illuminate\Database\Seeder;
 
-use App\Website;
+use App\Snapshot;
 
 use Faker\Factory;
 
-class WebsitesSeeder extends Seeder
+class SnapshotSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,16 +17,16 @@ class WebsitesSeeder extends Seeder
     {
         $faker = Factory::create();
 
-        Website::truncate();
+        Snapshot::truncate();
 
-        Website::create([
+        Snapshot::create([
             'user_id' => 1,
-            'name' => 'Most recent HN',
+            'name' => 'Most recent HN submisisons',
             'url' => 'https://news.ycombinator.com/news?p=',
         ]);
 
         for ($i = 1; $i < 10; $i++) {
-            Website::create([
+            Snapshot::create([
                 'user_id' => 1,
                 'name' => $faker->company,
                 'url' => $faker->url,

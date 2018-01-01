@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', $website->name . ' snapshots')
+@section('title', 'Snapshots')
 
 @section('content')
 
-    @forelse ($website->snapshots as $snapshot)
+    @forelse ($snapshots as $snapshot)
         <article class="m0 center column one-half">
             <h5>
                 <a href="{{ route('snapshots.show', $snapshot) }}">{{ $snapshot->created_at }}</a>
@@ -15,8 +15,8 @@
         </article>
     @empty
         <p>
-            No snapshots.
-            <a href="{{ route('snapshots.create', $website) }}">Make a first one.</a>
+            No snapshots yet.
+            <a href="{{ route('snapshots.create') }}">Make a first one.</a>
         </p>
     @endforelse
 

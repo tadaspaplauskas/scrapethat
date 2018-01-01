@@ -27,8 +27,8 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function websites()
+    public function snapshots()
     {
-        return $this->hasMany(Website::class);
+        return $this->hasMany(Snapshot::class);
     }
 }

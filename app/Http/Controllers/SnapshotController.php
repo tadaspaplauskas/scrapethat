@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Website;
+use App\Snapshot;
 
 class SnapshotController extends Controller
 {
@@ -18,9 +18,9 @@ class SnapshotController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Website $website)
+    public function index()
     {
-        return view('snapshots.index', ['website' => $website]);
+        return view('snapshots.index', ['snapshots' => auth()->user()->snapshots]);
     }
 
     /**
@@ -30,7 +30,7 @@ class SnapshotController extends Controller
      */
     public function create()
     {
-        //
+        return view('snapshots.create');
     }
 
     /**

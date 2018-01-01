@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
+@section('title', 'Create a new snapshot')
+
 @section('content')
-<h1>New website</h1>
 
 <p>
     Before runing any analysis, we have to crawl website for data. Let's do it right now.

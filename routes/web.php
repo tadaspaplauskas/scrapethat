@@ -17,6 +17,4 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/', 'PagesController@index')->name('index');
 
-Route::resource('websites', 'WebsiteController');
-
-Route::resource('websites/{website}/snapshots', 'SnapshotController');
+Route::resource('snapshots', 'SnapshotController');
