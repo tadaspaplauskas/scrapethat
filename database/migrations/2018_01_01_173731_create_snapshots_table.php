@@ -18,7 +18,7 @@ class CreateSnapshotsTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->string('name')->unsigned();
             $table->string('url');
-            $table->smallinteger('pages')->unsigned();
+            $table->smallinteger('pages')->unsigned()->nullable();
             $table->timestamps();
         });
     }
