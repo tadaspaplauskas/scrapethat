@@ -28,8 +28,14 @@ class SnapshotTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) {
             $browser->loginAs(User::find(1))
-                ->visit('/snapshots')
-                ->assertSee('Snapshots');
+                ->visit('/snapshots/create')
+                ->type('name', 'Sample snapshot crawl')
+                ->type('url', 'http://localhost')
+                ->type('from', '10')
+                ->type('to', '100')
+                ->press('SAVE')
+                ->assertSee('Sample snapshot crawl')
+                ->assertPathIs('/snapshots');
         });
     }
 }
