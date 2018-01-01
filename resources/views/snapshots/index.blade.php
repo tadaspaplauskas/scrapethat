@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $website->name)
+@section('title', $website->name . ' snapshots')
 
 @section('content')
 
@@ -16,7 +16,7 @@
     @empty
         <p>
             No snapshots.
-            <a href="{{ route('websites.create') }}">Make a first one.</a>
+            <a href="{{ route('snapshots.create', $website) }}">Make a first one.</a>
         </p>
     @endforelse
 
