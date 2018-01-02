@@ -6,15 +6,13 @@ use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-use SnapshotSeeder;
 use App\User;
+use App\Snapshot;
 
 class SnapshotTest extends DuskTestCase
 {
     public function testIndex()
     {
-        $this->seed(SnapshotSeeder::class);
-
         $this->browse(function (Browser $browser) {
             $browser->loginAs(User::find(1))
                 ->visit('/snapshots')
@@ -24,18 +22,25 @@ class SnapshotTest extends DuskTestCase
 
     public function testCreate()
     {
-        $this->seed(SnapshotSeeder::class);
-
         $this->browse(function (Browser $browser) {
             $browser->loginAs(User::find(1))
                 ->visit('/snapshots/create')
-                ->type('name', 'Sample snapshot crawl')
+                ->type('name', 'Sample snapshot')
                 ->type('url', 'http://localhost')
                 ->type('from', '10')
                 ->type('to', '100')
                 ->press('SAVE')
-                ->assertSee('Sample snapshot crawl')
-                ->assertPathIs('/snapshots');
+                ->assertPathIs('/snapshots')
+                ->assertSeeLink('Sample snapshot');
         });
     }
+
+    // public function testShow()
+    // {
+    //     $this->browse(function (Browser $browser) {
+    //         $browser->loginAs(User::find(1))
+    //             ->visit('/snapshots/' . Snapshot::find(1)->id)
+    //             ->assertSee('name', 'Sample snapshot');
+    //     });
+    // }
 }

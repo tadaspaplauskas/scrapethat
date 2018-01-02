@@ -20,7 +20,9 @@ class SnapshotController extends Controller
      */
     public function index()
     {
-        return view('snapshots.index', ['snapshots' => auth()->user()->snapshots]);
+        return view('snapshots.index', [
+            'snapshots' => auth()->user()->snapshots()->orderBy('id', 'desc')->get(),
+        ]);
     }
 
     /**
@@ -41,7 +43,10 @@ class SnapshotController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        auth()->user()->snapshots()->create($request->all());
+
+        return redirect()->action('SnapshotController@index')
+            ->with('message', $request->name . ' saved successfully.');
     }
 
     /**

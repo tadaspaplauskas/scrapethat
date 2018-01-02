@@ -43,6 +43,15 @@ abstract class DuskTestCase extends BaseTestCase
 
     public function tearDown()
     {
+        parent::tearDown();
+
         static::$browsers->first()->driver->manage()->deleteAllCookies();
+    }
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->seed(\DatabaseSeeder::class);
     }
 }

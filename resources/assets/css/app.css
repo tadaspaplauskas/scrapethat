@@ -4,6 +4,8 @@
 .mb1 { margin-bottom: 1rem }
 .ml1 { margin-left: 1rem }
 
+.p1 { padding: 1rem }
+
 .inline { display: inline }
 .block { display: block }
 
@@ -14,3 +16,5 @@
 .center { text-align: center }
 
 .flexbox { display: flex; flex-wrap: wrap; }
+
+.shade { background-color: #efefef }

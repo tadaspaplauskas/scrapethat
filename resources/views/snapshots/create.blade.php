@@ -8,7 +8,7 @@
     Before runing any analysis, we have to crawl website for data. Let's do it right now.
 </p>
 
-<form method="POST" action="{{ route('login') }}">
+<form method="POST" action="{{ route('snapshots.store') }}">
     
     {{ csrf_field() }}
 

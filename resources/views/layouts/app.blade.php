@@ -33,6 +33,12 @@
     <main class="container">
         <h2>@yield('title')</h2>
 
+        @if (session('message'))
+            <h5 class="center">
+                {{ session('message') }}
+            </h5>
+        @endif
+
         @yield('content')
     </main>
 

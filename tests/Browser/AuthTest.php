@@ -8,14 +8,12 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class AuthTest extends DuskTestCase
 {
-    use DatabaseMigrations;
-
     public function testRegistration()
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/register')
                 ->type('name', 'Tadas')
-                ->type('email', 'tadas@paplauskas.lt')
+                ->type('email', 'tadas+test@paplauskas.lt')
                 ->type('password', 'password')
                 ->type('password_confirmation', 'password')
                 ->press('REGISTER')
@@ -28,7 +26,7 @@ class AuthTest extends DuskTestCase
     public function testLogin()
     {
         $user = factory(\App\User::class)->create([
-            'email' => 'tadas@paplauskas.lt',
+            'email' => 'tadas+test@paplauskas.lt',
         ]);
 
         $this->browse(function (Browser $browser) use ($user) {
