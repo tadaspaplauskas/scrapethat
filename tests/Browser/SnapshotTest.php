@@ -35,12 +35,12 @@ class SnapshotTest extends DuskTestCase
         });
     }
 
-    // public function testShow()
-    // {
-    //     $this->browse(function (Browser $browser) {
-    //         $browser->loginAs(User::find(1))
-    //             ->visit('/snapshots/' . Snapshot::find(1)->id)
-    //             ->assertSee('name', 'Sample snapshot');
-    //     });
-    // }
+    public function testShow()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->loginAs(User::find(1))
+                ->visit('/snapshots/1')
+                ->assertSee('Most recent HN submisisons');
+        });
+    }
 }
