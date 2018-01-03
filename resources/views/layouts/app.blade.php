@@ -13,7 +13,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script defer src="{{ asset('js/app.js') }}"></script>
 </head>
 <body>
     <header class="container mt1">
