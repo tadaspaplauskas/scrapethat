@@ -21,6 +21,7 @@ class CreateSnapshotsTable extends Migration
             $table->smallinteger('pages_to_crawl')->unsigned()->nullable();
             $table->smallinteger('pages_crawled')->unsigned()->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

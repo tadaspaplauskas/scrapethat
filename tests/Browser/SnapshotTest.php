@@ -43,4 +43,18 @@ class SnapshotTest extends DuskTestCase
                 ->assertSee('Most recent HN submisisons');
         });
     }
+
+    public function testDeleteAndRestore()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->loginAs(User::find(1))
+                ->visit('/snapshots/1')
+                ->press('DELETE')
+                ->assertSee('was deleted')
+                ->assertDontSeeLink('Most recent HN submisisons')
+                ->clickLink('Undo')
+                ->waitForText('restored')
+                ->assertSeeLink('Most recent HN submisisons');
+        });
+    }
 }

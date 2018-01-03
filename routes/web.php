@@ -17,4 +17,5 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/', 'PagesController@index')->name('index');
 
+Route::get('snapshots/{id}/restore', 'SnapshotController@restore')->name('snapshots.restore');
 Route::resource('snapshots', 'SnapshotController');

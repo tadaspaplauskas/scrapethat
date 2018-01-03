@@ -37,7 +37,7 @@
 
         @if (session('message'))
             <h5 class="center">
-                {{ session('message') }}
+                {!! session('message') !!}
             </h5>
         @endif
 

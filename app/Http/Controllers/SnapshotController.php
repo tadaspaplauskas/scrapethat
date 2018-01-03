@@ -55,9 +55,9 @@ class SnapshotController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Snapshot $snapshot)
     {
-        return view('snapshots.show', ['snapshot' => auth()->user()->snapshots()->find($id)]);
+        return view('snapshots.show', compact('snapshot'));
     }
 
     /**
@@ -78,7 +78,7 @@ class SnapshotController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Snapshot $snapshot)
     {
         //
     }
@@ -89,8 +89,22 @@ class SnapshotController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Snapshot $snapshot)
     {
-        //
+        $snapshot->delete();
+
+        return redirect()->action('SnapshotController@index')
+            ->with('message', $snapshot->name . ' was deleted.
+                <a href="' . route('snapshots.restore', $snapshot) . '" class="block">Undo</a>');
+    }
+
+    public function restore($id)
+    {
+        $snapshot = Snapshot::withTrashed()->find($id);
+
+        $snapshot->restore();
+
+        return redirect()->action('SnapshotController@index')
+            ->with('message', $snapshot->name . ' was restored.');
     }
 }
