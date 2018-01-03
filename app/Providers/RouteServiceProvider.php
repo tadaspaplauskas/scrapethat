@@ -39,7 +39,9 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
-        //
+        Route::bind('snapshot', function ($id) {
+            return auth()->check() ? auth()->user()->snapshots()->find($id) : abort(404);
+        });
     }
 
     /**
