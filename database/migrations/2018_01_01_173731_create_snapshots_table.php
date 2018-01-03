@@ -15,10 +15,11 @@ class CreateSnapshotsTable extends Migration
     {
         Schema::create('snapshots', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
+            $table->integer('user_id')->unsigned()->index();
             $table->string('name')->unsigned();
             $table->string('url');
-            $table->smallinteger('pages')->unsigned()->nullable();
+            $table->smallinteger('pages_to_crawl')->unsigned()->nullable();
+            $table->smallinteger('pages_crawled')->unsigned()->nullable();
             $table->timestamps();
         });
     }
