@@ -55,9 +55,9 @@ class SnapshotController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Snapshot $snapshot)
+    public function show($id)
     {
-        return view('snapshots.show', ['snapshot' => $snapshot]);
+        return view('snapshots.show', ['snapshot' => auth()->user()->snapshots()->find($id)]);
     }
 
     /**
