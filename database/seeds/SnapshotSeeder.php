@@ -22,7 +22,7 @@ class SnapshotSeeder extends Seeder
         Snapshot::create([
             'user_id' => 1,
             'name' => 'Most recent HN submisisons',
-            'url' => 'https://news.ycombinator.com/news?p=',
+            'url' => 'http://localhost:8000/tests/1.html', // 'https://news.ycombinator.com/news?p=',
         ]);
 
         for ($i = 1; $i < 10; $i++) {
