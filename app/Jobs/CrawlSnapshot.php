@@ -36,21 +36,27 @@ class CrawlSnapshot implements ShouldQueue
     {
         $snapshot = $this->snapshot;
 
-        $client = new Client();
+        $nodes = $this->nodes($snapshot);
 
-        $crawler = $client->request('GET', $snapshot->url);
-
-        $tree = $this->buildTree($crawler);
+        $tree = $this->arrayTree($nodes);
 
         print_r($tree);
     }
 
-    protected function buildTree($crawler)
+    protected function nodes(Snapshot $snapshot)
+    {
+        $client = new Client();
+
+        $nodes = $client->request('GET', $snapshot->url);
+
+        return $nodes;
+    }
+
+    protected function arrayTree($nodes)
     {
         $tree = [];
 
-        foreach ($crawler as $node) {
-            // print_r($node);die;
+        foreach ($nodes as $node) {
             if ($node instanceof \DOMElement) {
 
                 $attributes = [];
@@ -62,7 +68,7 @@ class CrawlSnapshot implements ShouldQueue
                     'tag' => $node->tagName,
                     'attributes' => $attributes,
                     'text' => trim($node->textContent),
-                    'children' => $this->buildTree($node->childNodes)
+                    'children' => $this->arrayTree($node->childNodes)
                 ];
             }
         }
