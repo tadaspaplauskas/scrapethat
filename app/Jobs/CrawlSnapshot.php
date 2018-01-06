@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Goutte\Client;
+use DOMToArray\Client;
 
 use App\Snapshot;
 
@@ -36,43 +36,10 @@ class CrawlSnapshot implements ShouldQueue
     {
         $snapshot = $this->snapshot;
 
-        $nodes = $this->nodes($snapshot);
+        $client = new Client($snapshot->url);
 
-        $tree = $this->arrayTree($nodes);
+        $tree = $client->array();
 
         print_r($tree);
-    }
-
-    protected function nodes(Snapshot $snapshot)
-    {
-        $client = new Client();
-
-        $nodes = $client->request('GET', $snapshot->url);
-
-        return $nodes;
-    }
-
-    protected function arrayTree($nodes)
-    {
-        $tree = [];
-
-        foreach ($nodes as $node) {
-            if ($node instanceof \DOMElement) {
-
-                $attributes = [];
-                foreach ($node->attributes as $attribute) {
-                    $attributes[$attribute->name] = $attribute->value;
-                }
-
-                $tree[] = [
-                    'tag' => $node->tagName,
-                    'attributes' => $attributes,
-                    'text' => trim($node->textContent),
-                    'children' => $this->arrayTree($node->childNodes)
-                ];
-            }
-        }
-
-        return $tree;
     }
 }
