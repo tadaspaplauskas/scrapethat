@@ -7,14 +7,13 @@ namespace App;
 use Jenssegers\Mongodb\Eloquent\Model;
 use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 
-class Snapshot extends Model
+class Page extends Model
 {
-    use SoftDeletes;
-    
     protected $fillable = [
-        'name',
+        'snapshot_id',
         'url',
-        'from',
-        'to',
+        // 'from',
+        // 'to',
+        'dom',
     ];
 }
