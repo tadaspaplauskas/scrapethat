@@ -16,6 +16,8 @@ class Snapshot extends Model
         'url',
         'from',
         'to',
+        'crawled',
+        'total',
     ];
 
     public function pages()

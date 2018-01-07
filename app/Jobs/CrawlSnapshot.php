@@ -44,6 +44,8 @@ class CrawlSnapshot implements ShouldQueue
             'dom' => $dom,
         ]);
 
-        print_r($page);
+        $snapshot->crawled++;
+
+        $snapshot->save();
     }
 }

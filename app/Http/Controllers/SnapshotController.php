@@ -43,7 +43,12 @@ class SnapshotController extends Controller
      */
     public function store(Request $request)
     {
-        auth()->user()->snapshots()->create($request->all());
+        $data = $request->all();
+
+        $data['crawled'] = 0;
+        $data['total'] = abs($data['to'] - $data['from'] + 1);
+
+        auth()->user()->snapshots()->create($data);
 
         return redirect()->action('SnapshotController@index')
             ->with('message', $request->name . ' saved successfully.');
