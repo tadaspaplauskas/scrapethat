@@ -29,6 +29,8 @@ class CrawlSnapshotJobTest extends TestCase
 
         $job->handle();
 
+        $snapshot->refresh();
+
         $page = $snapshot->pages()->first();
 
         $this->assertTrue($snapshot->pages()->exists());
