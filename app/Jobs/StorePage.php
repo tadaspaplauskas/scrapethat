@@ -11,7 +11,7 @@ use DomToArray\Client;
 
 use App\Snapshot;
 
-class CrawlSnapshot implements ShouldQueue
+class StorePage implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 

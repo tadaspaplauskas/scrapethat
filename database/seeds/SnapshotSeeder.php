@@ -35,6 +35,10 @@ class SnapshotSeeder extends Seeder
                 'user_id' => User::first()->id,
                 'name' => $faker->company,
                 'url' => $faker->url,
+                'from' => 1,
+                'to' => 5,
+                'crawled' => 0,
+                'total' => 5,
             ]);
         }
     }

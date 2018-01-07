@@ -5,10 +5,10 @@ namespace Tests\Feature;
 use Tests\TestCase;
 // use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use App\Jobs\CrawlSnapshot;
+use App\Jobs\StorePage;
 use App\Snapshot;
 
-class CrawlSnapshotJobTest extends TestCase
+class StorePageTest extends TestCase
 {
     // use RefreshDatabase;
 
@@ -25,7 +25,7 @@ class CrawlSnapshotJobTest extends TestCase
 
         $this->assertTrue($snapshot->crawled === 0);
 
-        $job = new CrawlSnapshot($snapshot);
+        $job = new StorePage($snapshot);
 
         $job->handle();
 
