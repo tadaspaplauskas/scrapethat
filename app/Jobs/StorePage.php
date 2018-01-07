@@ -57,8 +57,7 @@ class StorePage implements ShouldQueue
 
         // queue next page
         if (!$snapshot->isCompleted()) {
-            static::dispatch($snapshot)
-                ->delay(now()->addSeconds(5));
+            static::dispatch($snapshot);
         }
     }
 }
