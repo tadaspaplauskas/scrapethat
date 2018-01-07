@@ -2661,7 +2661,7 @@
             "dist": {
                 "type": "path",
                 "url": "../../dom-to-array",
-                "reference": "f4b70975c10d4272028fdb9272edf2009d0bcdf6",
+                "reference": "95d9e721a5c93f5a8cf1bf3aaa7e3e45d3cd12ac",
                 "shasum": null
             },
             "require": {
@@ -2674,11 +2674,8 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "DOMToArray\\": "src"
-                },
-                "exclude-from-classmap": [
-                    "DOMToArray/Tests"
-                ]
+                    "DomToArray\\": "src"
+                }
             },
             "license": [
                 "MIT"

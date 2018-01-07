@@ -17,4 +17,9 @@ class Snapshot extends Model
         'from',
         'to',
     ];
+
+    public function pages()
+    {
+        return $this->hasMany(Page::class);
+    }
 }

@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use DOMToArray\Client;
+use DomToArray\Client;
 
 use App\Snapshot;
 
@@ -38,8 +38,12 @@ class CrawlSnapshot implements ShouldQueue
 
         $client = new Client($snapshot->url);
 
-        $tree = $client->array();
+        $dom = $client->array();
 
-        print_r($tree);
+        $page = $snapshot->pages()->create([
+            'dom' => $dom,
+        ]);
+
+        print_r($page);
     }
 }

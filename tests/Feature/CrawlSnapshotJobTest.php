@@ -3,14 +3,14 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+// use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Jobs\CrawlSnapshot;
 use App\Snapshot;
 
 class CrawlSnapshotJobTest extends TestCase
 {
-    use RefreshDatabase;
+    // use RefreshDatabase;
 
     protected function setUp()
     {
@@ -21,7 +21,7 @@ class CrawlSnapshotJobTest extends TestCase
 
     public function testHandle()
     {
-        $snapshot = Snapshot::find(1);
+        $snapshot = Snapshot::first();
 
         $job = new CrawlSnapshot($snapshot);
 
