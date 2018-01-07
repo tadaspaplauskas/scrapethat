@@ -14,7 +14,7 @@ class SnapshotTest extends DuskTestCase
     public function testIndex()
     {
         $this->browse(function (Browser $browser) {
-            $browser->loginAs(User::find(1))
+            $browser->loginAs(User::first())
                 ->visit('/snapshots')
                 ->assertSee('Snapshots');
         });
@@ -23,7 +23,7 @@ class SnapshotTest extends DuskTestCase
     public function testCreate()
     {
         $this->browse(function (Browser $browser) {
-            $browser->loginAs(User::find(1))
+            $browser->loginAs(User::first())
                 ->visit('/snapshots/create')
                 ->type('name', 'Sample snapshot')
                 ->type('url', 'http://localhost')
@@ -38,8 +38,8 @@ class SnapshotTest extends DuskTestCase
     public function testShow()
     {
         $this->browse(function (Browser $browser) {
-            $browser->loginAs(User::find(1))
-                ->visit('/snapshots/1')
+            $browser->loginAs(User::first())
+                ->visit('/snapshots/' . Snapshot::first()->id)
                 ->assertSee('Most recent HN submisisons');
         });
     }
@@ -47,8 +47,8 @@ class SnapshotTest extends DuskTestCase
     public function testDeleteAndRestore()
     {
         $this->browse(function (Browser $browser) {
-            $browser->loginAs(User::find(1))
-                ->visit('/snapshots/1')
+            $browser->loginAs(User::first())
+                ->visit('/snapshots/' . Snapshot::first()->id)
                 ->press('DELETE')
                 ->assertSee('was deleted')
                 ->assertDontSeeLink('Most recent HN submisisons')
