@@ -24,4 +24,23 @@ class Snapshot extends Model
     {
         return $this->hasMany(Page::class);
     }
+
+    public function nextPageUrl()
+    {
+        // we're done here
+        if ($this->isCompleted()) {
+            return null;
+        }
+
+        $nextPage = $this->from + $this->crawled;
+
+        $nextPageUrl = str_replace('*', $nextPage, $this->url);
+        
+        return $nextPageUrl;
+    }
+
+    public function isCompleted()
+    {
+        return $this->crawled > 0 && $this->crawled === $this->total;
+    }
 }

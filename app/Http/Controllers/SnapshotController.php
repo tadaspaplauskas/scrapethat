@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Snapshot;
+use App\Jobs\StorePage;
 
 class SnapshotController extends Controller
 {
@@ -48,10 +49,12 @@ class SnapshotController extends Controller
         $data['crawled'] = 0;
         $data['total'] = abs($data['to'] - $data['from'] + 1);
 
-        auth()->user()->snapshots()->create($data);
+        $snapshot = auth()->user()->snapshots()->create($data);
+
+        StorePage::dispatch($snapshot);
 
         return redirect()->action('SnapshotController@index')
-            ->with('message', $request->name . ' saved successfully.');
+            ->with('message', $request->name . ' created successfully. Please wait while we crawl the pages.');
     }
 
     /**

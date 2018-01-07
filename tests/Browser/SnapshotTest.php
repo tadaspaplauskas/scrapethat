@@ -26,7 +26,7 @@ class SnapshotTest extends DuskTestCase
             $browser->loginAs(User::first())
                 ->visit('/snapshots/create')
                 ->type('name', 'Sample snapshot')
-                ->type('url', 'http://localhost')
+                ->type('url', 'http://localhost:8000/tests/*.html')
                 ->type('from', '10')
                 ->type('to', '100')
                 ->press('SAVE')

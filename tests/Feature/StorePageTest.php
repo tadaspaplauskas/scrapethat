@@ -19,6 +19,7 @@ class StorePageTest extends TestCase
         $this->seed(\DatabaseSeeder::class);
     }
 
+    // 
     public function testHandle()
     {
         $snapshot = Snapshot::first();
@@ -34,6 +35,6 @@ class StorePageTest extends TestCase
         $page = $snapshot->pages()->first();
 
         $this->assertTrue($snapshot->pages()->exists());
-        $this->assertTrue($snapshot->crawled === 1);
+        $this->assertTrue($snapshot->isCompleted());
     }
 }

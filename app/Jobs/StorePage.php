@@ -36,7 +36,14 @@ class StorePage implements ShouldQueue
     {
         $snapshot = $this->snapshot;
 
-        $client = new Client($snapshot->url);
+        $url = $snapshot->nextPageUrl();
+
+        // we're done here
+        if (!$url) {
+            return;
+        }
+
+        $client = new Client($url);
 
         $dom = $client->array();
 
@@ -47,5 +54,11 @@ class StorePage implements ShouldQueue
         $snapshot->crawled++;
 
         $snapshot->save();
+
+        // queue next page
+        if (!$snapshot->isCompleted()) {
+            static::dispatch($snapshot)
+                ->delay(now()->addSeconds(5));
+        }
     }
 }
