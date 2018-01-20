@@ -6,21 +6,26 @@
 
 <h5>Analyze</h5>
 <p>
-    Here you
+    Start analyzing snapshot data with CSS selectors.
 </p>
 
 <form method="GET">
     <label for="password" class="">CSS selector</label>
-    <input type="text" name="css_selector" id="css_selector" placeholder="body > p" required>
+    <input type="text" name="css_selector" id="css_selector" placeholder=".css-selector" value="{{ old('css_selector') }}" required>
     <button type="submit" class="block">Fetch</button>
 </form>
 
+@if (!$values->isEmpty())
 
-<p>
+    {{ $values->toJson() }}
+
+@endif
+
+<p class="right">
     <a href="#delete">Delete snapshot</a>
 </p>
 
-<div id="delete" class="hidden">
+<div id="delete" class="hidden right">
     <form action="{{ route('snapshots.destroy', $snapshot) }}" method="POST">
         
         {{ method_field('DELETE') }}
