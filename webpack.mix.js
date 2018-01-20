@@ -15,7 +15,6 @@ mix.js('resources/assets/js/app.js', 'public/js')
     .styles([
         'resources/assets/css/skeleton/css/normalize.css',
         'resources/assets/css/skeleton/css/skeleton.css',
-        // 'resources/assets/basscss/css/bassapp.css',
         'resources/assets/css/app.css'
     ], 'public/css/app.css');
 
