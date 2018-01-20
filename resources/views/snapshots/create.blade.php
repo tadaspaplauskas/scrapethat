@@ -25,8 +25,8 @@
     @endif
 
     <label for="to" class="">Pages to scan</label>
-    From <input type="number" id="from" name="from" required value="0">
-    to <input type="number" id="to" name="to" required value="1000">
+    From <input type="number" id="from" name="from" required value="1">
+    to <input type="number" id="to" name="to" required value="100">
 
     @if ($errors->has('from'))
         <p class="red">
