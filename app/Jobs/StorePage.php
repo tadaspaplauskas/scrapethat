@@ -48,6 +48,7 @@ class StorePage implements ShouldQueue
         $dom = $client->array();
 
         $page = $snapshot->pages()->create([
+            'url' => $url,
             'dom' => $dom,
         ]);
 
