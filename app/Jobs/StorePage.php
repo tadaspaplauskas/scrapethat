@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use DomToArray\Client;
+use Goutte\Client;
 
 use App\Snapshot;
 
@@ -43,13 +43,15 @@ class StorePage implements ShouldQueue
             return;
         }
 
-        $client = new Client($url);
+        $client = new Client();
 
-        $dom = $client->array();
+        $response = $client->request('GET', $url);
+
+        $html = $response->html();
 
         $page = $snapshot->pages()->create([
             'url' => $url,
-            'dom' => $dom,
+            'html' => $html,
         ]);
 
         $snapshot->crawled++;
