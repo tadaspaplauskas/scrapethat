@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Goutte\Client;
+use GuzzleHttp\Client;
 
 use App\Snapshot;
 
@@ -47,7 +47,7 @@ class StorePage implements ShouldQueue
 
         $response = $client->request('GET', $url);
 
-        $html = $response->html();
+        $html = (string) $response->getBody();
 
         $page = $snapshot->pages()->create([
             'url' => $url,
