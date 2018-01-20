@@ -18,3 +18,13 @@
 .flexbox { display: flex; flex-wrap: wrap; }
 
 .shade { background-color: #efefef }
+
+.bg-pink { background-color: pink }
+
+/* helps with rudimental tab implementation */
+.hidden:not(:target) {
+  display: none;
+}
+.hidden:target {
+  display: block;
+}
