@@ -871,7 +871,6 @@ there.
 .hidden:not(:target) {
   display: none;
 }
-
 .hidden:target {
   display: block;
 }
