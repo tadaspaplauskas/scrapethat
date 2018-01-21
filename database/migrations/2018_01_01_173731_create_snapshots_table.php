@@ -13,20 +13,18 @@ class CreateSnapshotsTable extends Migration
      */
     public function up()
     {
-        Schema::create('snapshots', function (Blueprint $collection) {
-            $collection->index('user_id');
+        Schema::create('snapshots', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned()->index();
+            $table->string('name')->unsigned();
+            $table->string('url');
+            $table->smallinteger('from')->unsigned()->nullable();
+            $table->smallinteger('to')->unsigned()->nullable();
+            $table->smallinteger('crawled')->unsigned()->nullable();
+            $table->smallinteger('total')->unsigned()->nullable();
+            $table->timestamps();
+            $table->softDeletes();
         });
-
-        // Schema::create('snapshots', function (Blueprint $table) {
-        //     $table->increments('id');
-        //     $table->integer('user_id')->unsigned()->index();
-        //     $table->string('name')->unsigned();
-        //     $table->string('url');
-        //     $table->smallinteger('pages_to_crawl')->unsigned()->nullable();
-        //     $table->smallinteger('pages_crawled')->unsigned()->nullable();
-        //     $table->timestamps();
-        //     $table->softDeletes();
-        // });
     }
 
     /**

@@ -13,8 +13,12 @@ class CreatePagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('pages', function (Blueprint $collection) {
-            $collection->index('snapshot_id');
+        Schema::create('pages', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('snapshot_id')->unsigned()->index();
+            $table->string('url');
+            $table->longText('html');
+            $table->timestamps();
         });
     }
 
