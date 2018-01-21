@@ -8,6 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 
 use App\Snapshot;
 
@@ -56,18 +57,27 @@ class StorePage implements ShouldQueue
 
         $client = new Client();
 
-        $response = $client->request('GET', $url, [
-            'timeout' => self::CONNECT_TIMEOUT,
-            'connect_timeout' => self::CONNECT_TIMEOUT,
-            'headers' => [
-                'User-Agent' => $this->userAgent(),
-            ],
-        ]);
+        try {
+            $response = $client->request('GET', $url, [
+                'timeout' => self::CONNECT_TIMEOUT,
+                'connect_timeout' => self::CONNECT_TIMEOUT,
+                'headers' => [
+                    'User-Agent' => $this->userAgent(),
+                ],
+            ]);
 
-        $html = (string) $response->getBody();
+        } catch (ClientException $e) {
+            $response = $e->getResponse();
+        }
+
+        $html = $response->getBody()->getContents();
+        $statusCode = $response->getStatusCode();
+        $reasonPhrase = $response->getReasonPhrase();
 
         $page = $snapshot->pages()->create([
             'url' => $url,
+            'status_code' => $statusCode,
+            'reason_phrase' => $reasonPhrase,
             'html' => $html,
         ]);
 

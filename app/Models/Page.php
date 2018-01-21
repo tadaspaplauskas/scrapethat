@@ -10,6 +10,8 @@ class Page extends Model
     protected $fillable = [
         'snapshot_id',
         'url',
+        'status_code',
+        'reason_phrase',
         'html',
     ];
 }

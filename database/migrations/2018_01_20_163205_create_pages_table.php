@@ -17,6 +17,8 @@ class CreatePagesTable extends Migration
             $table->increments('id');
             $table->integer('snapshot_id')->unsigned()->index();
             $table->string('url');
+            $table->string('status_code')->nullable();
+            $table->string('reason_phrase')->nullable();
             $table->longText('html');
             $table->timestamps();
         });

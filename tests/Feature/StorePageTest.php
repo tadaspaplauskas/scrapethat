@@ -3,14 +3,14 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-// use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Jobs\StorePage;
 use App\Snapshot;
 
 class StorePageTest extends TestCase
 {
-    // use RefreshDatabase;
+    use RefreshDatabase;
 
     protected function setUp()
     {
@@ -19,7 +19,6 @@ class StorePageTest extends TestCase
         $this->seed(\DatabaseSeeder::class);
     }
 
-    // 
     public function testHandle()
     {
         $snapshot = Snapshot::first();
@@ -35,6 +34,22 @@ class StorePageTest extends TestCase
         $page = $snapshot->pages()->first();
 
         $this->assertTrue($snapshot->pages()->exists());
+        $this->assertTrue($snapshot->isCompleted());
+    }
+
+    public function testNotFound()
+    {
+        $snapshot = Snapshot::first();
+
+        $snapshot->total = 6;
+
+        $job = new StorePage($snapshot);
+
+        $job->handle();
+
+        $snapshot->refresh();
+
+        $this->assertTrue($snapshot->pages()->where('status_code', '>', '200')->exists());
         $this->assertTrue($snapshot->isCompleted());
     }
 }
