@@ -57,6 +57,7 @@ class StorePage implements ShouldQueue
         $client = new Client();
 
         $response = $client->request('GET', $url, [
+            'timeout' => self::CONNECT_TIMEOUT,
             'connect_timeout' => self::CONNECT_TIMEOUT,
             'headers' => [
                 'User-Agent' => $this->userAgent(),
