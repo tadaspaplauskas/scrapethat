@@ -24,7 +24,7 @@ class StorePageTest extends TestCase
     {
         $snapshot = Snapshot::first();
 
-        $this->assertTrue($snapshot->crawled === 0);
+        $this->assertTrue($snapshot->crawled == 0);
 
         $job = new StorePage($snapshot);
 
