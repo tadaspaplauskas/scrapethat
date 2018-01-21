@@ -26,9 +26,9 @@ class SnapshotTest extends DuskTestCase
             $browser->loginAs(User::first())
                 ->visit('/snapshots/create')
                 ->type('name', 'Sample snapshot')
-                ->type('url', 'http://localhost:8000/tests/*.html')
-                ->type('from', '10')
-                ->type('to', '100')
+                ->type('url', 'http://crawler.loc/tests/*.html')
+                ->type('from', '1')
+                ->type('to', '5')
                 ->press('SAVE')
                 ->assertPathIs('/snapshots')
                 ->assertSeeLink('Sample snapshot');
@@ -49,6 +49,7 @@ class SnapshotTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->loginAs(User::first())
                 ->visit('/snapshots/' . Snapshot::first()->id)
+                ->clickLink('Delete snapshot')
                 ->press('DELETE')
                 ->assertSee('was deleted')
                 ->assertDontSeeLink('Most recent HN submisisons')

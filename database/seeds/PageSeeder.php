@@ -38,7 +38,7 @@ HTML;
 
         foreach (Snapshot::all() as $snapshot) {
             $snapshot->pages()->create([
-                'url' => 'http://localhost:8000/tests/1.html',
+                'url' => 'http://crawler.loc/tests/1.html',
                 'html' => $html,
             ]);
         }
