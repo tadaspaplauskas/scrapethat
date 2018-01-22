@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['charts' => true])
 
 @section('title', $snapshot->name)
 
@@ -27,20 +27,21 @@
     <canvas id="chart"></canvas>
 </p>
 
-{{-- load charting libs separately --}}
-<script src="{{ asset('js/charts.js') }}"></script>
+<script async src="{{ asset('js/charts.js') }}"></script>
 <script type="text/javascript">
-var ctx = document.getElementById('chart');
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: {{ $filters->first()->values->toJson() }},
-        datasets: [{
-            label: '{{ $filters->first()->name }}',
-            data: {{ $filters->first()->values->toJson() }}
-        }]
-    }
-});
+    window.onload = function() {
+        var ctx = document.getElementById('chart');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ $filters->first()->values->toJson() }},
+                datasets: [{
+                    label: '{{ $filters->first()->name }}',
+                    data: {{ $filters->first()->values->toJson() }}
+                }]
+            }
+        });
+    };
 </script>
 
 <h5>Danger zone</h5>
