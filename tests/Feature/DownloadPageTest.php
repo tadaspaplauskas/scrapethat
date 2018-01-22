@@ -3,15 +3,12 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Jobs\DownloadPage;
 use App\Snapshot;
 
 class DownloadPageTest extends TestCase
 {
-    use RefreshDatabase;
-
     protected function setUp()
     {
         parent::setUp();

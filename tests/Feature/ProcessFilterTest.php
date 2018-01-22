@@ -3,15 +3,11 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
 use App\Jobs\ProcessFilter;
 use App\Filter;
 
 class ProcessFilterTest extends TestCase
 {
-    use RefreshDatabase;
-
     protected function setUp()
     {
         parent::setUp();
