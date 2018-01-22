@@ -10,22 +10,22 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 
-use App\Snapshot;
+use App\Filter;
 
 class PopulateFilter implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $snapshot;
+    protected $filter;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Snapshot $snapshot)
+    public function __construct(Filter $filter)
     {
-        $this->snapshot = $snapshot;
+        $this->filter = $filter;
     }
 
     /**
@@ -35,23 +35,23 @@ class PopulateFilter implements ShouldQueue
      */
     public function handle()
     {
-        $snapshot = $this->snapshot;
+        $filter = $this->filter;
 
-        if ($cssSelector) {
-            $pages = $snapshot->pages;
+        $page = $filter->snapshot->pages()->offset($filter->scanned_pages)->first();
 
-            foreach ($pages as $page) {
-                $crawler = new Crawler($page->html);
+        $crawler = new Crawler($page->html);
 
-                foreach ($crawler->filter('body > p') as $domElement) {
-                    $values[] = $domElement->nodeValue;
-                }
-            }
+        foreach ($crawler->filter($filter->selector) as $domElement) {
+            $filter->values[] = $domElement->nodeValue;
         }
 
+        $filter->scanned_pages++;
+
+        $filter->save();
+
         // queue next job
-        if (!$snapshot->isCompleted()) {
-            static::dispatch($snapshot);
+        if (!$filter->isCompleted()) {
+            static::dispatch($filter);
         }
     }
 }

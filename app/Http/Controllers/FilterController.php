@@ -45,7 +45,7 @@ class FilterController extends Controller
     public function store(Snapshot $snapshot, Request $request)
     {
         // TODO validate, selector should be unique
-        $cssSelector = $request->get('selector');
+        //snapshot->isCompleted() a must
 
         $data = $request->all();
 
