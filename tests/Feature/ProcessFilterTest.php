@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use App\Jobs\PopulateFilter;
+use App\Jobs\ProcessFilter;
 use App\Filter;
 
 class ProcessFilterTest extends TestCase
@@ -19,13 +19,13 @@ class ProcessFilterTest extends TestCase
         $this->seed(\DatabaseSeeder::class);
     }
 
-    public function testPopulateFilter()
+    public function testProcessFilter()
     {
         $filter = Filter::first();
 
         $this->assertTrue($filter->scanned == 0);
 
-        $job = new PopulateFilter($filter);
+        $job = new ProcessFilter($filter);
 
         $job->handle();
 

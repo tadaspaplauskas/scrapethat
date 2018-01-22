@@ -7,7 +7,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 use App\Snapshot;
 use App\Filter;
-use App\Jobs\PopulateFilter;
+use App\Jobs\ProcessFilter;
 
 class FilterController extends Controller
 {
@@ -51,7 +51,7 @@ class FilterController extends Controller
 
         $filter = $snapshot->filters()->create($data);
 
-        PopulateFilter::dispatch($filter);
+        ProcessFilter::dispatch($filter);
 
         return redirect()->back()->withInput();
     }

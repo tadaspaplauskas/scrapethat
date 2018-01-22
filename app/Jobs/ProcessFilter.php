@@ -11,7 +11,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 use App\Filter;
 
-class PopulateFilter implements ShouldQueue
+class ProcessFilter implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
