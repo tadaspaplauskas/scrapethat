@@ -21,11 +21,15 @@ class FilterSeeder extends Seeder
         Filter::truncate();
 
         foreach (Snapshot::all() as $snapshot) {
-            Filter::create([
+            $filter = new Filter([
                 'snapshot_id' => $snapshot->id,
                 'name' => 'dataX',
                 'selector' => '.data',
             ]);
+
+            $filter->values = [1, 2, 4, 5, 6];
+
+            $filter->save();
         }
     }
 }

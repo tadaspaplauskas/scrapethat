@@ -17,7 +17,7 @@
 
 <h5>Available filters</h5>
 @forelse ($snapshot->filters as $filter)
-    <li>{{ $filter->name }}</li>
+    <li>{{ $filter->name }} {{ $filter->values->toJson() }}</li>
 @empty
     <p>No filters created yet.</p>
 @endforelse
