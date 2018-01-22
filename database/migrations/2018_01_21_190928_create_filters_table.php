@@ -16,11 +16,14 @@ class CreateFiltersTable extends Migration
         Schema::create('filters', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('snapshot_id')->unsigned()->index();
-            $table->string('name')->unique();
-            $table->string('selector')->unique();
+            $table->string('name');
+            $table->string('selector');
             $table->smallinteger('scanned')->unsigned()->default(0);
             $table->json('values')->nullable();
             $table->timestamps();
+
+            $table->unique(['snapshot_id', 'name']);
+            $table->unique(['snapshot_id', 'selector']);
         });
     }
 

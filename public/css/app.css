@@ -871,6 +871,9 @@ there.
 .left { text-align: left }
 .right { text-align: right }
 
+.float-left { float: left }
+.float-right { float: right }
+
 .flexbox { display: flex; flex-wrap: wrap; }
 
 .shade { background-color: #efefef }

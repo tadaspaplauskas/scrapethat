@@ -4,7 +4,7 @@
 
 @section('content')
 
-<h5>Analyze</h5>
+<h5>New filter</h5>
 <p>
     Start analyzing snapshot data with CSS selectors.
 </p>
@@ -15,16 +15,16 @@
     <button type="submit" class="block">Fetch</button>
 </form>
 
-@if (!$snapshot->filters->isEmpty())
-
-    {{ $snapshot->filters->toJson() }}
-
-@endif
+<h5>Available filters</h5>
+@forelse ($snapshot->filters as $filter)
+    <li>{{ $filter->name }}</li>
+@empty
+    <p>No filters created yet.</p>
+@endforelse
 
 <p class="right">
     <a href="#delete">Delete snapshot</a>
 </p>
-
 <div id="delete" class="hidden right">
     <form action="{{ route('snapshots.destroy', $snapshot) }}" method="POST">
         
@@ -38,4 +38,5 @@
         <button class="bg-pink">Delete</button>
     </form>
 </div>
+
 @endsection

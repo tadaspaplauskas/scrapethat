@@ -20,10 +20,12 @@ class FilterSeeder extends Seeder
 
         Filter::truncate();
 
-        Filter::create([
-            'snapshot_id' => Snapshot::first()->id,
-            'name' => 'dataX',
-            'selector' => '.data',
-        ]);
+        foreach (Snapshot::all() as $snapshot) {
+            Filter::create([
+                'snapshot_id' => $snapshot->id,
+                'name' => 'dataX',
+                'selector' => '.data',
+            ]);
+        }
     }
 }
