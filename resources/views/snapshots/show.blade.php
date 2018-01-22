@@ -22,10 +22,14 @@
     <p>No filters created yet.</p>
 @endforelse
 
-<p class="right">
+
+
+
+<h5>Danger zone</h5>
+<p>
     <a href="#delete">Delete snapshot</a>
 </p>
-<div id="delete" class="hidden right">
+<div id="delete" class="hidden">
     <form action="{{ route('snapshots.destroy', $snapshot) }}" method="POST">
         
         {{ method_field('DELETE') }}
