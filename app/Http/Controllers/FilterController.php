@@ -42,12 +42,12 @@ class FilterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Snapshot $snapshot, Request $request)
+    public function store(Request $request)
     {
         // TODO validate, selector should be unique
         //snapshot->isCompleted() a must
 
-        $filter = $snapshot->filters()->create($request->all());
+        $filter = Filter::create($request->all());
 
         ProcessFilter::dispatch($filter);
 

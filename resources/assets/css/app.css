@@ -15,6 +15,7 @@
 .p1 { padding: 1rem }
 
 .inline { display: inline }
+.inline-block { display: inline-block }
 .block { display: block }
 
 .red { color: #990000 }

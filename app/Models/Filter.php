@@ -8,6 +8,7 @@ class Filter extends Model
 {
     protected $fillable = [
         'snapshot_id',
+        'name',
         'selector',
         'scanned',
         'values',

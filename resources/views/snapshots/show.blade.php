@@ -5,29 +5,19 @@
 @section('content')
 
 @if (!$filters->isEmpty())
-    <canvas id="chart" height="100"></canvas>
-    <script type="text/javascript">
-        // whenReady(function () {
-            var ctx = document.getElementById('chart');
-            var myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: {{ $filters->first()->values->toJson() }},
-                    datasets: [{
-                        label: '{{ $filters->first()->name }}',
-                        data: {{ $filters->first()->values->toJson() }}
-                    }]
-                },
-                options: {
-                    // maintainAspectRatio: false
-                }
-            });
-        // });
-    </script>
 
-    <ul class="list-none">
+    @if ($datasets->isEmpty())
+        <p class="center">Select at least one filter to display.</p>
+    @else
+        <canvas id="chart"></canvas>
+        <script type="text/javascript">
+            drawChart('chart', {!! $datasets->toJson() !!});
+        </script>
+    @endif
+
+    <ul class="list-none center">
         @foreach ($filters as $filter)
-            <li>
+            <li class="inline-block mr3">
                 <form method="POST" action="{{ route('filters.update', $filter) }}">
                     {{ method_field('PUT') }}
                     {{ csrf_field() }}
@@ -50,8 +40,12 @@
 <form method="POST" action="{{ route('filters.store') }}">
     {{ csrf_field() }}
     <input type="hidden" name="snapshot_id" value="{{ $snapshot->id }}">
-    <label for="password" class="">CSS selector</label>
-    <input type="text" name="selector" id="selector" placeholder=".selector" value="{{ old('css_selector') }}" required>
+    
+    <label for="name">Name</label>
+    <input type="text" name="name" id="name" placeholder="Name" value="{{ old('name') }}" required>
+
+    <label for="selector" class="">CSS selector</label>
+    <input type="text" name="selector" id="selector" placeholder=".selector" value="{{ old('selector') }}" required>
     <button type="submit" class="block">Fetch</button>
 </form>
 

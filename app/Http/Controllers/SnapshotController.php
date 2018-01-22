@@ -65,8 +65,10 @@ class SnapshotController extends Controller
     public function show(Snapshot $snapshot, Request $request)
     {
         $filters = $snapshot->filters;
+        
+        $datasets = $filters->where('selected', true)->values();
 
-        return view('snapshots.show', compact('snapshot', 'filters'));
+        return view('snapshots.show', compact('snapshot', 'filters', 'datasets'));
     }
 
     /**

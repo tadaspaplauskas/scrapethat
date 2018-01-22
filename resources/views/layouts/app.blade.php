@@ -16,7 +16,7 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
     @if (isset($charts))
-    <script src="{{ asset('js/charts.js') }}"></script>
+        <script src="{{ asset('js/charts.js') }}"></script>
     @endif
 </head>
 <body>
