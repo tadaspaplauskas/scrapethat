@@ -5,10 +5,10 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use App\Jobs\StorePage;
+use App\Jobs\DownloadPage;
 use App\Snapshot;
 
-class StorePageTest extends TestCase
+class DownloadPageTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -19,13 +19,13 @@ class StorePageTest extends TestCase
         $this->seed(\DatabaseSeeder::class);
     }
 
-    public function testHandle()
+    public function testDownloadPage()
     {
         $snapshot = Snapshot::first();
 
         $this->assertTrue($snapshot->crawled == 0);
 
-        $job = new StorePage($snapshot);
+        $job = new DownloadPage($snapshot);
 
         $job->handle();
 
@@ -37,13 +37,13 @@ class StorePageTest extends TestCase
         $this->assertTrue($snapshot->isCompleted());
     }
 
-    public function testNotFound()
+    public function testDownloadPageNotFound()
     {
         $snapshot = Snapshot::first();
 
         $snapshot->total = 6;
 
-        $job = new StorePage($snapshot);
+        $job = new DownloadPage($snapshot);
 
         $job->handle();
 

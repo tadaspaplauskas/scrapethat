@@ -26,7 +26,7 @@ class SnapshotSeeder extends Seeder
             'url' => 'http://crawler.loc/tests/*.html',
             'from' => 1,
             'to' => 5,
-            'crawled' => 0,
+            'downloaded' => 0,
             'total' => 5,
         ]);
 
@@ -37,7 +37,7 @@ class SnapshotSeeder extends Seeder
                 'url' => 'http://crawler.loc/tests/*.html',
                 'from' => 1,
                 'to' => 5,
-                'crawled' => 0,
+                'downloaded' => 0,
                 'total' => 5,
             ]);
         }

@@ -14,7 +14,7 @@ class Snapshot extends Model
         'url',
         'from',
         'to',
-        'crawled',
+        'downloaded',
         'total',
     ];
 
@@ -35,7 +35,7 @@ class Snapshot extends Model
             return null;
         }
 
-        $nextPage = $this->from + $this->crawled;
+        $nextPage = $this->from + $this->downloaded;
 
         $nextPageUrl = str_replace('*', $nextPage, $this->url);
         
@@ -44,6 +44,6 @@ class Snapshot extends Model
 
     public function isCompleted()
     {
-        return $this->crawled > 0 && $this->crawled === $this->total;
+        return $this->downloaded > 0 && $this->downloaded === $this->total;
     }
 }

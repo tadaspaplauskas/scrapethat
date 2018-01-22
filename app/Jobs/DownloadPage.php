@@ -12,7 +12,7 @@ use GuzzleHttp\Exception\ClientException;
 
 use App\Snapshot;
 
-class StorePage implements ShouldQueue
+class DownloadPage implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -81,7 +81,7 @@ class StorePage implements ShouldQueue
             'html' => $html,
         ]);
 
-        $snapshot->crawled++;
+        $snapshot->downloaded++;
 
         $snapshot->save();
 

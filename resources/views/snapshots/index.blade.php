@@ -16,7 +16,7 @@
             <p>
                 <small>
                     {{ $snapshot->created_at->diffForHumans() }},
-                    crawled {{ (int) $snapshot->crawled }}/{{ (int) $snapshot->total }} pages
+                    downloaded {{ (int) $snapshot->downloaded }}/{{ (int) $snapshot->total }} pages
                 </small>
             </p>
         </article>

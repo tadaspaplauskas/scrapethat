@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\DomCrawler\Crawler;
 
 use App\Snapshot;
-use App\Jobs\StorePage;
+use App\Jobs\DownloadPage;
 
 class SnapshotController extends Controller
 {
@@ -47,12 +47,11 @@ class SnapshotController extends Controller
     {
         $data = $request->all();
 
-        $data['crawled'] = 0;
         $data['total'] = abs($data['to'] - $data['from'] + 1);
 
         $snapshot = auth()->user()->snapshots()->create($data);
 
-        StorePage::dispatch($snapshot);
+        DownloadPage::dispatch($snapshot);
 
         return redirect()->action('SnapshotController@index')
             ->with('message', $request->name . ' created successfully. Please wait while we crawl the pages.');
