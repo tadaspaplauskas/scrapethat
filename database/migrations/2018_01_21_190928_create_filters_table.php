@@ -18,8 +18,8 @@ class CreateFiltersTable extends Migration
             $table->integer('snapshot_id')->unsigned()->index();
             $table->string('name')->unique();
             $table->string('selector')->unique();
-            $table->smallinteger('scanned_pages')->unsigned()->default(0);
-            $table->json('values');
+            $table->smallinteger('scanned')->unsigned()->default(0);
+            $table->json('values')->nullable();
             $table->timestamps();
         });
     }

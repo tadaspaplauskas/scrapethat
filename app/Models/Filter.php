@@ -9,12 +9,12 @@ class Filter extends Model
     protected $fillable = [
         'snapshot_id',
         'selector',
-        'scanned_pages',
-        'data',
+        'scanned',
+        'values',
     ];
 
     protected $casts = [
-        'data' => 'array',
+        'values' => 'collection',
     ];
 
     public function snapshot()
@@ -24,6 +24,6 @@ class Filter extends Model
 
     public function isCompleted()
     {
-        return $this->scanned_pages >= $this->snapshot->total;
+        return $this->scanned >= $this->snapshot->total;
     }
 }

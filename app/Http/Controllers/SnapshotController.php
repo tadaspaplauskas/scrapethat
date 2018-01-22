@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Symfony\Component\DomCrawler\Crawler;
 
 use App\Snapshot;
 use App\Jobs\DownloadPage;

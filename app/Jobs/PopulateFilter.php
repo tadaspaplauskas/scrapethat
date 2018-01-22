@@ -7,8 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use Symfony\Component\DomCrawler\Crawler;
 
 use App\Filter;
 
@@ -37,15 +36,19 @@ class PopulateFilter implements ShouldQueue
     {
         $filter = $this->filter;
 
-        $page = $filter->snapshot->pages()->offset($filter->scanned_pages)->first();
+        $page = $filter->snapshot->pages()->offset($filter->scanned)->first();
 
         $crawler = new Crawler($page->html);
 
+        $values = $filter->values;
+
         foreach ($crawler->filter($filter->selector) as $domElement) {
-            $filter->values[] = $domElement->nodeValue;
+            $values[] = $domElement->nodeValue;
         }
 
-        $filter->scanned_pages++;
+        $filter->values = $values;
+
+        $filter->scanned++;
 
         $filter->save();
 
