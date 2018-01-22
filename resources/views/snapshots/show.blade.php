@@ -16,14 +16,32 @@
 </form>
 
 <h5>Available filters</h5>
-@forelse ($snapshot->filters as $filter)
+@forelse ($filters as $filter)
     <li>{{ $filter->name }} {{ $filter->values->toJson() }}</li>
 @empty
     <p>No filters created yet.</p>
 @endforelse
 
+<h5>Graph</h5>
+<p>
+    <canvas id="chart"></canvas>
+</p>
 
-
+{{-- load charting libs separately --}}
+<script src="{{ asset('js/charts.js') }}"></script>
+<script type="text/javascript">
+var ctx = document.getElementById('chart');
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ $filters->first()->values->toJson() }},
+        datasets: [{
+            label: '{{ $filters->first()->name }}',
+            data: {{ $filters->first()->values->toJson() }}
+        }]
+    }
+});
+</script>
 
 <h5>Danger zone</h5>
 <p>

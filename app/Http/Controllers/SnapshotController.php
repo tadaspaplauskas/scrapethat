@@ -64,7 +64,9 @@ class SnapshotController extends Controller
      */
     public function show(Snapshot $snapshot, Request $request)
     {
-        return view('snapshots.show', compact('snapshot'));
+        $filters = $snapshot->filters;
+
+        return view('snapshots.show', compact('snapshot', 'filters'));
     }
 
     /**
