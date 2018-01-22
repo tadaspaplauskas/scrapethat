@@ -6,3 +6,9 @@ document.addEventListener('turbolinks:click', function (event) {
         return event.preventDefault();
     }
 });
+
+function whenReady(fn) {
+    document.addEventListener('turbolinks:load', function (event) {
+        fn();
+    });
+}
