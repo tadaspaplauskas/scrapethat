@@ -11,10 +11,12 @@ class Filter extends Model
         'selector',
         'scanned',
         'values',
+        'selected',
     ];
 
     protected $casts = [
         'values' => 'collection',
+        'selected' => 'boolean',
     ];
 
     public function snapshot()

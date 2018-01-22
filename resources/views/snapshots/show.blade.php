@@ -4,42 +4,52 @@
 
 @section('content')
 
-<script src="{{ asset('js/charts.js') }}"></script>
-<script type="text/javascript">
-    var ctx = document.getElementById('chart');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: {{ $filters->first()->values->toJson() }},
-            datasets: [{
-                label: '{{ $filters->first()->name }}',
-                data: {{ $filters->first()->values->toJson() }}
-            }]
-        }
-    });
-</script>
+@if (!$filters->isEmpty())
+    <canvas id="chart" height="100"></canvas>
+    <script type="text/javascript">
+        // whenReady(function () {
+            var ctx = document.getElementById('chart');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: {{ $filters->first()->values->toJson() }},
+                    datasets: [{
+                        label: '{{ $filters->first()->name }}',
+                        data: {{ $filters->first()->values->toJson() }}
+                    }]
+                },
+                options: {
+                    // maintainAspectRatio: false
+                }
+            });
+        // });
+    </script>
 
-<h5>Available filters</h5>
-@forelse ($filters as $filter)
-    <li>{{ $filter->name }} {{ $filter->values->toJson() }}</li>
-@empty
-    <p>No filters created yet.</p>
-@endforelse
-
-<h5>Graph</h5>
-<p>
-    <canvas id="chart"></canvas>
-</p>
+    <ul class="list-none">
+        @foreach ($filters as $filter)
+            <li>
+                <form method="POST" action="{{ route('filters.update', $filter) }}">
+                    {{ method_field('PUT') }}
+                    {{ csrf_field() }}
+                    <label>
+                        <input type="hidden" name="selected" value="0">
+                        <input type="checkbox" name="selected" value="1" {{ $filter->selected ? 'checked' : '' }} onchange="submit()">
+                        {{ $filter->name }}
+                    </label>
+                </form>
+            </li>
+        @endforeach
+    </ul>
+@endif
 
 <h5>Create a filter</h5>
 <p>
-    Start analyzing snapshot data with CSS selectors.
+    Select data out of snapshots using CSS selectors.
 </p>
 
-<form method="POST" action="{{ route('filters.store', $snapshot) }}">
-    
+<form method="POST" action="{{ route('filters.store') }}">
     {{ csrf_field() }}
-
+    <input type="hidden" name="snapshot_id" value="{{ $snapshot->id }}">
     <label for="password" class="">CSS selector</label>
     <input type="text" name="selector" id="selector" placeholder=".selector" value="{{ old('css_selector') }}" required>
     <button type="submit" class="block">Fetch</button>

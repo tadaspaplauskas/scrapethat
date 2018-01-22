@@ -883,3 +883,5 @@ there.
 /* helps with rudimental tab implementation */
 .hidden:not(:target) { display: none }
 .hidden:target { display: block }
+
+.list-none { list-style: none }

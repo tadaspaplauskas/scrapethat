@@ -20,6 +20,7 @@ class CreateFiltersTable extends Migration
             $table->string('selector');
             $table->smallinteger('scanned')->unsigned()->default(0);
             $table->json('values')->nullable();
+            $table->boolean('selected')->default(0);
             $table->timestamps();
 
             $table->unique(['snapshot_id', 'name']);

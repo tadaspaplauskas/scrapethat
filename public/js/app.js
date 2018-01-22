@@ -85,11 +85,11 @@ document.addEventListener('turbolinks:click', function (event) {
     }
 });
 
-function whenReady(fn) {
+document.whenReady = function (fn) {
     document.addEventListener('turbolinks:load', function (event) {
         fn();
     });
-}
+};
 
 /***/ }),
 

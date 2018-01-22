@@ -20,4 +20,4 @@ Route::get('/', 'PagesController@index')->name('index');
 Route::get('snapshots/{id}/restore', 'SnapshotController@restore')->name('snapshots.restore');
 Route::resource('snapshots', 'SnapshotController');
 
-Route::resource('snapshots/{snapshot}/filters', 'FilterController', ['only' => ['store']]);
+Route::resource('filters', 'FilterController');

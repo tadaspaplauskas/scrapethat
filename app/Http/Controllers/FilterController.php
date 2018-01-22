@@ -47,9 +47,7 @@ class FilterController extends Controller
         // TODO validate, selector should be unique
         //snapshot->isCompleted() a must
 
-        $data = $request->all();
-
-        $filter = $snapshot->filters()->create($data);
+        $filter = $snapshot->filters()->create($request->all());
 
         ProcessFilter::dispatch($filter);
 
@@ -85,9 +83,11 @@ class FilterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Filter $Filter)
+    public function update(Request $request, Filter $filter)
     {
-        //
+        $filter->update($request->all());
+
+        return redirect()->back();
     }
 
     /**
