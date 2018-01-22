@@ -23,6 +23,11 @@ class Snapshot extends Model
         return $this->hasMany(Page::class);
     }
 
+    public function filters()
+    {
+        return $this->hasMany(Filter::class);
+    }
+
     public function nextPageUrl()
     {
         // we're done here

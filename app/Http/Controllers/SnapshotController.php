@@ -66,25 +66,7 @@ class SnapshotController extends Controller
      */
     public function show(Snapshot $snapshot, Request $request)
     {
-        $request->flash();
-
-        $values = collect();
-
-        $cssSelector = $request->get('css_selector');
-
-        if ($cssSelector) {
-            $pages = $snapshot->pages;
-
-            foreach ($pages as $page) {
-                $crawler = new Crawler($page->html);
-
-                foreach ($crawler->filter('body > p') as $domElement) {
-                    $values[] = $domElement->nodeValue;
-                }
-            }
-        }
-
-        return view('snapshots.show', compact('snapshot', 'values'));
+        return view('snapshots.show', compact('snapshot'));
     }
 
     /**

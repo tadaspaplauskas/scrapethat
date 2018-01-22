@@ -11,13 +11,13 @@
 
 <form method="GET">
     <label for="password" class="">CSS selector</label>
-    <input type="text" name="css_selector" id="css_selector" placeholder=".css-selector" value="{{ old('css_selector') }}" required>
+    <input type="text" name="selector" id="selector" placeholder=".selector" value="{{ old('css_selector') }}" required>
     <button type="submit" class="block">Fetch</button>
 </form>
 
-@if (!$values->isEmpty())
+@if (!$snapshot->filters->isEmpty())
 
-    {{ $values->toJson() }}
+    {{ $snapshot->filters->toJson() }}
 
 @endif
 
