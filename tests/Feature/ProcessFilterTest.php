@@ -19,6 +19,8 @@ class ProcessFilterTest extends TestCase
     {
         $filter = Filter::first();
 
+        $filter->values = null;
+
         $this->assertTrue($filter->scanned == 0);
 
         $job = new ProcessFilter($filter);
@@ -30,6 +32,6 @@ class ProcessFilterTest extends TestCase
         $this->assertTrue($filter->scanned > 0);
         $this->assertTrue($filter->isCompleted());
         $this->assertFalse($filter->values->isEmpty());
-        $this->assertTrue($filter->values->contains('needle'));
+        $this->assertTrue($filter->values->contains('73 800 €'));
     }
 }
