@@ -5,28 +5,12 @@
 @section('content')
 
 @if (!$filters->isEmpty())
-
-    @if ($datasets->isEmpty())
-        <p class="center">Select at least one filter to display.</p>
-    @else
-        <canvas id="chart"></canvas>
-        <script type="text/javascript">
-            drawChart('chart', {!! $datasets->toJson() !!});
-        </script>
-    @endif
-
-    <ul class="list-none center">
+    <h5>Defined variables</h5>
+    
+    <ul>
         @foreach ($filters as $filter)
-            <li class="inline-block mr3">
-                <form method="POST" action="{{ route('filters.update', $filter) }}">
-                    {{ method_field('PUT') }}
-                    {{ csrf_field() }}
-                    <label>
-                        <input type="hidden" name="selected" value="0">
-                        <input type="checkbox" name="selected" value="1" {{ $filter->selected ? 'checked' : '' }} onchange="submit()">
-                        {{ $filter->name }}
-                    </label>
-                </form>
+            <li>
+                <a href="{{ route('filters.show', $filter) }}">{{ $filter->name }}</a>
             </li>
         @endforeach
     </ul>
@@ -48,9 +32,6 @@
     <input type="text" name="selector" id="selector" placeholder=".selector" value="{{ old('selector') }}" required>
     <button type="submit" class="block">Fetch</button>
 </form>
-
-
-
 
 
 <h5>Danger zone</h5>

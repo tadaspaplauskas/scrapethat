@@ -60,9 +60,10 @@ class FilterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Filter $Filter, Request $request)
+    public function show(Filter $filter, Request $request)
     {
 
+        return view('filters.show', compact('filter'));
     }
 
     /**
@@ -96,7 +97,7 @@ class FilterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Filter $Filter)
+    public function destroy(Filter $filter)
     {
         //
     }
