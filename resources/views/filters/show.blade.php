@@ -16,12 +16,12 @@
 </script>
 
 <ul class="center">
-    <li class="inline-block mr3">Count: {{ $filter->values->count() }}</li>
-    <li class="inline-block mr3">Avg: {{ $filter->values->avg() }}</li>
-    <li class="inline-block mr3">Median: {{ $filter->values->median() }}</li>
-    <li class="inline-block mr3">Sum: {{ $filter->values->sum() }}</li>
-    <li class="inline-block mr3">Min: {{ $filter->values->min() }}</li>
-    <li class="inline-block mr3">Max: {{ $filter->values->max() }}</li>
+    <li class="inline-block mr3">Count: {{ $numbers->count() }}</li>
+    <li class="inline-block mr3">Avg: {{ $numbers->avg() }}</li>
+    <li class="inline-block mr3">Median: {{ $numbers->median() }}</li>
+    <li class="inline-block mr3">Sum: {{ $numbers->sum() }}</li>
+    <li class="inline-block mr3">Min: {{ $numbers->min() }}</li>
+    <li class="inline-block mr3">Max: {{ $numbers->max() }}</li>
 </ul>
 
 <h5>Conditions</h5>

@@ -62,8 +62,11 @@ class FilterController extends Controller
      */
     public function show(Filter $filter, Request $request)
     {
+        $numbers = $filter->values->map(function ($item) {
+            return floatval(preg_replace('/\s*/m', '', $item));
+        });
 
-        return view('filters.show', compact('filter'));
+        return view('filters.show', compact('filter', 'numbers'));
     }
 
     /**
