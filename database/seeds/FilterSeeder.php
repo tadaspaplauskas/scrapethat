@@ -21,7 +21,7 @@ class FilterSeeder extends Seeder
         foreach (Snapshot::all() as $snapshot) {
             $filter = new Filter([
                 'snapshot_id' => $snapshot->id,
-                'name' => 'Price',
+                'name' => 'price',
                 'selector' => '.price',
             ]);
 
@@ -31,7 +31,7 @@ class FilterSeeder extends Seeder
 
             $filter = new Filter([
                 'snapshot_id' => $snapshot->id,
-                'name' => 'Meters',
+                'name' => 'square_price',
                 'selector' => '.meters',
             ]);
 

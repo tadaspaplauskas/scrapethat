@@ -14,6 +14,22 @@
             </li>
         @endforeach
     </ul>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/alasql@0.4"></script>
+    <script>
+
+    var data = {!! $dataset->toJson() !!};
+
+    var res = alasql('SELECT AVG(`Price`), MEDIAN(`Price`), MAX(`Price`), MIN(`Price`), SUM(`Price`) FROM ?',[data]);
+
+    console.log(data);
+    console.log(res);
+
+    </script>
+
+
+    <textarea id="query"></textarea>
 @endif
 
 <h5>Create a filter</h5>

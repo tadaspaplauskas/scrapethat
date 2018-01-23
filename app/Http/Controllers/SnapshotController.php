@@ -66,9 +66,19 @@ class SnapshotController extends Controller
     {
         $filters = $snapshot->filters;
         
-        $datasets = $filters->where('selected', true)->values();
+        $dataset = collect();
 
-        return view('snapshots.show', compact('snapshot', 'filters', 'datasets'));
+        foreach ($filters as $filter) {
+            foreach ($filter->values as $i => $value) {
+                if (!isset($dataset[$i])) {
+                    $dataset[$i] = collect();
+                }
+
+                $dataset[$i][$filter->name] = floatval(preg_replace('/\s*/m', '', $value));
+            }
+        }
+
+        return view('snapshots.show', compact('snapshot', 'filters', 'dataset'));
     }
 
     /**

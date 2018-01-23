@@ -46,6 +46,7 @@ class FilterController extends Controller
     {
         // TODO validate, selector should be unique
         //snapshot->isCompleted() a must
+        // TODO camel_case() name
 
         $filter = Filter::create($request->all());
 
