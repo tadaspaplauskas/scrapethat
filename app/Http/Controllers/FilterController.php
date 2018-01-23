@@ -99,6 +99,9 @@ class FilterController extends Controller
      */
     public function destroy(Filter $filter)
     {
-        //
+       $filter->delete();
+
+        return redirect()->action('SnapshotController@show', $filter->snapshot)
+            ->with('message', $filter->name . ' was deleted.');
     }
 }
