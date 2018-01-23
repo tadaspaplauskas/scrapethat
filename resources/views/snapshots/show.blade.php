@@ -69,8 +69,7 @@
             var results = alasql(query, [window.dataset]);
         }
         catch (exception) {
-            console.log(exception.toString());
-            outputElement.innerHTML = exception;
+            outputElement.innerText = exception;
             outputElement.className = 'red';
 
             return false;
