@@ -15,8 +15,9 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
-    @if (isset($charts))
-        <script src="{{ asset('js/charts.js') }}"></script>
+    @if (isset($extra_dependencies))
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/alasql/0.4.4/alasql.min.js"></script>
     @endif
 </head>
 <body>

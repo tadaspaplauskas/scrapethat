@@ -14,7 +14,5 @@
     "laravel-mix": "^1.0"
   },
   "dependencies": {
-    "chart.js": "^2.7.1",
-    "turbolinks": "^5.0.3"
   }
 }

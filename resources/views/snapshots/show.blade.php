@@ -1,38 +1,10 @@
-@extends('layouts.app', ['charts' => true])
+@extends('layouts.app', ['extra_dependencies' => true])
 
 @section('title', $snapshot->name)
 
 @section('content')
 
-@if (!$filters->isEmpty())
-    <h5>Defined filters</h5>
-
-    <ul>
-        @foreach ($filters as $filter)
-            <li>
-                <a href="{{ route('filters.show', $filter) }}">{{ $filter->name }}</a>
-            </li>
-        @endforeach
-    </ul>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/alasql@0.4"></script>
-    <script>
-
-    var data = {!! $dataset->toJson() !!};
-
-    var res = alasql('SELECT AVG(`Price`), MEDIAN(`Price`), MAX(`Price`), MIN(`Price`), SUM(`Price`) FROM ?',[data]);
-
-    console.log(data);
-    console.log(res);
-
-    </script>
-
-
-    <textarea id="query"></textarea>
-@endif
-
-<h5>Create a filter</h5>
+<h5>New filter</h5>
 <p>
     Select data out of snapshots using CSS selectors.
 </p>
@@ -49,6 +21,23 @@
     <button type="submit" class="block">Fetch</button>
 </form>
 
+@if (!$filters->isEmpty())
+    <h5>Defined filters</h5>
+
+    <ul>
+        @foreach ($filters as $filter)
+            <li>
+                <a href="{{ route('filters.show', $filter) }}">{{ $filter->name }}</a>
+            </li>
+        @endforeach
+    </ul>
+
+    <textarea id="query" class="full-width">SELECT AVG(Price) FROM ?</textarea>
+
+    <button onclick="runQuery()">Run query</button>
+
+    <p id="sql-output"></p>
+@endif
 
 <h5>Danger zone</h5>
 <p>
@@ -67,5 +56,45 @@
         <button class="bg-pink">Delete</button>
     </form>
 </div>
+
+
+<script>
+    window.dataset = {!! $dataset->toJson() !!};
+
+    function runQuery() {
+        var query = document.getElementById('query').value;
+        var outputElement = document.getElementById('sql-output');
+
+        try {
+            var results = alasql(query, [window.dataset]);
+        }
+        catch (exception) {
+            console.log(exception.toString());
+            outputElement.innerHTML = exception;
+            outputElement.className = 'red';
+
+            return false;
+        }
+
+        // all good
+        var html = '<table>';
+
+        // add header row
+        html += '<tr><th>' + Object.keys(results[0]).join('</th><th>') + '</th></tr>';
+
+        // add data
+        for (var i = 0; i < results.length; i++) {
+            html += '<tr><td>' + Object.values(results[i]).join('</td><td>') + '</td></tr>';
+        }
+
+        html += '<table>';
+
+        // output
+        outputElement.className = '';
+        outputElement.innerHTML = html;
+
+        return true;
+    }
+</script>
 
 @endsection
