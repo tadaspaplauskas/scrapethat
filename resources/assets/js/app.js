@@ -12,24 +12,3 @@
 //         fn();
 //     });
 // }
-
-
-window.drawChart = function (id, filters) {
-    var elem = document.getElementById(id);
-    var datasets = filters.map(function (item) {
-        return {
-            label: item.name,
-            data: item.values
-        };
-    });
-
-    var chart = new Chart(elem, {
-        type: 'line',
-        data: {
-            labels: new Array(datasets[0].data.length),
-            datasets: datasets
-        },
-        options: {
-        }
-    });
-};

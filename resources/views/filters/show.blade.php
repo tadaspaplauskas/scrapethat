@@ -12,7 +12,24 @@
 
 <canvas id="chart"></canvas>
 <script type="text/javascript">
-    drawChart('chart', [{!! $filter->toJson() !!}]);
+    var datasets = [
+        {
+            label: "{{ $filter->name }}",
+            data: {!! $numbers->toJson() !!}
+        }
+    ];
+    
+    var elem = document.getElementById('chart');
+
+    var chart = new Chart(elem, {
+        type: 'line',
+        data: {
+            labels: new Array(datasets[0].data.length),
+            datasets: datasets
+        },
+        options: {
+        }
+    });
 </script>
 
 <ul class="center">
