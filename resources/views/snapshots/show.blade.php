@@ -5,8 +5,8 @@
 @section('content')
 
 @if (!$filters->isEmpty())
-    <h5>Defined variables</h5>
-    
+    <h5>Defined filters</h5>
+
     <ul>
         @foreach ($filters as $filter)
             <li>
