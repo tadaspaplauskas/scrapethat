@@ -33,13 +33,17 @@
     </p>
 
     <p id="simple" class="mode">
-        {{-- <ul>
+        <ul class="list-none">
             @foreach ($filters as $filter)
                 <li>
-                    <a href="{{ route('filters.show', $filter) }}">{{ $filter->name }}</a>
+                    <label>
+                        <input type="checkbox" value="{{ $filter->name }}"
+                        onclick="toggleFilter(this.value)">
+                        {{ $filter->name }}
+                    </label>
                 </li>
             @endforeach
-        </ul> --}}
+        </ul>
         TODO
     </p>
 
@@ -72,7 +76,40 @@
 
 
 <script>
-    window.dataset = {!! $dataset->toJson() !!};
+    var dataset = {!! $dataset->toJson() !!};
+    var useFilters = [];
+
+    var queryElement = document.getElementById('query');
+    var outputElement = document.getElementById('sql-output');
+
+    function makeQuery() {
+        var sql;
+
+        sql = 'SELECT ';
+
+        sql += useFilters.join(', ');
+
+        sql += ' FROM ?';
+
+        queryElement.value = sql;
+
+        runQuery();
+    }
+
+    function toggleFilter(filter) {
+        var updated = useFilters.filter(function (item) {
+            return filter !== item;
+        });
+
+        // was not removed, so add now
+        if (updated.length === useFilters.length) {
+            updated.push(filter);
+        }
+
+        useFilters = updated;
+
+        makeQuery();
+    }
 
     function showMode() {
         var mode, modes, element;
@@ -94,18 +131,16 @@
     }
 
     function runQuery() {
-        var query, outputElement, results, html;
+        var results, html;
 
-        query = document.getElementById('query').value;
-
-        if (!query) {
+        if (!queryElement.value) {
             return false;
         }
 
-        var outputElement = document.getElementById('sql-output');
+        
 
         try {
-            var results = alasql(query, [window.dataset]);
+            var results = alasql(queryElement.value, [window.dataset]);
         }
         catch (exception) {
             outputElement.innerText = exception;
