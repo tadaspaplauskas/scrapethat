@@ -32,20 +32,58 @@
         </select>
     </p>
 
-    <p id="simple" class="mode">
+    <div id="simple" class="mode">
         <ul class="list-none">
             @foreach ($filters as $filter)
                 <li>
-                    <label>
-                        <input type="checkbox" value="{{ $filter->name }}"
-                        onclick="toggleFilter(this.value)">
+                    <label class="inline-block">
+                        <input type="checkbox" onclick="toggleFilter('{{ $filter->name }}')">
                         {{ $filter->name }}
                     </label>
+                    <small>
+                    <ul class="list-none inline-block ">
+                        <li class="inline-block ml3">
+                            <label>
+                                <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', 'AVG')">
+                                Average
+                            </label>
+                        </li>
+                        <li class="inline-block ml3">
+                            <label>
+                                <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', 'MEDIAN')">
+                                Median
+                            </label>
+                        </li>
+                        <li class="inline-block ml3">
+                            <label>
+                                <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', 'SUM')">
+                                Sum
+                            </label>
+                        </li>
+                        <li class="inline-block ml3">
+                            <label>
+                                <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', 'COUNT')">
+                                Count
+                            </label>
+                        </li>
+                        <li class="inline-block ml3">
+                            <label>
+                                <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', 'MIN')">
+                                Min
+                            </label>
+                        </li>
+                        <li class="inline-block ml3">
+                            <label>
+                                <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', 'MAX')">
+                                Max
+                            </label>
+                        </li>
+                    </ul>
+                </small>
                 </li>
             @endforeach
         </ul>
-        TODO
-    </p>
+    </div>
 
     <p id="advanced" class="mode">
         <textarea id="query" class="full-width">SELECT AVG(Price) FROM ?</textarea>
@@ -77,17 +115,19 @@
 
 <script>
     var dataset = {!! $dataset->toJson() !!};
-    var useFilters = [];
+    var shownFilters = [];
 
     var queryElement = document.getElementById('query');
     var outputElement = document.getElementById('sql-output');
+    var currentModeElement = document.getElementById('mode');
+    var modeElements = document.getElementsByClassName('mode');
 
     function makeQuery() {
         var sql;
 
         sql = 'SELECT ';
 
-        sql += useFilters.join(', ');
+        // sql += shownFilters.join(', ');
 
         sql += ' FROM ?';
 
@@ -96,32 +136,43 @@
         runQuery();
     }
 
-    function toggleFilter(filter) {
-        var updated = useFilters.filter(function (item) {
-            return filter !== item;
-        });
+    function toggle(array, item, compareFn) {
+        var updated = array.filter(compareFn);
 
-        // was not removed, so add now
-        if (updated.length === useFilters.length) {
-            updated.push(filter);
+        // not found, so add
+        if (updated.length === array.length) {
+            updated.push(item);
         }
 
-        useFilters = updated;
+        return updated;
+    }
+
+    function toggleFilter(filter) {
+        shownFilters = toggle(shownFilters, { name: filter }, function (item) {
+            return item.name === filter;
+        });
 
         makeQuery();
     }
 
+    function toggleAggregation(filter, aggregation) {
+        // shownFilters = shownFilters.map(function (item) {
+        //     if (filter == item.name) {
+        //         return toggle(item.aggregations, aggregation);
+        // });
+
+        // shownFilters = updated;
+
+        // makeQuery();
+    }
+
     function showMode() {
-        var mode, modes, element;
+        var element;
 
-        mode = document.getElementById('mode').value;
-
-        modes = document.getElementsByClassName('mode');
-
-        for (var i = 0; i < modes.length; i++) {
-            element = modes[i];
-
-            if (element.id === mode) {
+        for (var i = 0; i < modeElements.length; i++) {
+            element = modeElements[i];
+            console.log(element);
+            if (element.id === currentModeElement.value) {
                 element.style.display = 'block';
             }
             else {

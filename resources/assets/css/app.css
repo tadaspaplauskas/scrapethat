@@ -40,3 +40,5 @@
 .hidden:target { display: block }
 
 .list-none { list-style: none }
+
+.small { font-size: 0.9rem }
