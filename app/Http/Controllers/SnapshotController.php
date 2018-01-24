@@ -78,7 +78,16 @@ class SnapshotController extends Controller
             }
         }
 
-        return view('snapshots.show', compact('snapshot', 'filters', 'dataset'));
+        $aggregations = collect([
+            'COUNT' => 'Count',
+            'AVG' => 'Average',
+            'MEDIAN' => 'Median',
+            'SUM' => 'Sum',
+            'MIN' => 'Min',
+            'MAX' => 'Max',
+        ]);
+
+        return view('snapshots.show', compact('snapshot', 'filters', 'dataset', 'aggregations'));
     }
 
     /**
@@ -117,6 +126,11 @@ class SnapshotController extends Controller
         return redirect()->action('SnapshotController@index')
             ->with('message', $snapshot->name . ' was deleted.
                 <a href="' . route('snapshots.restore', $snapshot) . '" class="block">Undo</a>');
+    }
+
+    public function delete(Snapshot $snapshot)
+    {
+        return view('snapshots.delete', compact('snapshot'));
     }
 
     public function restore($id)
