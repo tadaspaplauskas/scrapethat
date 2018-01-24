@@ -26,7 +26,7 @@
 
     <p>
         <label for="name">Mode</label>
-        <select id="mode" name="mode" onchange="showMode()">
+        <select onchange="showMode(this.value)">
             <option value="simple">Simple</option>
             <option value="advanced">Advanced</option>
         </select>
@@ -58,7 +58,7 @@
     </div>
 
     <p id="advanced" class="mode">
-        <textarea id="query" class="full-width">SELECT AVG(Price) FROM ?</textarea>
+        <textarea id="query" class="full-width">SELECT * FROM ?</textarea>
 
         <button onclick="runQuery()">Run query</button>
     </p>
@@ -77,9 +77,9 @@
     var dataset = {!! $dataset->toJson() !!};
     var shownFilters = [];
 
+    // staticly selected DOM elements go there
     var queryElement = document.getElementById('query');
     var outputElement = document.getElementById('sql-output');
-    var currentModeElement = document.getElementById('mode');
     var modeElements = document.getElementsByClassName('mode');
 
     function makeQuery() {
@@ -89,12 +89,13 @@
 
          sql += shownFilters
             .map(function(item) {
-                if (item.aggregations.length)
+                if (item.aggregations.length) {
                     return item.aggregations
                         .map(function (agg) {
                             return agg + '(' + item.name + ')';
                         })
                         .join(', ');
+                }
 
                 // just the name by default
                 return item.name;
@@ -152,24 +153,27 @@
         makeQuery();
     }
 
-    function showMode() {
+    function showMode(currentMode) {
         var element;
 
         for (var i = 0; i < modeElements.length; i++) {
             element = modeElements[i];
 
-            if (element.id === currentModeElement.value)
+            if (element.id === currentMode) {
                 element.style.display = 'block';
-            else
+            }
+            else {
                 element.style.display = 'none';
+            }
         }
     }
 
     function runQuery() {
         var results, html;
 
-        if (!queryElement.value)
+        if (!queryElement.value) {
             return false;
+        }
 
         try {
             var results = alasql(queryElement.value, [dataset]);
@@ -205,7 +209,7 @@
         return true;
     }
 
-    showMode();
+    showMode('simple');
     runQuery();
 </script>
 
