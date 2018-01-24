@@ -92,15 +92,15 @@
                 if (item.aggregations.length) {
                     return item.aggregations
                         .map(function (agg) {
-                            return agg + '(' + item.name + ')';
+                            return agg + '(`' + item.name + '`)';
                         })
-                        .join(', ');
+                        .join('`, `');
                 }
 
                 // just the name by default
                 return item.name;
             })
-            .join(', ');
+            .join('`, `');
 
         sql += ' FROM ?';
 
