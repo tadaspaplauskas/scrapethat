@@ -35,51 +35,23 @@
     <div id="simple" class="mode">
         <ul class="list-none">
             @foreach ($filters as $filter)
-                <li>
+                <li id="{{ $filter->name }}">
                     <label class="inline-block">
                         <input type="checkbox" onclick="toggleFilter('{{ $filter->name }}')">
                         {{ $filter->name }}
                     </label>
                     <small>
-                    <ul class="list-none inline-block ">
-                        <li class="inline-block ml3">
-                            <label>
-                                <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', 'AVG')">
-                                Average
-                            </label>
-                        </li>
-                        <li class="inline-block ml3">
-                            <label>
-                                <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', 'MEDIAN')">
-                                Median
-                            </label>
-                        </li>
-                        <li class="inline-block ml3">
-                            <label>
-                                <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', 'SUM')">
-                                Sum
-                            </label>
-                        </li>
-                        <li class="inline-block ml3">
-                            <label>
-                                <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', 'COUNT')">
-                                Count
-                            </label>
-                        </li>
-                        <li class="inline-block ml3">
-                            <label>
-                                <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', 'MIN')">
-                                Min
-                            </label>
-                        </li>
-                        <li class="inline-block ml3">
-                            <label>
-                                <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', 'MAX')">
-                                Max
-                            </label>
-                        </li>
+                    <ul class="aggregations list-none inline-block">
+                        @foreach ($aggregations as $key => $value)
+                            <li class="inline-block ml3">
+                                <label>
+                                    <input type="checkbox"onclick="toggleAggregation('{{ $filter->name }}', '{{ $key }}')">
+                                    {{ $value }}
+                                </label>
+                            </li>
+                        @endforeach
                     </ul>
-                </small>
+                    </small>
                 </li>
             @endforeach
         </ul>
@@ -96,21 +68,9 @@
 
 <h5>Danger zone</h5>
 <p>
-    <a href="#delete">Delete snapshot</a>
+    <a href="{{ route('snapshots.delete', $snapshot) }}">Delete snapshot</a>
 </p>
-<div id="delete" class="hidden">
-    <form action="{{ route('snapshots.destroy', $snapshot) }}" method="POST">
-        
-        {{ method_field('DELETE') }}
-        {{ csrf_field() }}
 
-        <p>
-            Are you sure you want to delete this snapshot?
-        </p>
-
-        <button class="bg-pink">Delete</button>
-    </form>
-</div>
 
 
 <script>
@@ -127,7 +87,19 @@
 
         sql = 'SELECT ';
 
-        // sql += shownFilters.join(', ');
+         sql += shownFilters
+            .map(function(item) {
+                if (item.aggregations.length)
+                    return item.aggregations
+                        .map(function (agg) {
+                            return agg + '(' + item.name + ')';
+                        })
+                        .join(', ');
+
+                // just the name by default
+                return item.name;
+            })
+            .join(', ');
 
         sql += ' FROM ?';
 
@@ -137,33 +109,47 @@
     }
 
     function toggle(array, item, compareFn) {
+        // compare exact items by default
+        compareFn = compareFn || function (inArray) { return inArray !== item; };
+
         var updated = array.filter(compareFn);
 
         // not found, so add
-        if (updated.length === array.length) {
+        if (updated.length === array.length) 
             updated.push(item);
-        }
 
         return updated;
     }
 
-    function toggleFilter(filter) {
-        shownFilters = toggle(shownFilters, { name: filter }, function (item) {
-            return item.name === filter;
+    function resetInputs() {
+        Array.from(document.getElementsByClassName('aggregations')).map(function (item) {
+            item.style.display = 'none';
         });
+
+        shownFilters.map(function (item) {
+            document.querySelector('#' + item.name + ' .aggregations').style.display = 'initial';
+        });
+    }
+
+    function toggleFilter(filter) {
+        shownFilters = toggle(shownFilters, { name: filter, aggregations: [] }, function (item) {
+            return item.name !== filter;
+        });
+
+        resetInputs();
 
         makeQuery();
     }
 
     function toggleAggregation(filter, aggregation) {
-        // shownFilters = shownFilters.map(function (item) {
-        //     if (filter == item.name) {
-        //         return toggle(item.aggregations, aggregation);
-        // });
+        shownFilters = shownFilters.map(function (shownFilter) {
+            if (filter == shownFilter.name)
+                shownFilter.aggregations = toggle(shownFilter.aggregations, aggregation);
 
-        // shownFilters = updated;
+            return shownFilter;
+        });
 
-        // makeQuery();
+        makeQuery();
     }
 
     function showMode() {
@@ -171,27 +157,22 @@
 
         for (var i = 0; i < modeElements.length; i++) {
             element = modeElements[i];
-            console.log(element);
-            if (element.id === currentModeElement.value) {
+
+            if (element.id === currentModeElement.value)
                 element.style.display = 'block';
-            }
-            else {
+            else
                 element.style.display = 'none';
-            }
         }
     }
 
     function runQuery() {
         var results, html;
 
-        if (!queryElement.value) {
+        if (!queryElement.value)
             return false;
-        }
-
-        
 
         try {
-            var results = alasql(queryElement.value, [window.dataset]);
+            var results = alasql(queryElement.value, [dataset]);
         }
         catch (exception) {
             outputElement.innerText = exception;
@@ -204,11 +185,15 @@
         var html = '<table>';
 
         // add header row
-        html += '<tr><th>' + Object.keys(results[0]).join('</th><th>') + '</th></tr>';
+        html += '<tr><th>'
+            + Object.keys(results[0]).join('</th><th>')
+            + '</th></tr>';
 
         // add data
         for (var i = 0; i < results.length; i++) {
-            html += '<tr><td>' + Object.values(results[i]).join('</td><td>') + '</td></tr>';
+            html += '<tr><td>'
+                + Object.values(results[i]).join('</td><td>')
+                + '</td></tr>';
         }
 
         html += '<table>';
@@ -221,6 +206,7 @@
     }
 
     showMode();
+    resetInputs();
     runQuery();
 </script>
 
