@@ -22,19 +22,32 @@
 </form>
 
 @if (!$filters->isEmpty())
-    <h5>Defined filters</h5>
+    <h5>Dataset</h5>
 
-    <ul>
-        @foreach ($filters as $filter)
-            <li>
-                <a href="{{ route('filters.show', $filter) }}">{{ $filter->name }}</a>
-            </li>
-        @endforeach
-    </ul>
+    <p>
+        <label for="name">Mode</label>
+        <select id="mode" name="mode" onchange="showMode()">
+            <option value="simple">Simple</option>
+            <option value="advanced">Advanced</option>
+        </select>
+    </p>
 
-    <textarea id="query" class="full-width">SELECT AVG(Price) FROM ?</textarea>
+    <p id="simple" class="mode">
+        {{-- <ul>
+            @foreach ($filters as $filter)
+                <li>
+                    <a href="{{ route('filters.show', $filter) }}">{{ $filter->name }}</a>
+                </li>
+            @endforeach
+        </ul> --}}
+        TODO
+    </p>
 
-    <button onclick="runQuery()">Run query</button>
+    <p id="advanced" class="mode">
+        <textarea id="query" class="full-width">SELECT AVG(Price) FROM ?</textarea>
+
+        <button onclick="runQuery()">Run query</button>
+    </p>
 
     <p id="sql-output"></p>
 @endif
@@ -61,8 +74,34 @@
 <script>
     window.dataset = {!! $dataset->toJson() !!};
 
+    function showMode() {
+        var mode, modes, element;
+
+        mode = document.getElementById('mode').value;
+
+        modes = document.getElementsByClassName('mode');
+
+        for (var i = 0; i < modes.length; i++) {
+            element = modes[i];
+
+            if (element.id === mode) {
+                element.style.display = 'block';
+            }
+            else {
+                element.style.display = 'none';
+            }
+        }
+    }
+
     function runQuery() {
-        var query = document.getElementById('query').value;
+        var query, outputElement, results, html;
+
+        query = document.getElementById('query').value;
+
+        if (!query) {
+            return false;
+        }
+
         var outputElement = document.getElementById('sql-output');
 
         try {
@@ -94,6 +133,9 @@
 
         return true;
     }
+
+    showMode();
+    runQuery();
 </script>
 
 @endsection
