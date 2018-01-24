@@ -33,28 +33,28 @@
     </p>
 
     <div id="simple" class="mode">
-        <ul class="list-none">
-            @foreach ($filters as $filter)
-                <li id="{{ $filter->name }}">
-                    <label class="inline-block">
-                        <input type="checkbox" onclick="toggleFilter('{{ $filter->name }}')">
-                        {{ $filter->name }}
-                    </label>
-                    <small>
-                    <ul class="aggregations list-none inline-block">
-                        @foreach ($aggregations as $key => $value)
-                            <li class="inline-block ml3">
-                                <label>
-                                    <input type="checkbox"onclick="toggleAggregation('{{ $filter->name }}', '{{ $key }}')">
-                                    {{ $value }}
-                                </label>
-                            </li>
-                        @endforeach
-                    </ul>
-                    </small>
-                </li>
-            @endforeach
-        </ul>
+    <ul class="list-none">
+        @foreach ($filters as $filter)
+            <li id="{{ $filter->name }}">
+                <label class="inline-block">
+                    <input type="checkbox" onclick="toggleFilter('{{ $filter->name }}', this.checked)">
+                    {{ $filter->name }}
+                </label>
+                <small>
+                <ul class="aggregations list-none inline-block" style="visibility: hidden">
+                    @foreach ($aggregations as $key => $value)
+                        <li class="inline-block ml3">
+                            <label>
+                                <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', '{{ $key }}', this.checked)">
+                                {{ $value }}
+                            </label>
+                        </li>
+                    @endforeach
+                </ul>
+                </small>
+            </li>
+        @endforeach
+    </ul>
     </div>
 
     <p id="advanced" class="mode">
@@ -108,46 +108,46 @@
         runQuery();
     }
 
-    function toggle(array, item, compareFn) {
-        // compare exact items by default
-        compareFn = compareFn || function (inArray) { return inArray !== item; };
+    function toggleFilter(filterName, checked) {
+        var aggs = document.querySelector('#' + filterName + ' .aggregations');
 
-        var updated = array.filter(compareFn);
+        // add
+        if (checked) {
+            shownFilters.push({ name: filterName, aggregations: [] });
 
-        // not found, so add
-        if (updated.length === array.length) 
-            updated.push(item);
+            // show aggs
+            aggs.style.visibility = 'visible';
+        }
+        // remove
+        else {
+            shownFilters = shownFilters.filter(function (item) {
+                return item.name !== filterName;
+            });
+            
+            // hide and reset aggs
+            aggs.style.visibility = 'hidden';
 
-        return updated;
-    }
-
-    function resetInputs() {
-        Array.from(document.getElementsByClassName('aggregations')).map(function (item) {
-            item.style.display = 'none';
-        });
-
-        shownFilters.map(function (item) {
-            document.querySelector('#' + item.name + ' .aggregations').style.display = 'initial';
-        });
-    }
-
-    function toggleFilter(filter) {
-        shownFilters = toggle(shownFilters, { name: filter, aggregations: [] }, function (item) {
-            return item.name !== filter;
-        });
-
-        resetInputs();
+            Array.from(aggs.querySelectorAll('input'))
+                .map(function (agg) {
+                    agg.checked = false;
+                });
+        }
 
         makeQuery();
     }
 
-    function toggleAggregation(filter, aggregation) {
-        shownFilters = shownFilters.map(function (shownFilter) {
-            if (filter == shownFilter.name)
-                shownFilter.aggregations = toggle(shownFilter.aggregations, aggregation);
+    function toggleAggregation(filterName, aggregation, checked) {
+        // select correct filter
+        var filter = shownFilters.filter(function (shownFilter) {
+            return filterName == shownFilter.name;
+        })[0];
 
-            return shownFilter;
-        });
+        if (checked) {
+            filter.aggregations.push(aggregation);
+        }
+        else {
+            filter.aggregations.splice(filter.aggregations.indexOf(aggregation));
+        }
 
         makeQuery();
     }
@@ -206,7 +206,6 @@
     }
 
     showMode();
-    resetInputs();
     runQuery();
 </script>
 
