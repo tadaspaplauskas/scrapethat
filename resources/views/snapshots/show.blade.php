@@ -40,7 +40,7 @@
     <ul class="list-none">
         @foreach ($filters as $filter)
             <li id="{{ $filter->name }}" class="mb0">
-                <label class="inline-block">
+                <label class="inline-block min-width-10">
                     <input type="checkbox" onclick="toggleFilter('{{ $filter->name }}', this.checked)">
                     {{ $filter->name }}
                 </label>

@@ -25,6 +25,7 @@
 .red { color: #990000 }
 
 .full-width { width: 100% }
+.min-width-10 { min-width: 10rem }
 
 .center { text-align: center }
 .left { text-align: left }
