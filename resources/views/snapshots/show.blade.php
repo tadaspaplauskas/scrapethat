@@ -23,58 +23,86 @@
 
 @if (!$filters->isEmpty())
 
-    <h5>Chart</h5>
-    <canvas id="chart"></canvas>
+<h5>Chart</h5>
+<canvas id="chart"></canvas>
 
-    <h5>Dataset</h5>
+<h5>Query</h5>
 
-    <p>
-        <label for="name">Mode</label>
-        <select onchange="showMode(this.value)">
-            <option value="simple">Simple</option>
-            <option value="advanced">Advanced</option>
-        </select>
-    </p>
+<p>
+    <label for="name">Mode</label>
+    <select onchange="showMode(this.value)">
+        <option value="simple">Simple</option>
+        <option value="advanced">Advanced</option>
+    </select>
+</p>
 
-    <div id="simple" class="mode">
-    <ul class="list-none">
-        @foreach ($filters as $filter)
-            <li id="{{ $filter->name }}" class="mb0">
-                <label class="inline-block min-width-10">
-                    <input type="checkbox" onclick="toggleFilter('{{ $filter->name }}', this.checked)">
-                    {{ $filter->name }}
-                </label>
-                <small>
-                <ul class="aggregations list-none inline" style="visibility: hidden">
-                    @foreach ($aggregations as $key => $value)
-                        <li class="inline-block ml3 mb0">
-                            <label>
-                                <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', '{{ $key }}', this.checked)">
-                                {{ $value }}
-                            </label>
-                        </li>
-                    @endforeach
-                </ul>
-                </small>
-            </li>
-        @endforeach
+{{-- SIMPLE QUERY --}}
+<div id="simple" class="mode">
+<ul class="list-none">
+@foreach ($filters as $filter)
+    <li id="{{ $filter->name }}" class="mb0">
+        <label class="inline-block min-width-10">
+            <input type="checkbox" onclick="toggleFilter('{{ $filter->name }}', this.checked)">
+            {{ $filter->name }}
+        </label>
+        <small>
+        <ul class="aggregations list-none inline" style="visibility: hidden">
+            @foreach ($aggregations as $key => $value)
+                <li class="inline-block ml3 mb0">
+                    <label>
+                        <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', '{{ $key }}', this.checked)">
+                        {{ $value }}
+                    </label>
+                </li>
+            @endforeach
+        </ul>
+        </small>
+    </li>
+@endforeach
+<li>
+    <label class="inline">
+        <input type="checkbox" onclick="toggleOrder(this.checked)">
+        Order by
+    </label>
+
+    <ul id="order" class="list-none inline" style="visibility: hidden">
+        <li class="inline-block ml3 mb0">
+            <select>
+                @foreach ($filters as $filter)
+                    <option value="{{ $filter->name }}">{{ $filter->name }}</option>
+                @endforeach
+            </select>
+        </li>
+        <li class="inline-block ml3 mb0">
+            <select>
+                <option value="DESC">descending</option>
+                <option value="DESC">ascending</option>
+            </select>
+        </li>
     </ul>
-    </div>
+</li>
+</ul>
 
-    <p id="advanced" class="mode">
-        <textarea id="query" class="full-width">SELECT * FROM ?</textarea>
 
-        <button onclick="runQuery()">Run query</button>
-    </p>
 
-    <p id="sql-output"></p>
+{{-- ADVANDED QUERY --}}
+<p id="advanced" class="mode">
+    <textarea id="query" class="full-width">SELECT * FROM ?</textarea>
+
+    <button onclick="runQuery()">Run query</button>
+</p>
+
+
+<h5>Dataset</h5>
+
+<p id="sql-output"></p>
+
 @endif
 
 <h5>Danger zone</h5>
 <p>
     <a href="{{ route('snapshots.delete', $snapshot) }}">Delete snapshot</a>
 </p>
-
 
 
 <script>
@@ -86,6 +114,7 @@
     var queryElement = document.getElementById('query');
     var outputElement = document.getElementById('sql-output');
     var modeElements = document.getElementsByClassName('mode');
+    var orderElement = document.getElementById('order');
     var chartElement = document.getElementById('chart');
     var chart = new Chart(chartElement, { type: 'line', data: { datasets: [] }, options: {} });
 
@@ -160,6 +189,18 @@
         makeQuery();
     }
 
+    function toggleOrder(checked) {
+        // select correct filter
+        if (checked) {
+            orderElement.style.visibility = 'visible';
+        }
+        else {
+            orderElement.style.visibility = 'hidden';
+        }
+
+        makeQuery();
+    }
+
     function showMode(currentMode) {
         var element;
 
@@ -211,7 +252,7 @@
         outputElement.className = '';
         outputElement.innerHTML = html;
 
-        return drawChart();;
+        return drawChart();
     }
 
     function drawChart() {
