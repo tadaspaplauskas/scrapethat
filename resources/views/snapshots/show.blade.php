@@ -22,6 +22,10 @@
 </form>
 
 @if (!$filters->isEmpty())
+
+    <h5>Chart</h5>
+    <canvas id="chart"></canvas>
+
     <h5>Dataset</h5>
 
     <p>
@@ -35,15 +39,15 @@
     <div id="simple" class="mode">
     <ul class="list-none">
         @foreach ($filters as $filter)
-            <li id="{{ $filter->name }}">
+            <li id="{{ $filter->name }}" class="mb0">
                 <label class="inline-block">
                     <input type="checkbox" onclick="toggleFilter('{{ $filter->name }}', this.checked)">
                     {{ $filter->name }}
                 </label>
                 <small>
-                <ul class="aggregations list-none inline-block" style="visibility: hidden">
+                <ul class="aggregations list-none inline" style="visibility: hidden">
                     @foreach ($aggregations as $key => $value)
-                        <li class="inline-block ml3">
+                        <li class="inline-block ml3 mb0">
                             <label>
                                 <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', '{{ $key }}', this.checked)">
                                 {{ $value }}
@@ -75,12 +79,15 @@
 
 <script>
     var dataset = {!! $dataset->toJson() !!};
+    var results;
     var shownFilters = [];
 
     // staticly selected DOM elements go there
     var queryElement = document.getElementById('query');
     var outputElement = document.getElementById('sql-output');
     var modeElements = document.getElementsByClassName('mode');
+    var chartElement = document.getElementById('chart');
+    var chart = new Chart(chartElement, { type: 'line', data: { datasets: [] }, options: {} });
 
     function makeQuery() {
         var sql;
@@ -92,15 +99,15 @@
                 if (item.aggregations.length) {
                     return item.aggregations
                         .map(function (agg) {
-                            return agg + '(`' + item.name + '`)';
+                            return agg + '(' + item.name + ')';
                         })
-                        .join('`, `');
+                        .join(', ');
                 }
 
                 // just the name by default
                 return item.name;
             })
-            .join('`, `');
+            .join(', ');
 
         sql += ' FROM ?';
 
@@ -169,14 +176,12 @@
     }
 
     function runQuery() {
-        var results, html;
-
         if (!queryElement.value) {
             return false;
         }
 
         try {
-            var results = alasql(queryElement.value, [dataset]);
+            results = alasql(queryElement.value, [dataset]);
         }
         catch (exception) {
             outputElement.innerText = exception;
@@ -206,11 +211,34 @@
         outputElement.className = '';
         outputElement.innerHTML = html;
 
+        return drawChart();;
+    }
+
+    function drawChart() {
+        if (!results.length) {
+            return false;
+        }
+
+        var chartDatasets = Object.keys(results[0]).map(function (key) {
+            return {
+                label: key,
+                data: results.map(function (row) {
+                    return row[key];
+                })
+            };
+        });
+
+        chart.data.labels = new Array(chartDatasets[0].data.length);
+        chart.data.datasets = chartDatasets;
+        chart.update();
+
         return true;
     }
 
     showMode('simple');
     runQuery();
+
+
 </script>
 
 @endsection
