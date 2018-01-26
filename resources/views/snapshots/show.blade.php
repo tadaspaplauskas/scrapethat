@@ -1,4 +1,4 @@
-@extends('layouts.app', ['extra_dependencies' => true])
+@extends('layouts.app', ['data_explorer' => true])
 
 @section('title', $snapshot->name)
 
@@ -30,7 +30,7 @@
 
 <p>
     <label for="name">Mode</label>
-    <select onchange="showMode(this.value)">
+    <select onchange="showOneOfMany(this.value, qsa('.mode'))">
         <option value="simple">Simple</option>
         <option value="advanced">Advanced</option>
     </select>
@@ -82,15 +82,15 @@
     </ul>
 </li>
 </ul>
-
+</div>
 
 
 {{-- ADVANDED QUERY --}}
-<p id="advanced" class="mode">
+<div id="advanced" class="mode" style="display: none">
     <textarea id="query" class="full-width">SELECT * FROM ?</textarea>
 
-    <button onclick="runQuery()">Run query</button>
-</p>
+    <button onclick="runQuery(qs('#query').value)">Run query</button>
+</div>
 
 
 <h5>Dataset</h5>
@@ -104,182 +104,8 @@
     <a href="{{ route('snapshots.delete', $snapshot) }}">Delete snapshot</a>
 </p>
 
-
 <script>
     var dataset = {!! $dataset->toJson() !!};
-    var results;
-    var shownFilters = [];
-
-    // staticly selected DOM elements go there
-    var queryElement = document.getElementById('query');
-    var outputElement = document.getElementById('sql-output');
-    var modeElements = document.getElementsByClassName('mode');
-    var orderElement = document.getElementById('order');
-    var chartElement = document.getElementById('chart');
-    var chart = new Chart(chartElement, { type: 'line', data: { datasets: [] }, options: {} });
-
-    function makeQuery() {
-        var sql;
-
-        sql = 'SELECT ';
-
-         sql += shownFilters
-            .map(function(item) {
-                if (item.aggregations.length) {
-                    return item.aggregations
-                        .map(function (agg) {
-                            return agg + '(' + item.name + ')';
-                        })
-                        .join(', ');
-                }
-
-                // just the name by default
-                return item.name;
-            })
-            .join(', ');
-
-        sql += ' FROM ?';
-
-        queryElement.value = sql;
-
-        runQuery();
-    }
-
-    function toggleFilter(filterName, checked) {
-        var aggs = document.querySelector('#' + filterName + ' .aggregations');
-
-        // add
-        if (checked) {
-            shownFilters.push({ name: filterName, aggregations: [] });
-
-            // show aggs
-            aggs.style.visibility = 'visible';
-        }
-        // remove
-        else {
-            shownFilters = shownFilters.filter(function (item) {
-                return item.name !== filterName;
-            });
-            
-            // hide and reset aggs
-            aggs.style.visibility = 'hidden';
-
-            Array.from(aggs.querySelectorAll('input'))
-                .map(function (agg) {
-                    agg.checked = false;
-                });
-        }
-
-        makeQuery();
-    }
-
-    function toggleAggregation(filterName, aggregation, checked) {
-        // select correct filter
-        var filter = shownFilters.filter(function (shownFilter) {
-            return filterName == shownFilter.name;
-        })[0];
-
-        if (checked) {
-            filter.aggregations.push(aggregation);
-        }
-        else {
-            filter.aggregations.splice(filter.aggregations.indexOf(aggregation));
-        }
-
-        makeQuery();
-    }
-
-    function toggleOrder(checked) {
-        // select correct filter
-        if (checked) {
-            orderElement.style.visibility = 'visible';
-        }
-        else {
-            orderElement.style.visibility = 'hidden';
-        }
-
-        makeQuery();
-    }
-
-    function showMode(currentMode) {
-        var element;
-
-        for (var i = 0; i < modeElements.length; i++) {
-            element = modeElements[i];
-
-            if (element.id === currentMode) {
-                element.style.display = 'block';
-            }
-            else {
-                element.style.display = 'none';
-            }
-        }
-    }
-
-    function runQuery() {
-        if (!queryElement.value) {
-            return false;
-        }
-
-        try {
-            results = alasql(queryElement.value, [dataset]);
-        }
-        catch (exception) {
-            outputElement.innerText = exception;
-            outputElement.className = 'red';
-
-            return false;
-        }
-
-        // all good
-        var html = '<table>';
-
-        // add header row
-        html += '<tr><th>'
-            + Object.keys(results[0]).join('</th><th>')
-            + '</th></tr>';
-
-        // add data
-        for (var i = 0; i < results.length; i++) {
-            html += '<tr><td>'
-                + Object.values(results[i]).join('</td><td>')
-                + '</td></tr>';
-        }
-
-        html += '<table>';
-
-        // output
-        outputElement.className = '';
-        outputElement.innerHTML = html;
-
-        return drawChart();
-    }
-
-    function drawChart() {
-        if (!results.length) {
-            return false;
-        }
-
-        var chartDatasets = Object.keys(results[0]).map(function (key) {
-            return {
-                label: key,
-                data: results.map(function (row) {
-                    return row[key];
-                })
-            };
-        });
-
-        chart.data.labels = new Array(chartDatasets[0].data.length);
-        chart.data.datasets = chartDatasets;
-        chart.update();
-
-        return true;
-    }
-
-    showMode('simple');
-    runQuery();
-
-
 </script>
 
 @endsection

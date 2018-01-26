@@ -14,10 +14,8 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
-    @if (isset($extra_dependencies))
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/alasql/0.4.4/alasql.min.js"></script>
+    @if (isset($data_explorer))
+        <script src="{{ asset('js/data_explorer.js') }}"></script>
     @endif
 </head>
 <body>
