@@ -61,20 +61,20 @@
 @endforeach
 <li>
     <label class="inline">
-        <input type="checkbox" onclick="toggleOrder(this.checked)">
+        <input type="checkbox" onclick="toggleOrder(this.checked);setOrder(qs('#order_field').value, qs('#order_value').value);">
         Order by
     </label>
 
     <ul id="order" class="list-none inline" style="visibility: hidden">
         <li class="inline-block ml3 mb0">
-            <select>
+            <select id="order_field" onchange="setOrder(this.value, qs('#order_value').value)">
                 @foreach ($filters as $filter)
                     <option value="{{ $filter->name }}">{{ $filter->name }}</option>
                 @endforeach
             </select>
         </li>
         <li class="inline-block ml3 mb0">
-            <select>
+            <select id="order_value" onchange="setOrder(qs('#order_field').value, this.value)">
                 <option value="DESC">descending</option>
                 <option value="DESC">ascending</option>
             </select>
@@ -83,7 +83,6 @@
 </li>
 </ul>
 </div>
-
 
 {{-- ADVANDED QUERY --}}
 <div id="advanced" class="mode" style="display: none">

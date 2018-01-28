@@ -17302,12 +17302,12 @@ window.qsa = function (selector) {
 };
 
 // meat and potatoes
-window.makeQuery = function (filters) {
+window.makeQuery = function () {
     var sql;
 
     sql = 'SELECT ';
 
-    sql += filters.map(function (item) {
+    sql += query.conditions.map(function (item) {
         if (item.aggregations.length) {
             return item.aggregations.map(function (agg) {
                 return agg + '(' + item.name + ')';
@@ -17320,6 +17320,10 @@ window.makeQuery = function (filters) {
 
     sql += ' FROM ?';
 
+    if (query.order) {
+        sql += ' ORDER BY ' + query.order.field + ' ' + query.order.order_value;
+    }
+
     return sql;
 };
 
@@ -17328,14 +17332,14 @@ window.toggleFilter = function (filterName, checked) {
 
     // add
     if (checked) {
-        shownFilters.push({ name: filterName, aggregations: [] });
+        query.conditions.push({ name: filterName, aggregations: [] });
 
         // show aggs
         aggs.style.visibility = 'visible';
     }
     // remove
     else {
-            shownFilters = shownFilters.filter(function (item) {
+            query.conditions = query.conditions.filter(function (item) {
                 return item.name !== filterName;
             });
 
@@ -17347,12 +17351,12 @@ window.toggleFilter = function (filterName, checked) {
             });
         }
 
-    runQuery(makeQuery(shownFilters));
+    runQuery(makeQuery());
 };
 
 window.toggleAggregation = function (filterName, aggregation, checked) {
     // select correct filter
-    var filter = shownFilters.filter(function (shownFilter) {
+    var filter = query.conditions.filter(function (shownFilter) {
         return filterName == shownFilter.name;
     })[0];
 
@@ -17362,7 +17366,7 @@ window.toggleAggregation = function (filterName, aggregation, checked) {
         filter.aggregations.splice(filter.aggregations.indexOf(aggregation));
     }
 
-    runQuery(makeQuery(shownFilters));
+    runQuery(makeQuery());
 };
 
 window.toggleOrder = function (checked) {
@@ -17370,11 +17374,20 @@ window.toggleOrder = function (checked) {
     // select correct filter
     if (checked) {
         orderElement.style.visibility = 'visible';
+        query.order = {};
     } else {
         orderElement.style.visibility = 'hidden';
+        query.order = null;
     }
 
-    runQuery(makeQuery(shownFilters));
+    runQuery(makeQuery());
+};
+
+window.setOrder = function (field, order_value) {
+    query.order.field = field;
+    query.order.order_value = order_value;
+
+    runQuery(makeQuery());
 };
 
 window.showOneOfMany = function (needleId, haystack) {
@@ -17457,26 +17470,11 @@ window.drawChart = function (results) {
 
 window.onload = function () {
     // shared data
-    shownFilters = [];
+    query = { conditions: [] };
 
     // since default is simple mode
-    runQuery(makeQuery(shownFilters));
+    runQuery(makeQuery());
 };
-
-// Turbolinks = require('turbolinks');
-// Turbolinks.start();
-
-// document.addEventListener('turbolinks:click', function (event) {
-//     if (event.target.getAttribute('href').charAt(0) === '#') {
-//         return event.preventDefault();
-//     }
-// });
-
-// function whenReady(fn) {
-//     document.addEventListener('turbolinks:load', function (event) {
-//         fn();
-//     });
-// }
 
 /***/ }),
 /* 130 */
