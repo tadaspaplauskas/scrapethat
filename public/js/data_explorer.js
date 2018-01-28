@@ -17303,11 +17303,11 @@ window.qsa = function (selector) {
 
 // meat and potatoes
 window.makeQuery = function () {
-    var sql;
+    var sql, conditions;
 
     sql = 'SELECT ';
 
-    sql += query.conditions.map(function (item) {
+    conditions = query.conditions.map(function (item) {
         if (item.aggregations.length) {
             return item.aggregations.map(function (agg) {
                 return agg + '(' + item.name + ')';
@@ -17318,12 +17318,18 @@ window.makeQuery = function () {
         return item.name;
     }).join(', ');
 
+    sql += conditions.length ? conditions : '*';
+
     sql += ' FROM ?';
 
-    if (query.order) {
-        sql += ' ORDER BY ' + query.order.field + ' ' + query.order.order_value;
+    if (query.group_by) {
+        sql += ' GROUP BY ' + query.group_by;
     }
 
+    if (query.order_by) {
+        sql += ' ORDER BY ' + query.order_by.field + ' ' + query.order_by.order_value;
+    }
+    console.log(sql);
     return sql;
 };
 
@@ -17369,23 +17375,37 @@ window.toggleAggregation = function (filterName, aggregation, checked) {
     runQuery(makeQuery());
 };
 
-window.toggleOrder = function (checked) {
-    var orderElement = document.getElementById('order');
-    // select correct filter
+window.toggleOrderBy = function (checked) {
+    var element = document.getElementById('order_by');
+
     if (checked) {
-        orderElement.style.visibility = 'visible';
-        query.order = {};
+        element.style.visibility = 'visible';
+        query.order_by = {};
     } else {
-        orderElement.style.visibility = 'hidden';
-        query.order = null;
+        element.style.visibility = 'hidden';
+        query.order_by = null;
     }
 
     runQuery(makeQuery());
 };
 
-window.setOrder = function (field, order_value) {
-    query.order.field = field;
-    query.order.order_value = order_value;
+window.setOrderBy = function (field, order_value) {
+    query.order_by.field = field;
+    query.order_by.order_value = order_value;
+
+    runQuery(makeQuery());
+};
+
+window.setGroupBy = function (field) {
+    var element = document.getElementById('group_by');
+
+    if (field) {
+        element.style.visibility = 'visible';
+    } else {
+        element.style.visibility = 'hidden';
+    }
+
+    query.group_by = field;
 
     runQuery(makeQuery());
 };
@@ -17418,6 +17438,8 @@ window.runQuery = function (query) {
 
         return false;
     }
+
+    console.log(results);
 
     // format table
     var html = '<table>';

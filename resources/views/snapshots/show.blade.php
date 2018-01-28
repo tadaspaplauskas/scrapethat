@@ -45,7 +45,6 @@
             <input type="checkbox" onclick="toggleFilter('{{ $filter->name }}', this.checked)">
             {{ $filter->name }}
         </label>
-        <small>
         <ul class="aggregations list-none inline" style="visibility: hidden">
             @foreach ($aggregations as $key => $value)
                 <li class="inline-block ml3 mb0">
@@ -56,27 +55,42 @@
                 </li>
             @endforeach
         </ul>
-        </small>
     </li>
 @endforeach
-<li>
-    <label class="inline">
-        <input type="checkbox" onclick="toggleOrder(this.checked);setOrder(qs('#order_field').value, qs('#order_value').value);">
-        Order by
-    </label>
 
-    <ul id="order" class="list-none inline" style="visibility: hidden">
+{{-- ORDER BY --}}
+<li class="mb0">
+    <label class="inline">
+        <input type="checkbox" onclick="toggleOrderBy(this.checked);setOrderBy(qs('#order_field').value, qs('#order_value').value);"> Order by</label>
+
+    <ul id="order_by" class="list-none inline" style="visibility: hidden">
         <li class="inline-block ml3 mb0">
-            <select id="order_field" onchange="setOrder(this.value, qs('#order_value').value)">
+            <select id="order_field" onchange="setOrderBy(this.value, qs('#order_value').value)">
                 @foreach ($filters as $filter)
                     <option value="{{ $filter->name }}">{{ $filter->name }}</option>
                 @endforeach
             </select>
         </li>
         <li class="inline-block ml3 mb0">
-            <select id="order_value" onchange="setOrder(qs('#order_field').value, this.value)">
+            <select id="order_value" onchange="setOrderBy(qs('#order_field').value, this.value)">
                 <option value="DESC">descending</option>
                 <option value="DESC">ascending</option>
+            </select>
+        </li>
+    </ul>
+</li>
+
+{{-- GROUP BY --}}
+<li class="mb0">
+    <label class="inline">
+        <input type="checkbox" onclick="setGroupBy(this.checked ? qs('#group_by_field').value : null);"> Group by</label>
+
+    <ul id="group_by" class="list-none inline" style="visibility: hidden">
+        <li class="inline-block ml3 mb0">
+            <select id="group_by_field" onchange="setGroupBy(this.value)">
+                @foreach ($filters as $filter)
+                    <option value="{{ $filter->name }}">{{ $filter->name }}</option>
+                @endforeach
             </select>
         </li>
     </ul>
