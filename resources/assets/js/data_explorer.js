@@ -197,14 +197,16 @@ window.drawChart = function (results) {
         };
     });
 
-    var chart = new Chart(document.querySelector('#chart'), {
-        type: 'line',
-        data: {
-            datasets: []
-        },
-        options: {}
-    });
-
+    if (!chart) {
+        chart = new Chart(document.querySelector('#chart'), {
+            type: 'line',
+            data: {
+                datasets: []
+            },
+            options: {}
+        });
+    }
+    
     chart.data.labels = new Array(chartDatasets[0].data.length);
     chart.data.datasets = chartDatasets;
     chart.update();
@@ -215,6 +217,7 @@ window.drawChart = function (results) {
 window.onload = function () {
     // shared data
     query = { conditions: [] };
+    chart = null;
 
     // since default is simple mode
     runQuery(makeQuery());
