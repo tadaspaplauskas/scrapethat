@@ -91,24 +91,22 @@ window.toggleAggregation = function (filterName, aggregation, checked) {
     runQuery(makeQuery());
 };
 
-window.toggleOrderBy = function (checked) {
+window.setOrderBy = function (field, order_value) {
     var element = document.getElementById('order_by');
 
-    if (checked) {
+    if (field) {
         element.style.visibility = 'visible';
-        query.order_by = {};
+
+        query.order_by = {
+            field: field,
+            order_value: order_value,
+
+        };
     }
     else {
         element.style.visibility = 'hidden';
         query.order_by = null;
     }
-
-    runQuery(makeQuery());
-};
-
-window.setOrderBy = function (field, order_value) {
-    query.order_by.field = field;
-    query.order_by.order_value = order_value;
 
     runQuery(makeQuery());
 };

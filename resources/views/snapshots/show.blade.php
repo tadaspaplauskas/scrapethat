@@ -61,7 +61,7 @@
 {{-- ORDER BY --}}
 <li class="mb0">
     <label class="inline">
-        <input type="checkbox" onclick="toggleOrderBy(this.checked);setOrderBy(qs('#order_field').value, qs('#order_value').value);"> Order by</label>
+        <input type="checkbox" onclick="setOrderBy(this.checked ? qs('#order_field').value : null, qs('#order_value').value);"> Order by</label>
 
     <ul id="order_by" class="list-none inline" style="visibility: hidden">
         <li class="inline-block ml3 mb0">
@@ -74,7 +74,7 @@
         <li class="inline-block ml3 mb0">
             <select id="order_value" onchange="setOrderBy(qs('#order_field').value, this.value)">
                 <option value="DESC">descending</option>
-                <option value="DESC">ascending</option>
+                <option value="ASC">ascending</option>
             </select>
         </li>
     </ul>
