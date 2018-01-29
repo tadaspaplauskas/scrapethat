@@ -13,11 +13,11 @@ window.qsa = function (selector) {
 
 // meat and potatoes
 window.makeQuery = function () {
-    var sql, conditions;
+    var sql, select;
 
     sql = 'SELECT ';
 
-    conditions = query.conditions
+    select = query.select
         .map(function(item) {
             if (item.aggregations.length) {
                 return item.aggregations
@@ -32,7 +32,7 @@ window.makeQuery = function () {
         })
         .join(', ');
 
-    sql += conditions.length ? conditions : '*';
+    sql += select.length ? select : '*';
 
     sql += ' FROM ?';
 
@@ -52,14 +52,14 @@ window.toggleFilter = function (filterName, checked) {
 
     // add
     if (checked) {
-        query.conditions.push({ name: filterName, aggregations: [] });
+        query.select.push({ name: filterName, aggregations: [] });
 
         // show aggs
         aggs.style.visibility = 'visible';
     }
     // remove
     else {
-        query.conditions = query.conditions.filter(function (item) {
+        query.select = query.select.filter(function (item) {
             return item.name !== filterName;
         });
         
@@ -77,7 +77,7 @@ window.toggleFilter = function (filterName, checked) {
 
 window.toggleAggregation = function (filterName, aggregation, checked) {
     // select correct filter
-    var filter = query.conditions.filter(function (shownFilter) {
+    var filter = query.select.filter(function (shownFilter) {
         return filterName == shownFilter.name;
     })[0];
 
@@ -206,7 +206,7 @@ window.drawChart = function (results) {
             options: {}
         });
     }
-    
+
     chart.data.labels = new Array(chartDatasets[0].data.length);
     chart.data.datasets = chartDatasets;
     chart.update();
@@ -216,7 +216,7 @@ window.drawChart = function (results) {
 
 window.onload = function () {
     // shared data
-    query = { conditions: [] };
+    query = { select: [] };
     chart = null;
 
     // since default is simple mode
