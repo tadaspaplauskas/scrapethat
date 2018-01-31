@@ -17441,17 +17441,15 @@ window.runQuery = function (query) {
 
     console.log(results);
 
-    html = '<p>Rows: ' + results.length + '</p>';
-
     // format table
-    html += '<table>';
+    html = '<table>';
 
     // add header row
-    html += '<tr><th>' + Object.keys(results[0]).join('</th><th>') + '</th></tr>';
+    html += '<tr><th>#</th><th>' + Object.keys(results[0]).join('</th><th>') + '</th></tr>';
 
     // add data
     for (var i = 0; i < results.length; i++) {
-        html += '<tr><td>' + Object.values(results[i]).join('</td><td>') + '</td></tr>';
+        html += '<tr><td>' + (i + 1) + '</td><td>' + Object.values(results[i]).join('</td><td>') + '</td></tr>';
     }
 
     html += '<table>';
