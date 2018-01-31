@@ -55,7 +55,7 @@ window.toggleFilter = function (filterName, checked) {
         query.select.push({ name: filterName, aggregations: [] });
 
         // show options
-        options.style.visibility = 'visible';
+        options.style.display = 'block';
     }
     // remove
     else {
@@ -64,7 +64,7 @@ window.toggleFilter = function (filterName, checked) {
         });
         
         // hide and reset options
-        options.style.visibility = 'hidden';
+        options.style.display = 'none';
 
         Array.from(options.querySelectorAll('input'))
             .map(function (box) {
@@ -95,7 +95,7 @@ window.setOrderBy = function (field, order_value) {
     var element = document.getElementById('order_by');
 
     if (field) {
-        element.style.visibility = 'visible';
+        element.style.display = 'block';
 
         query.order_by = {
             field: field,
@@ -104,7 +104,7 @@ window.setOrderBy = function (field, order_value) {
         };
     }
     else {
-        element.style.visibility = 'hidden';
+        element.style.display = 'none';
         query.order_by = null;
     }
 
@@ -115,10 +115,10 @@ window.setGroupBy = function (field) {
     var element = document.getElementById('group_by');
 
     if (field) {
-        element.style.visibility = 'visible';
+        element.style.display = 'block';
     }
     else {
-        element.style.visibility = 'hidden';
+        element.style.display = 'none';
     }
 
     query.group_by = field;

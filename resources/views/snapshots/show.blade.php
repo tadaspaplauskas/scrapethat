@@ -38,7 +38,7 @@
 
 {{-- SIMPLE QUERY --}}
 <div id="simple" class="mode">
-
+<div class="row">
 @foreach ($filters as $filter)
 <article id="{{ $filter->name }}" class="m0 column one-half">
     <label>
@@ -47,7 +47,7 @@
         {{ $filter->name }}
     </h5>
     </label>
-    <div class="options" style="visibility: hidden">
+    <div class="options" style="display: none">
         <label>Condition</label>
         <select onchange="
             var e = this.parentNode.querySelector('.condition_value');
@@ -77,8 +77,15 @@
         </ul>
     </div>
 </article>
-@endforeach
 
+@if ($loop->iteration % 2 === 0)
+    </div>
+    <div class="row">
+@endif
+@endforeach
+</div>
+
+<div class="row">
 {{-- ORDER BY --}}
 <article class="m0 center column one-half">
     <label>
@@ -86,7 +93,7 @@
         <input type="checkbox" onclick="setOrderBy(this.checked ? qs('#order_field').value : null, qs('#order_value').value);"> Order by
     </h5>
     </label>
-    <ul id="order_by" class="inline list-none" style="visibility: hidden">
+    <ul id="order_by" class="inline list-none" style="display: none">
         <li class="inline-block">
             <select id="order_field" onchange="setOrderBy(this.value, qs('#order_value').value)">
                 @foreach ($filters as $filter)
@@ -112,7 +119,7 @@
         "> Group by
     </h5>
     </label>
-    <ul id="group_by" class="list-none inline" style="visibility: hidden">
+    <ul id="group_by" class="list-none inline" style="display: none">
         <li class="inline-block ml3 mb0">
             <select id="group_by_field" onchange="setGroupBy(this.value)">
                 @foreach ($filters as $filter)
@@ -122,8 +129,7 @@
         </li>
     </ul>
 </article>
-
-</ul>
+</div>
 </div>
 
 {{-- ADVANDED QUERY --}}
