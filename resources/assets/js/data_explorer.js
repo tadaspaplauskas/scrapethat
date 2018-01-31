@@ -48,14 +48,14 @@ window.makeQuery = function () {
 };
 
 window.toggleFilter = function (filterName, checked) {
-    var aggs = document.querySelector('#' + filterName + ' .aggregations');
+    var options = document.querySelector('#' + filterName + ' .options');
 
     // add
     if (checked) {
         query.select.push({ name: filterName, aggregations: [] });
 
-        // show aggs
-        aggs.style.visibility = 'visible';
+        // show options
+        options.style.visibility = 'visible';
     }
     // remove
     else {
@@ -63,12 +63,12 @@ window.toggleFilter = function (filterName, checked) {
             return item.name !== filterName;
         });
         
-        // hide and reset aggs
-        aggs.style.visibility = 'hidden';
+        // hide and reset options
+        options.style.visibility = 'hidden';
 
-        Array.from(aggs.querySelectorAll('input'))
-            .map(function (agg) {
-                agg.checked = false;
+        Array.from(options.querySelectorAll('input'))
+            .map(function (box) {
+                box.checked = false;
             });
     }
 

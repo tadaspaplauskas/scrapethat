@@ -877,6 +877,8 @@ there.
 .left { text-align: left }
 .right { text-align: right }
 
+.normal-text { text-decoration: none; font-weight: normal; }
+
 .float-left { float: left }
 .float-right { float: right }
 

@@ -38,31 +38,54 @@
 
 {{-- SIMPLE QUERY --}}
 <div id="simple" class="mode">
-<ul class="list-none">
+
 @foreach ($filters as $filter)
-    <li id="{{ $filter->name }}" class="mb0">
-        <label class="inline-block min-width-10">
-            <input type="checkbox" onclick="toggleFilter('{{ $filter->name }}', this.checked)">
-            {{ $filter->name }}
-        </label>
-        <ul class="aggregations list-none inline" style="visibility: hidden">
+<article id="{{ $filter->name }}" class="m0 column one-half">
+    <label>
+    <h5 class="center">
+        <input type="checkbox" onclick="toggleFilter('{{ $filter->name }}', this.checked)">
+        {{ $filter->name }}
+    </h5>
+    </label>
+    <div class="options" style="visibility: hidden">
+        <em class="mr3 min-width-10">Condition</em>
+        <select onchange="
+            var e = this.parentNode.querySelector('.condition_value');
+            if (this.value.length) e.style.display = 'inline';
+            else e.style.display = 'none';
+        ">
+            <option value="">anything</option>
+            <option value="=">=</option>
+            <option value="<"><</option>
+            <option value=">">></option>
+            <option value="BETWEEN">BETWEEN</option>
+        </select>
+        <input type="text" class="condition_value" style="display: none">
+
+        <br>
+        
+        <em class="mr3 min-width-10">Aggregations</em>
+        <ul class="aggregations list-none inline">
             @foreach ($aggregations as $key => $value)
-                <li class="inline-block ml3 mb0">
-                    <label>
+                <li class="inline-block ml1 mb0">
+                    <label class="normal-text">
                         <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', '{{ $key }}', this.checked)">
                         {{ $value }}
                     </label>
                 </li>
             @endforeach
         </ul>
-    </li>
+    </div>
+</article>
 @endforeach
 
 {{-- ORDER BY --}}
-<li class="mb0">
-    <label class="inline">
-        <input type="checkbox" onclick="setOrderBy(this.checked ? qs('#order_field').value : null, qs('#order_value').value);"> Order by</label>
-
+<article class="m0 center column one-half">
+    <label>
+    <h5>
+        <input type="checkbox" onclick="setOrderBy(this.checked ? qs('#order_field').value : null, qs('#order_value').value);"> Order by
+    </h5>
+    </label>
     <ul id="order_by" class="list-none inline" style="visibility: hidden">
         <li class="inline-block ml3 mb0">
             <select id="order_field" onchange="setOrderBy(this.value, qs('#order_value').value)">
@@ -78,13 +101,17 @@
             </select>
         </li>
     </ul>
-</li>
+</article>
 
 {{-- GROUP BY --}}
-<li class="mb0">
-    <label class="inline">
-        <input type="checkbox" onclick="setGroupBy(this.checked ? qs('#group_by_field').value : null);"> Group by</label>
-
+<article class="m0 center column one-half">
+    <label>
+    <h5>
+        <input type="checkbox" onclick="
+            setGroupBy(this.checked ? qs('#group_by_field').value : null);
+        "> Group by
+    </h5>
+    </label>
     <ul id="group_by" class="list-none inline" style="visibility: hidden">
         <li class="inline-block ml3 mb0">
             <select id="group_by_field" onchange="setGroupBy(this.value)">
@@ -94,7 +121,8 @@
             </select>
         </li>
     </ul>
-</li>
+</article>
+
 </ul>
 </div>
 
