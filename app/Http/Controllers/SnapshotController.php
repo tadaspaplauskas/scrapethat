@@ -79,7 +79,6 @@ class SnapshotController extends Controller
         }
 
         $aggregations = collect([
-            'COUNT' => 'Count',
             'AVG' => 'Average',
             'MEDIAN' => 'Median',
             'SUM' => 'Sum',

@@ -142,7 +142,9 @@ window.showOneOfMany = function (needleId, haystack) {
 };
 
 window.runQuery = function (query) {
-    var outputElement = document.querySelector('#sql-output');
+    var outputElement, html;
+
+    outputElement = document.querySelector('#sql-output');
     if (!query) {
         return false;
     }
@@ -159,8 +161,10 @@ window.runQuery = function (query) {
 
     console.log(results);
 
+    html = '<p>Rows: ' + results.length + '</p>';
+
     // format table
-    var html = '<table>';
+    html += '<table>';
 
     // add header row
     html += '<tr><th>' +

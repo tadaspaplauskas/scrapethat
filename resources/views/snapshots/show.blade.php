@@ -48,7 +48,7 @@
     </h5>
     </label>
     <div class="options" style="visibility: hidden">
-        <em class="mr3 min-width-10">Condition</em>
+        <label>Condition</label>
         <select onchange="
             var e = this.parentNode.querySelector('.condition_value');
             if (this.value.length) e.style.display = 'inline';
@@ -64,10 +64,10 @@
 
         <br>
         
-        <em class="mr3 min-width-10">Aggregations</em>
+        <label>Aggregations</label>
         <ul class="aggregations list-none inline">
             @foreach ($aggregations as $key => $value)
-                <li class="inline-block ml1 mb0">
+                <li class="inline-block mr2">
                     <label class="normal-text">
                         <input type="checkbox" onclick="toggleAggregation('{{ $filter->name }}', '{{ $key }}', this.checked)">
                         {{ $value }}
@@ -86,15 +86,15 @@
         <input type="checkbox" onclick="setOrderBy(this.checked ? qs('#order_field').value : null, qs('#order_value').value);"> Order by
     </h5>
     </label>
-    <ul id="order_by" class="list-none inline" style="visibility: hidden">
-        <li class="inline-block ml3 mb0">
+    <ul id="order_by" class="inline list-none" style="visibility: hidden">
+        <li class="inline-block">
             <select id="order_field" onchange="setOrderBy(this.value, qs('#order_value').value)">
                 @foreach ($filters as $filter)
                     <option value="{{ $filter->name }}">{{ $filter->name }}</option>
                 @endforeach
             </select>
         </li>
-        <li class="inline-block ml3 mb0">
+        <li class="inline-block">
             <select id="order_value" onchange="setOrderBy(qs('#order_field').value, this.value)">
                 <option value="DESC">descending</option>
                 <option value="ASC">ascending</option>
