@@ -91,6 +91,10 @@ window.toggleAggregation = function (filterName, aggregation, checked) {
     runQuery(makeQuery());
 };
 
+window.setCondition = function (field, operator, value) {
+    query.conditions[field] = { operator: operator, value: value };
+};
+
 window.setOrderBy = function (field, order_value) {
     var element = document.getElementById('order_by');
 
