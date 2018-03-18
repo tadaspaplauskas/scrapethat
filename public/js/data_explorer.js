@@ -17292,6 +17292,13 @@ module.exports = __webpack_require__(129);
 var alasql = __webpack_require__(130);
 var Chart = __webpack_require__(135);
 
+// global data
+query = {
+    select: [],
+    conditions: []
+};
+chart = null;
+
 // helpers
 window.qs = function (selector) {
     return document.querySelector(selector);
@@ -17307,6 +17314,7 @@ window.makeQuery = function () {
 
     sql = 'SELECT ';
 
+    // fields to select
     select = query.select.map(function (item) {
         if (item.aggregations.length) {
             return item.aggregations.map(function (agg) {
@@ -17322,6 +17330,15 @@ window.makeQuery = function () {
 
     sql += ' FROM ?';
 
+    // conditions
+    where = query.conditions.map(function (item) {
+        return item.field + ' ' + item.operator + ' ' + item.value;
+    }).join(', ');
+
+    if (where.length) {
+        sql += ' WHERE ' + where;
+    }
+
     if (query.group_by) {
         sql += ' GROUP BY ' + query.group_by;
     }
@@ -17329,7 +17346,10 @@ window.makeQuery = function () {
     if (query.order_by) {
         sql += ' ORDER BY ' + query.order_by.field + ' ' + query.order_by.order_value;
     }
+
+    console.log(query.conditions);
     console.log(sql);
+
     return sql;
 };
 
@@ -17355,6 +17375,8 @@ window.toggleFilter = function (filterName, checked) {
             Array.from(options.querySelectorAll('input')).map(function (box) {
                 box.checked = false;
             });
+
+            window.clearCondition(filterName);
         }
 
     runQuery(makeQuery());
@@ -17376,7 +17398,17 @@ window.toggleAggregation = function (filterName, aggregation, checked) {
 };
 
 window.setCondition = function (field, operator, value) {
-    query.conditions[field] = { operator: operator, value: value };
+    query.conditions.push({ field: field, operator: operator, value: value });
+
+    runQuery(makeQuery());
+};
+
+window.clearCondition = function (field) {
+    query.conditions = query.conditions.filter(function (item) {
+        return item.field !== field;
+    });
+
+    runQuery(makeQuery());
 };
 
 window.setOrderBy = function (field, order_value) {
@@ -17443,22 +17475,24 @@ window.runQuery = function (query) {
         return false;
     }
 
-    console.log(results);
+    if (results.length) {
+        // format table
+        html = '<table>';
 
-    // format table
-    html = '<table>';
+        // add header row
+        html += '<tr><th>#</th><th>' + Object.keys(results[0]).join('</th><th>') + '</th></tr>';
 
-    // add header row
-    html += '<tr><th>#</th><th>' + Object.keys(results[0]).join('</th><th>') + '</th></tr>';
+        // add data
+        for (var i = 0; i < results.length; i++) {
+            html += '<tr><td>' + (i + 1) + '</td><td>' + Object.values(results[i]).join('</td><td>') + '</td></tr>';
+        }
 
-    // add data
-    for (var i = 0; i < results.length; i++) {
-        html += '<tr><td>' + (i + 1) + '</td><td>' + Object.values(results[i]).join('</td><td>') + '</td></tr>';
+        html += '<table>';
+    } else {
+        html = '<p>Nothing found.</p>';
     }
 
-    html += '<table>';
-
-    // output
+    // set output
     outputElement.className = '';
     outputElement.innerHTML = html;
 
@@ -17497,10 +17531,6 @@ window.drawChart = function (results) {
 };
 
 window.onload = function () {
-    // shared data
-    query = { select: [] };
-    chart = null;
-
     // since default is simple mode
     runQuery(makeQuery());
 };

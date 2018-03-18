@@ -52,13 +52,17 @@
     </label>
     <div class="options" style="display: none">
         <label>Condition</label>
-        <select onchange="
+        <select class="operator" onchange="
             var e = this.parentNode.querySelector('.value');
 
-            if (this.value.length)
+            if (this.value.length) {
                 e.style.display = 'inline';
-            else
+            }
+            else {
                 e.style.display = 'none';
+
+                clearCondition('{{ $filter->name }}');
+            }
         ">
             <option value="">anything</option>
             <option value="=">=</option>
@@ -67,8 +71,8 @@
             <option value="BETWEEN">BETWEEN</option>
         </select>
         <input type="text" class="value" style="display: none" onchange="
-            var operator = this.parentNode.querySelector('.operator');
-            setCondition("{{ $filter->name }}", operator, this.value);
+            var operator = this.parentNode.querySelector('.operator').value;
+            setCondition('{{ $filter->name }}', operator, this.value);
         ">
         
         <br>
