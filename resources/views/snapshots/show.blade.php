@@ -52,10 +52,13 @@
     </label>
     <div class="options" style="display: none">
         <label>Condition</label>
-        <select class="value" onchange="
+        <select onchange="
             var e = this.parentNode.querySelector('.value');
-            if (this.value.length) e.style.display = 'inline';
-            else e.style.display = 'none';
+
+            if (this.value.length)
+                e.style.display = 'inline';
+            else
+                e.style.display = 'none';
         ">
             <option value="">anything</option>
             <option value="=">=</option>
