@@ -38,9 +38,13 @@
 {{-- SIMPLE QUERY --}}
 <div id="simple" class="mode">
     
-    <button onclick="">+ Add a rule</button>
+    <button onclick="
+        var rule = document.getElementById('rule-template').cloneNode(true);
 
-    <table style=">
+        document.getElementById('query-editor').appendChild(rule);
+    ">+ Add a rule</button>
+
+    <table class="full-width" id="query-editor">
         <tr>
             <th>Type</th>
             <th>Column</th>
