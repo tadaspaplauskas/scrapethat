@@ -49,7 +49,7 @@
                 </div>
 
                 <div class="args aggregation" style="display: none">
-                    <select class="function" onchange="">
+                    <select class="value" onchange="">
                         <option value="AVG">Average</option>
                         <option value="MEDIAN">Median</option>
                         <option value="SUM">Sum</option>
@@ -59,7 +59,7 @@
                 </div>
 
                 <div class="args order" style="display: none">
-                    <select>
+                    <select class="value">
                         <option value="DESC">Descending</option>
                         <option value="ASC">Ascending</option>
                     </select>

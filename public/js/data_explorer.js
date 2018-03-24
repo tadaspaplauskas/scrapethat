@@ -134,15 +134,16 @@ window.makeQuery = function () {
     // start from the first one
     for (var i = 1; i < rules.length; i++) {
         var rule = rules[i];
+        var type = rule.querySelector('.type').value;
         var variable = rule.querySelector('.variable').value;
-        var value = rule.querySelector('.condition .value').value || null; // ???
+        var value = rule.querySelector('.' + type + ' .value').value || '';
 
-        switch (rule.querySelector('.type').value) {
+        switch (type) {
             case 'select':
                 select.push(variable);
                 break;
             case 'aggregation':
-                select.push(rule.querySelector('.aggregation .function').value + '(' + variable + ')');
+                select.push(value + '(' + variable + ')');
                 break;
             case 'condition':
                 conditions.push(variable + rule.querySelector('.condition .operator').value + value);
