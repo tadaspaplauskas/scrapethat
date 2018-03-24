@@ -64,17 +64,17 @@ class SnapshotController extends Controller
      */
     public function show(Snapshot $snapshot, Request $request)
     {
-        $columns = $snapshot->filters;
+        $variables = $snapshot->variables;
         
         $dataset = collect();
 
-        foreach ($columns as $column) {
-            foreach ($column->values as $i => $value) {
+        foreach ($variables as $variable) {
+            foreach ($variable->values as $i => $value) {
                 if (!isset($dataset[$i])) {
                     $dataset[$i] = collect();
                 }
 
-                $dataset[$i][$column->name] = floatval(preg_replace('/\s*/m', '', $value));
+                $dataset[$i][$variable->name] = floatval(preg_replace('/\s*/m', '', $value));
             }
         }
 

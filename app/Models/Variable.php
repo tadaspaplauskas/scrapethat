@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Filter extends Model
+class Variable extends Model
 {
     protected $fillable = [
         'snapshot_id',

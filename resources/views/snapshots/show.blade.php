@@ -21,7 +21,7 @@
     <button type="submit" class="block">Fetch</button>
 </form>
 
-@if (!$columns->isEmpty())
+@if (!$variables->isEmpty())
 
 <h5>Chart</h5>
 <canvas id="chart"></canvas>
@@ -39,6 +39,7 @@
 <div id="simple" class="mode">
     
     <button onclick="
+        // clone with all children
         var rule = document.getElementById('rule-template').cloneNode(true);
 
         // make visible
@@ -57,10 +58,8 @@
         <tr id="rule-template" style="display: none">
             <td>
                 <select onclick="
-                    var parent = this.parentNode.parentNode;
-                    
-                    // document.
-                    parent.querySelector('.' + this.value).style.display = 'none';
+                    this.parentNode.parentNode
+                        .querySelector('.' + this.value).style.display = 'none';
                 ">
                     <option value="select">Show column</option>
                     <option value="condition">Condition</option>
@@ -70,8 +69,8 @@
             </td>
             <td>
                 <select>
-                    @foreach ($columns as $column)
-                        <option value="">{{ $column->name }}</option>
+                    @foreach ($variables as $variable)
+                        <option value="{{ $variable->name }}">{{ $variable->name }}</option>
                     @endforeach
                 </select>
             </td>
@@ -83,12 +82,12 @@
                         if (this.value.length) {
                             valueField.style.display = 'inline';
 
-                            setCondition('{{ $column->name }}', this.value, valueField.value);
+                            setCondition('{{ $variable->name }}', this.value, valueField.value);
                         }
                         else {
                             valueField.style.display = 'none';
 
-                            clearCondition('{{ $column->name }}');
+                            clearCondition('{{ $variable->name }}');
                         }
                     ">
                         <option value="">anything</option>
@@ -100,7 +99,7 @@
 
                     <input type="text" class="value" style="display: none" onchange="
                         var operatorField = this.parentNode.querySelector('.operator');
-                        setCondition('{{ $column->name }}', operatorField.value, this.value);
+                        setCondition('{{ $variable->name }}', operatorField.value, this.value);
                     ">
                 </div>
 

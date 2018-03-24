@@ -9,22 +9,22 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Symfony\Component\DomCrawler\Crawler;
 
-use App\Filter;
+use App\Variable;
 
-class ProcessFilter implements ShouldQueue
+class ProcessVariable implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $filter;
+    protected $variable;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Filter $filter)
+    public function __construct(Variable $variable)
     {
-        $this->filter = $filter;
+        $this->variable = $variable;
     }
 
     /**
@@ -34,27 +34,27 @@ class ProcessFilter implements ShouldQueue
      */
     public function handle()
     {
-        $filter = $this->filter;
+        $variable = $this->variable;
 
-        $page = $filter->snapshot->pages()->offset($filter->scanned)->first();
+        $page = $variable->snapshot->pages()->offset($variable->scanned)->first();
 
         $crawler = new Crawler($page->html);
 
-        $values = $filter->values;
+        $values = $variable->values;
 
-        foreach ($crawler->filter($filter->selector) as $domElement) {
+        foreach ($crawler->filter($variable->selector) as $domElement) {
             $values[] = $domElement->nodeValue;
         }
 
-        $filter->values = $values;
+        $variable->values = $values;
 
-        $filter->scanned++;
+        $variable->scanned++;
 
-        $filter->save();
+        $variable->save();
 
         // queue next job
-        if (!$filter->isCompleted()) {
-            static::dispatch($filter);
+        if (!$variable->isCompleted()) {
+            static::dispatch($variable);
         }
     }
 }
