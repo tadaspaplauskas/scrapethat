@@ -14,16 +14,16 @@ window.qs = function (selector) {
     return document.querySelector(selector);
 };
 
-window.qsa = function (selector) {
-    return document.querySelectorAll(selector);
-};
-
 window.addElementTo = function (sourceSelector, targetSelector) {
     // clone with all children
     var elem = document.querySelector(sourceSelector).cloneNode(true);
 
     return document.querySelector(targetSelector).appendChild(elem);
 };
+
+window.removeElement = function (element) {
+    return element.parentNode.removeChild(element);
+}
 
 window.showOneOfMany = function (needleSelector, haystackSelector, context) {
     context = context || document;
