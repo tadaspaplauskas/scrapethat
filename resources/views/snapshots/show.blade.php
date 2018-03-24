@@ -28,7 +28,7 @@
 
 <h5>Query</h5>
 
-@include('components/query_editor')
+@include('snapshots/query_editor_component')
 
 @endif
 
