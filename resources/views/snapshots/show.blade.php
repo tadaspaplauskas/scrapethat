@@ -26,9 +26,6 @@
 <h5>Chart</h5>
 <canvas id="chart"></canvas>
 
-<div class="row">
-<div class="column one-half">
-
 <h5>Query</h5>
 <p>
 <label for="name">Mode</label>
@@ -135,6 +132,7 @@
         </select>
     </div>
 </article>
+</div>
 
 {{-- ADVANDED QUERY --}}
 <div id="advanced" class="mode" style="display: none">
@@ -144,10 +142,7 @@
         runQuery(qs('#query').value);
     ">Run query</button>
 </div>
-</div>
-</div>
 
-<div class="column one-half">
 <h5>Dataset</h5>
 
 <p id="sql-output"></p>
