@@ -41,6 +41,9 @@
     <button onclick="
         var rule = document.getElementById('rule-template').cloneNode(true);
 
+        // make visible
+        rule.style.display = 'table-row';
+
         document.getElementById('query-editor').appendChild(rule);
     ">+ Add a rule</button>
 
@@ -51,7 +54,7 @@
             <th>Arguments</th>
             <th>Remove</th>
         </tr>
-        <tr id="rule-template" {{-- style="display: none" --}}>
+        <tr id="rule-template" style="display: none">
             <td>
                 <select onclick="
                     var parent = this.parentNode.parentNode;
