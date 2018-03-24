@@ -18,167 +18,86 @@ window.qsa = function (selector) {
     return document.querySelectorAll(selector);
 };
 
+window.addElementTo = function (sourceSelector, targetSelector) {
+    // clone with all children
+    var elem = document.querySelector(sourceSelector).cloneNode(true);
+
+    return document.querySelector(targetSelector).appendChild(elem);
+};
+
+window.showOneOfMany = function (needleSelector, haystackSelector, context) {
+    // context =  typeof context !== 'undefined' ? context : vat;
+    console.log(context);
+    context = context || document;
+
+ console.log (context);
+    var element = context.querySelector(needleSelector);
+    var haystack = context.querySelectorAll(haystackSelector);
+
+    // hide all
+    for (var i = 0; i < haystack.length; i++) {
+        haystack[i].style.display = 'none';
+    }
+
+    // show one
+    element.style.display = 'block';
+};
+
 // meat and potatoes
 window.makeQuery = function () {
-    var sql, select;
-
-    sql = 'SELECT ';
-
     // fields to select
-    select = query.select
-        .map(function(item) {
-            if (item.aggregations.length) {
-                return item.aggregations
-                    .map(function (agg) {
-                        return agg + '(' + item.name + ')';
-                    })
-                    .join(', ');
-            }
+    var rules = document.querySelectorAll('.rule');
 
-            // just the name by default
-            return item.name;
-        })
-        .join(', ');
+    var select = [], conditions = [], order = [], group = [];
 
-    sql += select.length ? select : '*';
+    // start from the first one
+    for (var i = 1; i < rules.length; i++) {
+        var rule = rules[i];
+        var variable = rule.querySelector('.variable').value;
+        var value = rule.querySelector('.condition .value').value || null; // ???
 
-    sql += ' FROM ?';
+        switch (rule.querySelector('.type').value) {
+            case 'select':
+                select.push(variable);
+                break;
+            case 'aggregation':
+                select.push(rule.querySelector('.aggregation .function').value +
+                    '(' + variable + ')');
+                break;
+            case 'condition':
+                conditions.push(variable + rule.querySelector('.condition .operator').value + value);
+                break;
+            case 'order':
+                order.push(variable + ' ' + value);
+                break;
+            case 'group':
+                group.push(variable);
+                break;
+            default:
+                break;
+        }
+    }
+
+    var sql = 'SELECT ' +
+        (select.length ? select.join(', ') : '*') +
+        ' FROM ?';
 
     // conditions
-    where = query.conditions
-        .map(function(item) {
-            return  item.field + ' ' + item.operator + ' ' + parseFloat(item.value);
-        })
-        .join(', ');
-
-    if (where.length) {
-        sql += ' WHERE ' + where;
+    if (conditions.length) {
+        sql += ' WHERE ' + conditions.join(', ');
     }
 
-    if (query.group_by) {
-        sql += ' GROUP BY ' + query.group_by;
+    if (group.length) {
+        sql += ' GROUP BY ' + group.join(', ');
     }
 
-    if (query.order_by) {
-        sql += ' ORDER BY ' + query.order_by.field + ' ' + query.order_by.order_value;
+    if (order.length) {
+        sql += ' ORDER BY ' + order.join(', ');;
     }
 
-    console.log(query.conditions);
     console.log(sql);
     
     return sql;
-};
-
-window.toggleFilter = function (filterName, checked) {
-    var options = document.querySelector('#' + filterName + ' .options');
-
-    // add
-    if (checked) {
-        query.select.push({ name: filterName, aggregations: [] });
-
-        // show options
-        options.style.display = 'block';
-    }
-    // remove
-    else {
-        query.select = query.select.filter(function (item) {
-            return item.name !== filterName;
-        });
-        
-        // hide and reset options
-        options.style.display = 'none';
-
-        Array.from(options.querySelectorAll('input'))
-            .map(function (box) {
-                box.checked = false;
-            });
-
-        window.clearCondition(filterName);
-    }
-
-    runQuery(makeQuery());
-};
-
-window.toggleAggregation = function (filterName, aggregation, checked) {
-    // select correct filter
-    var filter = query.select.filter(function (shownFilter) {
-        return filterName == shownFilter.name;
-    })[0];
-
-    if (checked) {
-        filter.aggregations.push(aggregation);
-    }
-    else {
-        filter.aggregations.splice(filter.aggregations.indexOf(aggregation));
-    }
-
-    runQuery(makeQuery());
-};
-
-window.setCondition = function (field, operator, value) {
-    window.clearCondition(field);
-
-    query.conditions.push({ field: field, operator: operator, value: value });
-
-    runQuery(makeQuery());
-};
-
-window.clearCondition = function (field) {
-    query.conditions = query.conditions.filter(function (item) {
-            return item.field !== field;
-        });
-
-    runQuery(makeQuery());
-};
-
-window.setOrderBy = function (field, order_value) {
-    var element = document.getElementById('order_by');
-
-    if (field) {
-        element.style.display = 'block';
-
-        query.order_by = {
-            field: field,
-            order_value: order_value,
-
-        };
-    }
-    else {
-        element.style.display = 'none';
-        query.order_by = null;
-    }
-
-    runQuery(makeQuery());
-};
-
-window.setGroupBy = function (field) {
-    var element = document.getElementById('group_by');
-
-    if (field) {
-        element.style.display = 'block';
-    }
-    else {
-        element.style.display = 'none';
-    }
-
-    query.group_by = field;
-
-    runQuery(makeQuery());
-};
-
-window.showOneOfMany = function (needleId, haystack) {
-    var element;
-
-    for (var i = 0; i < haystack.length; i++) {
-        element = haystack[i];
-
-        if (element.id === needleId) {
-            element.style.display = 'block';
-        }
-        else {
-            element.style.display = 'none';
-        }
-    }
 };
 
 window.runQuery = function (query) {

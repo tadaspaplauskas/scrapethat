@@ -27,34 +27,10 @@
 <canvas id="chart"></canvas>
 
 <h5>Query</h5>
-<p>
-    <label for="name">Mode</label>
-    <select onchange="showOneOfMany(this.value, qsa('.mode'))">
-        <option value="simple">Simple</option>
-        <option value="advanced">Advanced</option>
-    </select>
-</p>
 
-{{-- SIMPLE QUERY --}}
-<div id="simple" class="mode">
-    @include('components/query_editor')
-</div>
+@include('components/query_editor')
 
-{{-- ADVANDED QUERY --}}
-<div id="advanced" class="mode" style="display: none">
-    <textarea id="query" class="full-width">SELECT * FROM ?</textarea>
-
-    <button onclick="
-        runQuery(qs('#query').value);
-    ">Run query</button>
-</div>
-
-<h5>Dataset</h5>
-
-<p id="sql-output"></p>
-</div>
 @endif
-</div>
 
 <h5>Danger zone</h5>
 <p>
