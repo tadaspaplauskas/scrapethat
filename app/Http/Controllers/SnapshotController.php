@@ -78,7 +78,7 @@ class SnapshotController extends Controller
             }
         }
 
-        return view('snapshots.show', compact('snapshot', 'columns', 'dataset'));
+        return view('snapshots.show', compact('snapshot', 'variables', 'dataset'));
     }
 
     /**
