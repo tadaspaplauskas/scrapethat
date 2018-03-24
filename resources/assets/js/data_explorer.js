@@ -47,7 +47,7 @@ window.makeQuery = function () {
     // conditions
     where = query.conditions
         .map(function(item) {
-            return  item.field + ' ' + item.operator + ' ' + item.value;
+            return  item.field + ' ' + item.operator + ' ' + parseFloat(item.value);
         })
         .join(', ');
 
@@ -116,6 +116,8 @@ window.toggleAggregation = function (filterName, aggregation, checked) {
 };
 
 window.setCondition = function (field, operator, value) {
+    window.clearCondition(field);
+
     query.conditions.push({ field: field, operator: operator, value: value });
 
     runQuery(makeQuery());

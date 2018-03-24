@@ -44,22 +44,22 @@
 <div id="simple" class="mode">
 @foreach ($filters as $filter)
 <article id="{{ $filter->name }}">
-    <label>
-    <h5>
+    <h5 class="mb0">
         <input type="checkbox" onclick="toggleFilter('{{ $filter->name }}', this.checked)">
         {{ $filter->name }}
     </h5>
-    </label>
     <div class="options" style="display: none">
         <label>Condition</label>
         <select class="operator" onchange="
-            var e = this.parentNode.querySelector('.value');
+            var valueField = this.parentNode.querySelector('.value');
 
             if (this.value.length) {
-                e.style.display = 'inline';
+                valueField.style.display = 'inline';
+
+                setCondition('{{ $filter->name }}', this.value, valueField.value);
             }
             else {
-                e.style.display = 'none';
+                valueField.style.display = 'none';
 
                 clearCondition('{{ $filter->name }}');
             }
@@ -71,8 +71,8 @@
             <option value="BETWEEN">BETWEEN</option>
         </select>
         <input type="text" class="value" style="display: none" onchange="
-            var operator = this.parentNode.querySelector('.operator').value;
-            setCondition('{{ $filter->name }}', operator, this.value);
+            var operatorField = this.parentNode.querySelector('.operator');
+            setCondition('{{ $filter->name }}', operatorField.value, this.value);
         ">
         
         <br>
@@ -80,13 +80,11 @@
         <label>Aggregations</label>
         <ul class="aggregations list-none inline">
             @foreach ($aggregations as $key => $value)
-                <li class="inline-block mr2">
-                    <label class="normal-text">
-                        <input type="checkbox" onclick="
-                            toggleAggregation('{{ $filter->name }}', '{{ $key }}', this.checked)
-                        ">
-                        {{ $value }}
-                    </label>
+                <li class="inline-block mr2 normal-text">
+                    <input type="checkbox" onclick="
+                        toggleAggregation('{{ $filter->name }}', '{{ $key }}', this.checked)
+                    ">
+                    {{ $value }}
                 </li>
             @endforeach
         </ul>
@@ -96,13 +94,11 @@
 
 {{-- ORDER BY --}}
 <article>
-    <label>
     <h5>
         <input type="checkbox" onclick="
             setOrderBy(this.checked ? qs('#order_field').value : null, qs('#order_value').value);
         "> Order by
     </h5>
-    </label>
     <ul id="order_by" class="inline list-none" style="display: none">
         <li class="inline-block">
             <select id="order_field" onchange="setOrderBy(this.value, qs('#order_value').value)">
@@ -124,13 +120,11 @@
 
 {{-- GROUP BY --}}
 <article>
-    <label>
     <h5>
         <input type="checkbox" onclick="
             setGroupBy(this.checked ? qs('#group_by_field').value : null);
         "> Group by
     </h5>
-    </label>
     <div id="group_by" class="list-none inline" style="display: none">
         <select id="group_by_field" onchange="
             setGroupBy(this.value);
