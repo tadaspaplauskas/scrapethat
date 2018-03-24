@@ -26,11 +26,8 @@ window.addElementTo = function (sourceSelector, targetSelector) {
 };
 
 window.showOneOfMany = function (needleSelector, haystackSelector, context) {
-    // context =  typeof context !== 'undefined' ? context : vat;
-    console.log(context);
     context = context || document;
 
- console.log (context);
     var element = context.querySelector(needleSelector);
     var haystack = context.querySelectorAll(haystackSelector);
 
@@ -55,7 +52,9 @@ window.makeQuery = function () {
         var rule = rules[i];
         var type = rule.querySelector('.type').value;
         var variable = rule.querySelector('.variable').value;
-        var value = rule.querySelector('.' + type + ' .value').value || '';
+        
+        var valueElement = rule.querySelector('.' + type + ' .value');
+        var value = valueElement ? valueElement.value : '';
 
         switch (type) {
             case 'select':
@@ -65,7 +64,8 @@ window.makeQuery = function () {
                 select.push(value +'(' + variable + ')');
                 break;
             case 'condition':
-                conditions.push(variable + rule.querySelector('.condition .operator').value + value);
+                conditions.push(variable +rule.querySelector('.condition .operator').value +
+                    (isNaN(value) ? '"' + value + '"' : value));
                 break;
             case 'order':
                 order.push(variable + ' ' + value);
