@@ -64,8 +64,16 @@ window.makeQuery = function () {
                 select.push(value +'(' + variable + ')');
                 break;
             case 'condition':
-                conditions.push(variable +rule.querySelector('.condition .operator').value +
-                    (isNaN(value) ? '"' + value + '"' : value));
+                // put in quotes
+                if (value === '') {
+                    var conditionValue = '""';
+                }
+                else {
+                    var conditionValue = isNaN(value) ? '"' + value + '"' : value;
+                }
+                
+                conditions.push(variable + rule.querySelector('.condition .operator').value +
+                    conditionValue);
                 break;
             case 'order':
                 order.push(variable + ' ' + value);
