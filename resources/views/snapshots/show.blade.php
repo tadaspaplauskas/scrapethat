@@ -21,117 +21,105 @@
     <button type="submit" class="block">Fetch</button>
 </form>
 
-@if (!$filters->isEmpty())
+@if (!$columns->isEmpty())
 
 <h5>Chart</h5>
 <canvas id="chart"></canvas>
 
 <h5>Query</h5>
 <p>
-<label for="name">Mode</label>
-<select onchange="
-    showOneOfMany(this.value, qsa('.mode'));
-">
-    <option value="simple">Simple</option>
-    <option value="advanced">Advanced</option>
-</select>
+    <label for="name">Mode</label>
+    <select onchange="showOneOfMany(this.value, qsa('.mode'))">
+        <option value="simple">Simple</option>
+        <option value="advanced">Advanced</option>
+    </select>
 </p>
 
 {{-- SIMPLE QUERY --}}
 <div id="simple" class="mode">
-@foreach ($filters as $filter)
-<article id="{{ $filter->name }}">
-    <h5 class="mb0">
-        <input type="checkbox" onclick="toggleFilter('{{ $filter->name }}', this.checked)">
-        {{ $filter->name }}
-    </h5>
-    <div class="options" style="display: none">
-        <label>Condition</label>
-        <select class="operator" onchange="
-            var valueField = this.parentNode.querySelector('.value');
+    
+    <button onclick="">+ Add a rule</button>
 
-            if (this.value.length) {
-                valueField.style.display = 'inline';
+    <table style=">
+        <tr>
+            <th>Type</th>
+            <th>Column</th>
+            <th>Arguments</th>
+            <th>Remove</th>
+        </tr>
+        <tr id="rule-template" {{-- style="display: none" --}}>
+            <td>
+                <select onclick="
+                    var parent = this.parentNode.parentNode;
+                    
+                    // document.
+                    parent.querySelector('.' + this.value).style.display = 'none';
+                ">
+                    <option value="select">Show column</option>
+                    <option value="condition">Condition</option>
+                    <option value="aggregation">Aggregation</option>
+                    <option value="order">Order by</option>
+                    <option value="group">Group by</option>
+            </td>
+            <td>
+                <select>
+                    @foreach ($columns as $column)
+                        <option value="">{{ $column->name }}</option>
+                    @endforeach
+                </select>
+            </td>
+            <td>
+                <div class="args condition" style="display: none">
+                    <select class="operator" onchange="
+                        var valueField = this.parentNode.querySelector('.value');
 
-                setCondition('{{ $filter->name }}', this.value, valueField.value);
-            }
-            else {
-                valueField.style.display = 'none';
+                        if (this.value.length) {
+                            valueField.style.display = 'inline';
 
-                clearCondition('{{ $filter->name }}');
-            }
-        ">
-            <option value="">anything</option>
-            <option value="=">=</option>
-            <option value="<"><</option>
-            <option value=">">></option>
-            <option value="BETWEEN">BETWEEN</option>
-        </select>
-        <input type="text" class="value" style="display: none" onchange="
-            var operatorField = this.parentNode.querySelector('.operator');
-            setCondition('{{ $filter->name }}', operatorField.value, this.value);
-        ">
-        
-        <br>
-        
-        <label>Aggregations</label>
-        <ul class="aggregations list-none inline">
-            @foreach ($aggregations as $key => $value)
-                <li class="inline-block mr2 normal-text">
-                    <input type="checkbox" onclick="
-                        toggleAggregation('{{ $filter->name }}', '{{ $key }}', this.checked)
+                            setCondition('{{ $column->name }}', this.value, valueField.value);
+                        }
+                        else {
+                            valueField.style.display = 'none';
+
+                            clearCondition('{{ $column->name }}');
+                        }
                     ">
-                    {{ $value }}
-                </li>
-            @endforeach
-        </ul>
-    </div>
-</article>
-@endforeach
+                        <option value="">anything</option>
+                        <option value="=">=</option>
+                        <option value="<"><</option>
+                        <option value=">">></option>
+                        <option value="BETWEEN">BETWEEN</option>
+                    </select>
 
-{{-- ORDER BY --}}
-<article>
-    <h5>
-        <input type="checkbox" onclick="
-            setOrderBy(this.checked ? qs('#order_field').value : null, qs('#order_value').value);
-        "> Order by
-    </h5>
-    <ul id="order_by" class="inline list-none" style="display: none">
-        <li class="inline-block">
-            <select id="order_field" onchange="setOrderBy(this.value, qs('#order_value').value)">
-                @foreach ($filters as $filter)
-                    <option value="{{ $filter->name }}">{{ $filter->name }}</option>
-                @endforeach
-            </select>
-        </li>
-        <li class="inline-block">
-            <select id="order_value" onchange="
-                setOrderBy(qs('#order_field').value, this.value);
-            ">
-                <option value="DESC">descending</option>
-                <option value="ASC">ascending</option>
-            </select>
-        </li>
-    </ul>
-</article>
+                    <input type="text" class="value" style="display: none" onchange="
+                        var operatorField = this.parentNode.querySelector('.operator');
+                        setCondition('{{ $column->name }}', operatorField.value, this.value);
+                    ">
+                </div>
 
-{{-- GROUP BY --}}
-<article>
-    <h5>
-        <input type="checkbox" onclick="
-            setGroupBy(this.checked ? qs('#group_by_field').value : null);
-        "> Group by
-    </h5>
-    <div id="group_by" class="list-none inline" style="display: none">
-        <select id="group_by_field" onchange="
-            setGroupBy(this.value);
-        ">
-            @foreach ($filters as $filter)
-                <option value="{{ $filter->name }}">{{ $filter->name }}</option>
-            @endforeach
-        </select>
-    </div>
-</article>
+                <div class="args aggregations" style="display: none">
+                    <select class="operator" onchange="">
+                        <option value="AVG">Average</option>
+                        <option value="MEDIAN">Median</option>
+                        <option value="SUM">Sum</option>
+                        <option value="MIN">Min</option>
+                        <option value="MAX">Max</option>
+                    </select>
+                </div>
+
+                <div class="args order" style="display: none">
+                    <select>
+                        <option value="DESC">Descending</option>
+                        <option value="ASC">Ascending</option>
+                    </select>
+                </div>
+
+            </td>
+            <td>
+                <button onclick="">- Remove</button>
+            </td>
+        </tr>
+    </table>
 </div>
 
 {{-- ADVANDED QUERY --}}

@@ -64,29 +64,21 @@ class SnapshotController extends Controller
      */
     public function show(Snapshot $snapshot, Request $request)
     {
-        $filters = $snapshot->filters;
+        $columns = $snapshot->filters;
         
         $dataset = collect();
 
-        foreach ($filters as $filter) {
-            foreach ($filter->values as $i => $value) {
+        foreach ($columns as $column) {
+            foreach ($column->values as $i => $value) {
                 if (!isset($dataset[$i])) {
                     $dataset[$i] = collect();
                 }
 
-                $dataset[$i][$filter->name] = floatval(preg_replace('/\s*/m', '', $value));
+                $dataset[$i][$column->name] = floatval(preg_replace('/\s*/m', '', $value));
             }
         }
 
-        $aggregations = collect([
-            'AVG' => 'Average',
-            'MEDIAN' => 'Median',
-            'SUM' => 'Sum',
-            'MIN' => 'Min',
-            'MAX' => 'Max',
-        ]);
-
-        return view('snapshots.show', compact('snapshot', 'filters', 'dataset', 'aggregations'));
+        return view('snapshots.show', compact('snapshot', 'columns', 'dataset'));
     }
 
     /**
