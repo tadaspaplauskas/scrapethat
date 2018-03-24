@@ -87,3 +87,6 @@
 <h5>Dataset</h5>
 
 <p id="sql-output"></p>
+
+<script src="{{ asset('js/data_explorer.js') }}"></script>
+

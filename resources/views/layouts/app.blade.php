@@ -12,11 +12,6 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-
-    <!-- Scripts -->
-    @if (isset($data_explorer))
-        <script src="{{ asset('js/data_explorer.js') }}"></script>
-    @endif
 </head>
 <body>
     <header class="container mt1">

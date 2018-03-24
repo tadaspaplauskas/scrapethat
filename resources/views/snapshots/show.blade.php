@@ -1,4 +1,4 @@
-@extends('layouts.app', ['data_explorer' => true])
+@extends('layouts.app')
 
 @section('title', $snapshot->name)
 
