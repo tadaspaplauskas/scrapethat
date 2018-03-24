@@ -120,7 +120,9 @@
 
             </td>
             <td>
-                <button onclick="">- Remove</button>
+                <button onclick="
+                this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+                ">- Remove</button>
             </td>
         </tr>
     </table>
