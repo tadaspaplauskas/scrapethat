@@ -8,7 +8,7 @@
 
 {{-- SIMPLE QUERY --}}
 <div id="simple" class="mode">
-    <button onclick="addElementTo('#rule-template', '#query-editor').style.display = 'table-row'" accesskey="n" title="Keyboard shortcut: [Alt] + n or [Control] [Alt] + n">+ Add a rule</button>
+    <button onclick="addElementTo('#rule-template', '#query-editor').style.display = 'table-row'" accesskey="n" title="Keyboard shortcut: [Alt]+n or [Control]+[Alt]+n">+ Add a rule</button>
 
     <table class="full-width" id="query-editor">
         <tr>
@@ -76,7 +76,7 @@
     </table>
 
     <button onclick="runQuery(makeQuery())" accesskey="r"
-        title="Keyboard shortcut: [Alt] + r or [Control] [Alt] + r">Refresh</button>
+        title="Keyboard shortcut: [Alt]+r or [Control]+[Alt]+r">Refresh</button>
 </div>
 
 {{-- ADVANDED QUERY --}}
