@@ -22,7 +22,7 @@
         </tr>
         <tr id="rule-template" class="rule" style="display: none">
             <td>
-                <select class="type" onclick="showOneOfMany('.' + this.value, '.args', this.parentNode.parentNode)">
+                <select class="type" onchange="showOneOfMany('.' + this.value, '.args', this.parentNode.parentNode)">
                     <option value="select">Show column</option>
                     <option value="condition">Condition</option>
                     <option value="aggregation">Aggregation</option>
