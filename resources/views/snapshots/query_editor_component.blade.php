@@ -95,6 +95,11 @@
     <button onclick="runQuery(document.querySelector('#query').value, true)">Run query</button>
 </div>
 
-<h5>Dataset</h5>
-
+<h5>Results</h5>
 <p id="sql-output"></p>
+
+<h5>Export results</h5>
+<p>
+    <button onclick="exportToCSV(makeQuery())">CSV file</button>
+    <button onclick="exportToXLSX(makeQuery())">XLSX file</button>
+</p>

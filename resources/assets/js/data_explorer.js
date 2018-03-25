@@ -176,6 +176,23 @@ window.drawChart = function (results) {
     return true;
 };
 
+window.submitQuery = function () {
+    return runQuery(makeQuery());
+};
+
+window.exportToCSV = function (query) {
+    alasql.promise('SELECT * INTO CSV("query_results.csv", { separator: ","}) FROM (' + query + ')', [dataset])
+        .then(function(){
+             console.log('Data was saved');
+        }).catch(function(error){
+             console.log('Error:', error);
+        });
+};
+
+window.exportToXLSX = function () {
+
+};
+
 window.onload = function () {
     // since default is simple mode
     runQuery(makeQuery());
