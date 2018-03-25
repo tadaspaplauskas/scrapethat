@@ -10,7 +10,7 @@
 <div id="simple" class="mode">
     <button onclick="addElementTo('#rule-template', '#query-editor').style.display = 'table-row'">+ Add a rule</button>
 
-    <table class="full-width" id="query-editor" onchange="runQuery(makeQuery())">
+    <table class="full-width" id="query-editor">
         <tr>
             <th>Type</th>
             <th>Column</th>
@@ -75,6 +75,7 @@
         </tr>
     </table>
 
+    <button onclick="runQuery(makeQuery())">Refresh</button>
 </div>
 
 {{-- ADVANDED QUERY --}}
