@@ -1,6 +1,6 @@
-// dependencies
-var alasql = require('alasql');
-var Chart = require('chart.js');
+// global dependencies
+alasql = require('alasql');
+Chart = require('chart.js');
 
 // global data
 chart = null;
@@ -183,14 +183,10 @@ window.submitQuery = function () {
 window.exportToCSV = function (query) {
     alasql.promise('SELECT * INTO CSV("query_results.csv", { separator: ","}) FROM (' + query + ')', [dataset])
         .then(function(){
-             console.log('Data was saved');
+             console.log('File was saved');
         }).catch(function(error){
              console.log('Error:', error);
         });
-};
-
-window.exportToXLSX = function () {
-
 };
 
 window.onload = function () {

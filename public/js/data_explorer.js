@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 128);
+/******/ 	return __webpack_require__(__webpack_require__.s = 131);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1896,7 +1896,7 @@ function loadLocale(name) {
             module && module.exports) {
         try {
             oldLocale = globalLocale._abbr;
-            __webpack_require__(165)("./" + name);
+            __webpack_require__(171)("./" + name);
             // because defineLocale currently also sets the global locale, we
             // want to undo that for lazy loaded locales
             getSetGlobalLocale(oldLocale);
@@ -4531,7 +4531,7 @@ return hooks;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)(module)))
 
 /***/ }),
 /* 1 */
@@ -4541,9 +4541,9 @@ return hooks;
 
 
 module.exports = __webpack_require__(6);
-module.exports.easing = __webpack_require__(137);
-module.exports.canvas = __webpack_require__(138);
-module.exports.options = __webpack_require__(139);
+module.exports.easing = __webpack_require__(143);
+module.exports.canvas = __webpack_require__(144);
+module.exports.options = __webpack_require__(145);
 
 
 /***/ }),
@@ -4572,7 +4572,7 @@ module.exports = {
 "use strict";
 
 
-var color = __webpack_require__(8);
+var color = __webpack_require__(11);
 var helpers = __webpack_require__(1);
 
 function interpolate(start, view, model, ease) {
@@ -4695,10 +4695,10 @@ module.exports = Element;
 
 
 module.exports = {};
-module.exports.Arc = __webpack_require__(145);
-module.exports.Line = __webpack_require__(146);
-module.exports.Point = __webpack_require__(147);
-module.exports.Rectangle = __webpack_require__(148);
+module.exports.Arc = __webpack_require__(151);
+module.exports.Line = __webpack_require__(152);
+module.exports.Point = __webpack_require__(153);
+module.exports.Rectangle = __webpack_require__(154);
 
 
 /***/ }),
@@ -5262,6 +5262,223 @@ helpers.getValueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 /* 7 */
 /***/ (function(module, exports) {
 
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
 module.exports = function(module) {
 	if(!module.webpackPolyfill) {
 		module.deprecate = function() {};
@@ -5287,12 +5504,13 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 8 */
+/* 10 */,
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
-var convert = __webpack_require__(141);
-var string = __webpack_require__(143);
+var convert = __webpack_require__(147);
+var string = __webpack_require__(149);
 
 var Color = function (obj) {
 	if (obj instanceof Color) {
@@ -5778,7 +5996,7 @@ module.exports = Color;
 
 
 /***/ }),
-/* 9 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6115,15 +6333,15 @@ module.exports = {
 
 
 /***/ }),
-/* 10 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var helpers = __webpack_require__(1);
-var basic = __webpack_require__(149);
-var dom = __webpack_require__(150);
+var basic = __webpack_require__(155);
+var dom = __webpack_require__(156);
 
 // @TODO Make possible to select another platform at build time.
 var implementation = dom._enabled ? dom : basic;
@@ -6196,7 +6414,7 @@ module.exports = helpers.extend({
 
 
 /***/ }),
-/* 11 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6274,7 +6492,7 @@ return af;
 
 
 /***/ }),
-/* 12 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6421,7 +6639,7 @@ return ar;
 
 
 /***/ }),
-/* 13 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6485,7 +6703,7 @@ return arDz;
 
 
 /***/ }),
-/* 14 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6549,7 +6767,7 @@ return arKw;
 
 
 /***/ }),
-/* 15 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6680,7 +6898,7 @@ return arLy;
 
 
 /***/ }),
-/* 16 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6745,7 +6963,7 @@ return arMa;
 
 
 /***/ }),
-/* 17 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6855,7 +7073,7 @@ return arSa;
 
 
 /***/ }),
-/* 18 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6919,7 +7137,7 @@ return arTn;
 
 
 /***/ }),
-/* 19 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7029,7 +7247,7 @@ return az;
 
 
 /***/ }),
-/* 20 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7168,7 +7386,7 @@ return be;
 
 
 /***/ }),
-/* 21 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7263,7 +7481,7 @@ return bg;
 
 
 /***/ }),
-/* 22 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7387,7 +7605,7 @@ return bn;
 
 
 /***/ }),
-/* 23 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7511,7 +7729,7 @@ return bo;
 
 
 /***/ }),
-/* 24 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7624,7 +7842,7 @@ return br;
 
 
 /***/ }),
-/* 25 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7772,7 +7990,7 @@ return bs;
 
 
 /***/ }),
-/* 26 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7865,7 +8083,7 @@ return ca;
 
 
 /***/ }),
-/* 27 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8042,7 +8260,7 @@ return cs;
 
 
 /***/ }),
-/* 28 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8110,7 +8328,7 @@ return cv;
 
 
 /***/ }),
-/* 29 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8196,7 +8414,7 @@ return cy;
 
 
 /***/ }),
-/* 30 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8261,7 +8479,7 @@ return da;
 
 
 /***/ }),
-/* 31 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8344,7 +8562,7 @@ return de;
 
 
 /***/ }),
-/* 32 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8428,7 +8646,7 @@ return deAt;
 
 
 /***/ }),
-/* 33 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8511,7 +8729,7 @@ return deCh;
 
 
 /***/ }),
-/* 34 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8616,7 +8834,7 @@ return dv;
 
 
 /***/ }),
-/* 35 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8721,7 +8939,7 @@ return el;
 
 
 /***/ }),
-/* 36 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8793,7 +9011,7 @@ return enAu;
 
 
 /***/ }),
-/* 37 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8861,7 +9079,7 @@ return enCa;
 
 
 /***/ }),
-/* 38 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8933,7 +9151,7 @@ return enGb;
 
 
 /***/ }),
-/* 39 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9005,7 +9223,7 @@ return enIe;
 
 
 /***/ }),
-/* 40 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9077,7 +9295,7 @@ return enNz;
 
 
 /***/ }),
-/* 41 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9155,7 +9373,7 @@ return eo;
 
 
 /***/ }),
-/* 42 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9243,7 +9461,7 @@ return es;
 
 
 /***/ }),
-/* 43 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9330,7 +9548,7 @@ return esDo;
 
 
 /***/ }),
-/* 44 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9415,7 +9633,7 @@ return et;
 
 
 /***/ }),
-/* 45 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9486,7 +9704,7 @@ return eu;
 
 
 /***/ }),
-/* 46 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9598,7 +9816,7 @@ return fa;
 
 
 /***/ }),
-/* 47 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9710,7 +9928,7 @@ return fi;
 
 
 /***/ }),
-/* 48 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9775,7 +9993,7 @@ return fo;
 
 
 /***/ }),
-/* 49 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9863,7 +10081,7 @@ return fr;
 
 
 /***/ }),
-/* 50 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9942,7 +10160,7 @@ return frCa;
 
 
 /***/ }),
-/* 51 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10025,7 +10243,7 @@ return frCh;
 
 
 /***/ }),
-/* 52 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10105,7 +10323,7 @@ return fy;
 
 
 /***/ }),
-/* 53 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10186,7 +10404,7 @@ return gd;
 
 
 /***/ }),
-/* 54 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10268,7 +10486,7 @@ return gl;
 
 
 /***/ }),
-/* 55 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10395,7 +10613,7 @@ return gomLatn;
 
 
 /***/ }),
-/* 56 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10499,7 +10717,7 @@ return he;
 
 
 /***/ }),
-/* 57 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10628,7 +10846,7 @@ return hi;
 
 
 /***/ }),
-/* 58 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10778,7 +10996,7 @@ return hr;
 
 
 /***/ }),
-/* 59 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10892,7 +11110,7 @@ return hu;
 
 
 /***/ }),
-/* 60 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10992,7 +11210,7 @@ return hyAm;
 
 
 /***/ }),
-/* 61 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11080,7 +11298,7 @@ return id;
 
 
 /***/ }),
-/* 62 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11212,7 +11430,7 @@ return is;
 
 
 /***/ }),
-/* 63 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11287,7 +11505,7 @@ return it;
 
 
 /***/ }),
-/* 64 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11372,7 +11590,7 @@ return ja;
 
 
 /***/ }),
-/* 65 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11460,7 +11678,7 @@ return jv;
 
 
 /***/ }),
-/* 66 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11554,7 +11772,7 @@ return ka;
 
 
 /***/ }),
-/* 67 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11646,7 +11864,7 @@ return kk;
 
 
 /***/ }),
-/* 68 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11709,7 +11927,7 @@ return km;
 
 
 /***/ }),
-/* 69 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11840,7 +12058,7 @@ return kn;
 
 
 /***/ }),
-/* 70 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11914,7 +12132,7 @@ return ko;
 
 
 /***/ }),
-/* 71 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12007,7 +12225,7 @@ return ky;
 
 
 /***/ }),
-/* 72 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12149,7 +12367,7 @@ return lb;
 
 
 /***/ }),
-/* 73 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12224,7 +12442,7 @@ return lo;
 
 
 /***/ }),
-/* 74 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12346,7 +12564,7 @@ return lt;
 
 
 /***/ }),
-/* 75 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12448,7 +12666,7 @@ return lv;
 
 
 /***/ }),
-/* 76 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12564,7 +12782,7 @@ return me;
 
 
 /***/ }),
-/* 77 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12633,7 +12851,7 @@ return mi;
 
 
 /***/ }),
-/* 78 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12728,7 +12946,7 @@ return mk;
 
 
 /***/ }),
-/* 79 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12814,7 +13032,7 @@ return ml;
 
 
 /***/ }),
-/* 80 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12978,7 +13196,7 @@ return mr;
 
 
 /***/ }),
-/* 81 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13065,7 +13283,7 @@ return ms;
 
 
 /***/ }),
-/* 82 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13153,7 +13371,7 @@ return msMy;
 
 
 /***/ }),
-/* 83 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13254,7 +13472,7 @@ return my;
 
 
 /***/ }),
-/* 84 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13322,7 +13540,7 @@ return nb;
 
 
 /***/ }),
-/* 85 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13450,7 +13668,7 @@ return ne;
 
 
 /***/ }),
-/* 86 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13543,7 +13761,7 @@ return nl;
 
 
 /***/ }),
-/* 87 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13636,7 +13854,7 @@ return nlBe;
 
 
 /***/ }),
-/* 88 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13701,7 +13919,7 @@ return nn;
 
 
 /***/ }),
-/* 89 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13830,7 +14048,7 @@ return paIn;
 
 
 /***/ }),
-/* 90 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13942,7 +14160,7 @@ return pl;
 
 
 /***/ }),
-/* 91 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14012,7 +14230,7 @@ return pt;
 
 
 /***/ }),
-/* 92 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14078,7 +14296,7 @@ return ptBr;
 
 
 /***/ }),
-/* 93 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14158,7 +14376,7 @@ return ro;
 
 
 /***/ }),
-/* 94 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14346,7 +14564,7 @@ return ru;
 
 
 /***/ }),
-/* 95 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14449,7 +14667,7 @@ return sd;
 
 
 /***/ }),
-/* 96 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14515,7 +14733,7 @@ return se;
 
 
 /***/ }),
-/* 97 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14591,7 +14809,7 @@ return si;
 
 
 /***/ }),
-/* 98 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14746,7 +14964,7 @@ return sk;
 
 
 /***/ }),
-/* 99 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14913,7 +15131,7 @@ return sl;
 
 
 /***/ }),
-/* 100 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14988,7 +15206,7 @@ return sq;
 
 
 /***/ }),
-/* 101 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15103,7 +15321,7 @@ return sr;
 
 
 /***/ }),
-/* 102 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15218,7 +15436,7 @@ return srCyrl;
 
 
 /***/ }),
-/* 103 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15312,7 +15530,7 @@ return ss;
 
 
 /***/ }),
-/* 104 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15386,7 +15604,7 @@ return sv;
 
 
 /***/ }),
-/* 105 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15450,7 +15668,7 @@ return sw;
 
 
 /***/ }),
-/* 106 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15585,7 +15803,7 @@ return ta;
 
 
 /***/ }),
-/* 107 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15679,7 +15897,7 @@ return te;
 
 
 /***/ }),
-/* 108 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15752,7 +15970,7 @@ return tet;
 
 
 /***/ }),
-/* 109 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15824,7 +16042,7 @@ return th;
 
 
 /***/ }),
-/* 110 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15891,7 +16109,7 @@ return tlPh;
 
 
 /***/ }),
-/* 111 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16016,7 +16234,7 @@ return tlh;
 
 
 /***/ }),
-/* 112 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16111,7 +16329,7 @@ return tr;
 
 
 /***/ }),
-/* 113 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16207,7 +16425,7 @@ return tzl;
 
 
 /***/ }),
-/* 114 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16270,7 +16488,7 @@ return tzm;
 
 
 /***/ }),
-/* 115 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16333,7 +16551,7 @@ return tzmLatn;
 
 
 /***/ }),
-/* 116 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16489,7 +16707,7 @@ return uk;
 
 
 /***/ }),
-/* 117 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16593,7 +16811,7 @@ return ur;
 
 
 /***/ }),
-/* 118 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16656,7 +16874,7 @@ return uz;
 
 
 /***/ }),
-/* 119 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16719,7 +16937,7 @@ return uzLatn;
 
 
 /***/ }),
-/* 120 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16803,7 +17021,7 @@ return vi;
 
 
 /***/ }),
-/* 121 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16876,7 +17094,7 @@ return xPseudo;
 
 
 /***/ }),
-/* 122 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16941,7 +17159,7 @@ return yo;
 
 
 /***/ }),
-/* 123 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17057,7 +17275,7 @@ return zhCn;
 
 
 /***/ }),
-/* 124 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17167,7 +17385,7 @@ return zhHk;
 
 
 /***/ }),
-/* 125 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17276,21 +17494,21 @@ return zhTw;
 
 
 /***/ }),
-/* 126 */,
-/* 127 */,
-/* 128 */
+/* 129 */,
+/* 130 */,
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(129);
+module.exports = __webpack_require__(132);
 
 
 /***/ }),
-/* 129 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// dependencies
-var alasql = __webpack_require__(130);
-var Chart = __webpack_require__(135);
+// global dependencies
+alasql = __webpack_require__(133);
+Chart = __webpack_require__(141);
 
 // global data
 chart = null;
@@ -17465,13 +17683,11 @@ window.submitQuery = function () {
 
 window.exportToCSV = function (query) {
     alasql.promise('SELECT * INTO CSV("query_results.csv", { separator: ","}) FROM (' + query + ')', [dataset]).then(function () {
-        console.log('Data was saved');
+        console.log('File was saved');
     }).catch(function (error) {
         console.log('Error:', error);
     });
 };
-
-window.exportToXLSX = function () {};
 
 window.onload = function () {
     // since default is simple mode
@@ -17479,7 +17695,7 @@ window.onload = function () {
 };
 
 /***/ }),
-/* 130 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process, module, global) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_RESULT__;//! AlaSQL v0.4.5 | © 2014-2016 Andrey Gershun & Mathias Rangel Wulff | License: MIT
@@ -17501,229 +17717,12 @@ A.srch.CLONEDEEP=function(e){return{status:1,values:[F(e)]}},A.srch.SET=function
 K.Over=function(e){return K.extend(this,e)},K.Over.prototype.toString=function(){var e="OVER (";return this.partition&&(e+="PARTITION BY "+this.partition.toString(),this.order&&(e+=" ")),this.order&&(e+="ORDER BY "+this.order.toString()),e+=")"},K.ExpressionStatement=function(e){return K.extend(this,e)},K.ExpressionStatement.prototype.toString=function(){return this.expression.toString()},K.ExpressionStatement.prototype.execute=function(e,t,r){if(this.expression){A.precompile(this,e,t);var n=new Function("params,alasql,p","var y;return "+this.expression.toJS("({})","",null)).bind(this),a=n(t,A);return r&&(a=r(a)),a}},K.Expression=function(e){return K.extend(this,e)},K.Expression.prototype.toString=function(e){var t=this.expression.toString(e);return this.order&&(t+=" "+this.order.toString()),this.nocase&&(t+=" COLLATE NOCASE"),this.direction&&(t+=" "+this.direction),t},K.Expression.prototype.findAggregator=function(e){this.expression.findAggregator&&this.expression.findAggregator(e)},K.Expression.prototype.toJS=function(e,t,r){return this.expression.reduced?"true":this.expression.toJS(e,t,r)},K.Expression.prototype.compile=function(e,t,r){return!!this.reduced||new Function("p","var y;return "+this.toJS(e,t,r))},K.JavaScript=function(e){return K.extend(this,e)},K.JavaScript.prototype.toString=function(){return"``"+this.value+"``"},K.JavaScript.prototype.toJS=function(){return"("+this.value+")"},K.JavaScript.prototype.execute=function(e,t,r){var n=1;return new Function("params,alasql,p",this.value)(t,A),r&&(n=r(n)),n},K.Literal=function(e){return K.extend(this,e)},K.Literal.prototype.toString=function(e){var t=this.value;return this.value1&&(t=this.value1+"."+t),this.alias&&!e&&(t+=" AS "+this.alias),t},K.Join=function(e){return K.extend(this,e)},K.Join.prototype.toString=function(){var e=" ";return this.joinmode&&(e+=this.joinmode+" "),e+="JOIN "+this.table.toString()},K.Table=function(e){return K.extend(this,e)},K.Table.prototype.toString=function(){var e=this.tableid;return this.databaseid&&(e=this.databaseid+"."+e),e},K.View=function(e){return K.extend(this,e)},K.View.prototype.toString=function(){var e=this.viewid;return this.databaseid&&(e=this.databaseid+"."+e),e},K.Op=function(e){return K.extend(this,e)},K.Op.prototype.toString=function(){if("IN"===this.op||"NOT IN"===this.op)return this.left.toString()+" "+this.op+" ("+this.right.toString()+")";if(this.allsome)return this.left.toString()+" "+this.op+" "+this.allsome+" ("+this.right.toString()+")";if("->"===this.op||"!"===this.op){var e=this.left.toString()+this.op;return"string"!=typeof this.right&&"number"!=typeof this.right&&(e+="("),e+=this.right.toString(),"string"!=typeof this.right&&"number"!=typeof this.right&&(e+=")"),e}return this.left.toString()+" "+this.op+" "+(this.allsome?this.allsome+" ":"")+this.right.toString()},K.Op.prototype.findAggregator=function(e){this.left&&this.left.findAggregator&&this.left.findAggregator(e),this.right&&this.right.findAggregator&&!this.allsome&&this.right.findAggregator(e)},K.Op.prototype.toType=function(e){if(["-","*","/","%","^"].indexOf(this.op)>-1)return"number";if(["||"].indexOf(this.op)>-1)return"string";if("+"===this.op){if("string"===this.left.toType(e)||"string"===this.right.toType(e))return"string";if("number"===this.left.toType(e)||"number"===this.right.toType(e))return"number"}return["AND","OR","NOT","=","==","===","!=","!==","!===",">",">=","<","<=","IN","NOT IN","LIKE","NOT LIKE","REGEXP","GLOB"].indexOf(this.op)>-1?"boolean":"BETWEEN"===this.op||"NOT BETWEEN"===this.op||"IS NULL"===this.op||"IS NOT NULL"===this.op?"boolean":this.allsome?"boolean":this.op?"unknown":this.left.toType()},K.Op.prototype.toJS=function(e,t,r){var n,a=[],s=this.op,i=this,o=function(n){return n.toJS&&(n=n.toJS(e,t,r)),"y["+(a.push(n)-1)+"]"},u=function(){return o(i.left)},c=function(){return o(i.right)};if("="===this.op?s="===":"<>"===this.op?s="!=":"OR"===this.op&&(s="||"),"->"===this.op){var l="("+u()+"||{})";if("string"==typeof this.right)n=l+'["'+this.right+'"]';else if("number"==typeof this.right)n=l+"["+this.right+"]";else if(this.right instanceof K.FuncValue){var h=[];if(this.right.args&&0!==this.right.args.length)var h=this.right.args.map(o);n=l+"['"+this.right.funcid+"']("+h.join(",")+")"}else n=l+"["+c()+"]"}if("!"===this.op&&"string"==typeof this.right&&(n="alasql.databases[alasql.useid].objects["+u()+']["'+this.right+'"]'),"IS"===this.op&&(n="(("+u()+"==null) === ("+c()+"==null))"),"=="===this.op&&(n="alasql.utils.deepEqual("+u()+","+c()+")"),"==="!==this.op&&"!==="!==this.op||(n="("+("!==="===this.op?"!":"")+"(("+u()+").valueOf()===("+c()+").valueOf()))"),"!=="===this.op&&(n="(!alasql.utils.deepEqual("+u()+","+c()+"))"),"||"===this.op&&(n="(''+("+u()+"||'')+("+c()+'||""))'),"LIKE"===this.op||"NOT LIKE"===this.op){var n="("+("NOT LIKE"===this.op?"!":"")+"alasql.utils.like("+c()+","+u();this.escape&&(n+=","+o(this.escape)),n+="))"}if("REGEXP"===this.op&&(n="alasql.stdfn.REGEXP_LIKE("+u()+","+c()+")"),"GLOB"===this.op&&(n="alasql.utils.glob("+u()+","+c()+")"),"BETWEEN"===this.op||"NOT BETWEEN"===this.op){var d=u();n="("+("NOT BETWEEN"===this.op?"!":"")+"(("+o(this.right1)+"<="+d+") && ("+d+"<="+o(this.right2)+")))"}if("IN"===this.op&&(this.right instanceof K.Select?(n="(",n+="alasql.utils.flatArray(this.queriesfn["+this.queriesidx+"](params,null,"+e+"))",n+=".indexOf(",n+=u()+")>-1)"):n=Array.isArray(this.right)?"(["+this.right.map(o).join(",")+"].indexOf("+u()+")>-1)":"("+c()+".indexOf("+u()+")>-1)"),"NOT IN"===this.op&&(this.right instanceof K.Select?(n="(",n+="alasql.utils.flatArray(this.queriesfn["+this.queriesidx+"](params,null,p))",n+=".indexOf(",n+=u()+")<0)"):Array.isArray(this.right)?(n="(["+this.right.map(o).join(",")+"].indexOf(",n+=u()+")<0)"):(n="("+c()+".indexOf(",n+=u()+")==-1)")),"ALL"===this.allsome){var n;if(this.right instanceof K.Select)n="alasql.utils.flatArray(this.query.queriesfn["+this.queriesidx+"](params,null,p))",n+=".every(function(b){return (",n+=u()+")"+s+"b})";else{if(!Array.isArray(this.right))throw new Error("NOT IN operator without SELECT");n=""+(1==this.right.length?o(this.right[0]):"["+this.right.map(o).join(",")+"]"),n+=".every(function(b){return (",n+=u()+")"+s+"b})"}}if("SOME"===this.allsome||"ANY"===this.allsome){var n;if(this.right instanceof K.Select)n="alasql.utils.flatArray(this.query.queriesfn["+this.queriesidx+"](params,null,p))",n+=".some(function(b){return (",n+=u()+")"+s+"b})";else{if(!Array.isArray(this.right))throw new Error("SOME/ANY operator without SELECT");n=""+(1==this.right.length?o(this.right[0]):"["+this.right.map(o).join(",")+"]"),n+=".some(function(b){return (",n+=u()+")"+s+"b})"}}if("AND"===this.op){if(this.left.reduced){if(this.right.reduced)return"true";n=c()}else this.right.reduced&&(n=u());s="&&"}var f=n||"("+u()+s+c()+")",p="y=[("+a.join("), (")+")]";return"&&"==s||"||"==s||"IS"==s||"IS NULL"==s||"IS NOT NULL"==s?"("+p+", "+f+")":"("+p+", y.some(function(e){return e == null}) ? void 0 : "+f+")"},K.VarValue=function(e){return K.extend(this,e)},K.VarValue.prototype.toString=function(){return"@"+this.variable},K.VarValue.prototype.toType=function(){return"unknown"},K.VarValue.prototype.toJS=function(){return"alasql.vars['"+this.variable+"']"},K.NumValue=function(e){return K.extend(this,e)},K.NumValue.prototype.toString=function(){return this.value.toString()},K.NumValue.prototype.toType=function(){return"number"},K.NumValue.prototype.toJS=function(){return""+this.value},K.StringValue=function(e){return K.extend(this,e)},K.StringValue.prototype.toString=function(){return"'"+this.value.toString()+"'"},K.StringValue.prototype.toType=function(){return"string"},K.StringValue.prototype.toJS=function(){return"'"+R(this.value)+"'"},K.DomainValueValue=function(e){return K.extend(this,e)},K.DomainValueValue.prototype.toString=function(){return"VALUE"},K.DomainValueValue.prototype.toType=function(){return"object"},K.DomainValueValue.prototype.toJS=function(e,t,r){return e},K.ArrayValue=function(e){return K.extend(this,e)},K.ArrayValue.prototype.toString=function(){return"ARRAY[]"},K.ArrayValue.prototype.toType=function(){return"object"},K.ArrayValue.prototype.toJS=function(e,t,r){return"[("+this.value.map(function(n){return n.toJS(e,t,r)}).join("), (")+")]"},K.LogicValue=function(e){return K.extend(this,e)},K.LogicValue.prototype.toString=function(){return this.value?"TRUE":"FALSE"},K.LogicValue.prototype.toType=function(){return"boolean"},K.LogicValue.prototype.toJS=function(){return this.value?"true":"false"},K.NullValue=function(e){return K.extend(this,e)},K.NullValue.prototype.toString=function(){return"NULL"},K.NullValue.prototype.toJS=function(){return"undefined"},K.ParamValue=function(e){return K.extend(this,e)},K.ParamValue.prototype.toString=function(){return"$"+this.param},K.ParamValue.prototype.toJS=function(){return"string"==typeof this.param?"params['"+this.param+"']":"params["+this.param+"]"},K.UniOp=function(e){return K.extend(this,e)},K.UniOp.prototype.toString=function(){var e;return e=void 0,"~"===this.op&&(e=this.op+this.right.toString()),"-"===this.op&&(e=this.op+this.right.toString()),"+"===this.op&&(e=this.op+this.right.toString()),"#"===this.op&&(e=this.op+this.right.toString()),"NOT"===this.op&&(e=this.op+"("+this.right.toString()+")"),null===this.op&&(e="("+this.right.toString()+")"),e||(e="("+this.right.toString()+")"),e},K.UniOp.prototype.findAggregator=function(e){this.right.findAggregator&&this.right.findAggregator(e)},K.UniOp.prototype.toType=function(){return"-"===this.op?"number":"+"===this.op?"number":"NOT"===this.op?"boolean":void 0},K.UniOp.prototype.toJS=function(e,t,r){return"~"===this.op?"(~("+this.right.toJS(e,t,r)+"))":"-"===this.op?"(-("+this.right.toJS(e,t,r)+"))":"+"===this.op?"("+this.right.toJS(e,t,r)+")":"NOT"===this.op?"!("+this.right.toJS(e,t,r)+")":"#"===this.op?this.right instanceof K.Column?"(alasql.databases[alasql.useid].objects['"+this.right.columnid+"'])":"(alasql.databases[alasql.useid].objects["+this.right.toJS(e,t,r)+"])":null==this.op?"("+this.right.toJS(e,t,r)+")":void 0},K.Column=function(e){return K.extend(this,e)},K.Column.prototype.toString=function(e){var t;return t=this.columnid==+this.columnid?"["+this.columnid+"]":this.columnid,this.tableid&&(t=+this.columnid===this.columnid?this.tableid+t:this.tableid+"."+t,this.databaseid&&(t=this.databaseid+"."+t)),this.alias&&!e&&(t+=" AS "+this.alias),t},K.Column.prototype.toJS=function(e,t,r){var n="";if(this.tableid||""!==t||r)if("g"===e)n="g['"+this.nick+"']";else if(this.tableid)n="_"!==this.columnid?e+"['"+this.tableid+"']['"+this.columnid+"']":"g"===e?"g['_']":e+"['"+this.tableid+"']";else if(r){var a=r[this.columnid];if("-"===a)throw new Error('Cannot resolve column "'+this.columnid+'" because it exists in two source tables');n=a?"_"!==this.columnid?e+"['"+a+"']['"+this.columnid+"']":e+"['"+a+"']":"_"!==this.columnid?e+"['"+(this.tableid||t)+"']['"+this.columnid+"']":e+"['"+(this.tableid||t)+"']"}else n=-1===t?e+"['"+this.columnid+"']":"_"!==this.columnid?e+"['"+(this.tableid||t)+"']['"+this.columnid+"']":e+"['"+(this.tableid||t)+"']";else n="_"!==this.columnid?e+"['"+this.columnid+"']":"g"===e?"g['_']":e;return n},K.AggrValue=function(e){return K.extend(this,e)},K.AggrValue.prototype.toString=function(e){var t="";return"REDUCE"===this.aggregatorid?t+=this.funcid+"(":t+=this.aggregatorid+"(",this.distinct&&(t+="DISTINCT "),this.expression&&(t+=this.expression.toString()),t+=")",this.over&&(t+=" "+this.over.toString()),this.alias&&!e&&(t+=" AS "+this.alias),t},K.AggrValue.prototype.findAggregator=function(e){var t=R(this.toString())+":"+e.selectGroup.length,r=!1;if(!r){if(!this.nick){this.nick=t;for(var r=!1,n=0;n<e.removeKeys.length;n++)if(e.removeKeys[n]===t){r=!0;break}r||e.removeKeys.push(t)}e.selectGroup.push(this)}},K.AggrValue.prototype.toType=function(){return["SUM","COUNT","AVG","MIN","MAX","AGGR","VAR","STDDEV"].indexOf(this.aggregatorid)>-1?"number":["ARRAY"].indexOf(this.aggregatorid)>-1?"array":["FIRST","LAST"].indexOf(this.aggregatorid)>-1?this.expression.toType():void 0},K.AggrValue.prototype.toJS=function(){var e=this.nick;return void 0===e&&(e=this.toString()),"g['"+e+"']"},K.OrderExpression=function(e){return K.extend(this,e)},K.OrderExpression.prototype.toString=K.Expression.prototype.toString,K.GroupExpression=function(e){return K.extend(this,e)},K.GroupExpression.prototype.toString=function(){return this.type+"("+this.group.toString()+")"},K.FromData=function(e){return K.extend(this,e)},K.FromData.prototype.toString=function(){return this.data?"DATA("+(1e16*Math.random()|0)+")":"?"},K.FromData.prototype.toJS=function(){},K.Select.prototype.exec=function(e,t){this.preparams&&(e=this.preparams.concat(e));var r=A.useid;db=A.databases[r];var n=this.toString(),a=D(n),s=this.compile(r);if(s){s.sql=n,s.dbversion=db.dbversion,db.sqlCacheSize>A.MAXSQLCACHESIZE&&db.resetSqlCache(),db.sqlCacheSize++,db.sqlCache[a]=s;return A.res=s(e,t)}},K.Select.prototype.Select=function(){var e=this;if(arguments.length>1)args=Array.prototype.slice.call(arguments);else{if(1!=arguments.length)throw new Error("Wrong number of arguments of Select() function");Array.isArray(arguments[0])?args=arguments[0]:args=[arguments[0]]}return e.columns=[],args.forEach(function(t){if("string"==typeof t)e.columns.push(new K.Column({columnid:t}));else if("function"==typeof t){var r=0;e.preparams?r=e.preparams.length:e.preparams=[],e.preparams.push(t),e.columns.push(new K.Column({columnid:"*",func:t,param:r}))}}),e},K.Select.prototype.From=function(e){var t=this;if(t.from||(t.from=[]),Array.isArray(e)){var r=0;t.preparams?r=t.preparams.length:t.preparams=[],t.preparams.push(e),t.from.push(new K.ParamValue({param:r}))}else{if("string"!=typeof e)throw new Error("Unknown arguments in From() function");t.from.push(new K.Table({tableid:e}))}return t},K.Select.prototype.OrderBy=function(){var e=this;if(e.order=[],0==arguments.length)args=["_"];else if(arguments.length>1)args=Array.prototype.slice.call(arguments);else{if(1!=arguments.length)throw new Error("Wrong number of arguments of Select() function");Array.isArray(arguments[0])?args=arguments[0]:args=[arguments[0]]}return args.length>0&&args.forEach(function(t){var r=new K.Column({columnid:t});"function"==typeof t&&(r=t),e.order.push(new K.OrderExpression({expression:r,direction:"ASC"}))}),e},K.Select.prototype.Top=function(e){var t=this;return t.top=new K.NumValue({value:e}),t},K.Select.prototype.GroupBy=function(){var e=this;if(arguments.length>1)args=Array.prototype.slice.call(arguments);else{if(1!=arguments.length)throw new Error("Wrong number of arguments of Select() function");Array.isArray(arguments[0])?args=arguments[0]:args=[arguments[0]]}return e.group=[],args.forEach(function(t){var r=new K.Column({columnid:t});e.group.push(r)}),e},K.Select.prototype.Where=function(e){var t=this;return"function"==typeof e&&(t.where=e),t},K.FuncValue=function(e){return K.extend(this,e)},K.FuncValue.prototype.toString=function(e){var t="";return A.fn[this.funcid]?t+=this.funcid:A.aggr[this.funcid]?t+=this.funcid:(A.stdlib[this.funcid.toUpperCase()]||A.stdfn[this.funcid.toUpperCase()])&&(t+=this.funcid.toUpperCase()),t+="(",this.args&&this.args.length>0&&(t+=this.args.map(function(e){return e.toString()}).join(",")),t+=")",this.as&&!e&&(t+=" AS "+this.as.toString()),t},K.FuncValue.prototype.execute=function(e,t,r){var n=1;return A.precompile(this,e,t),new Function("params,alasql","var y;return "+this.toJS("","",null))(t,A),r&&(n=r(n)),n},K.FuncValue.prototype.findAggregator=function(e){this.args&&this.args.length>0&&this.args.forEach(function(t){t.findAggregator&&t.findAggregator(e)})},K.FuncValue.prototype.toJS=function(e,t,r){var n="",a=this.funcid;return!A.fn[a]&&A.stdlib[a.toUpperCase()]?this.args&&this.args.length>0?n+=A.stdlib[a.toUpperCase()].apply(this,this.args.map(function(r){return r.toJS(e,t)})):n+=A.stdlib[a.toUpperCase()]():!A.fn[a]&&A.stdfn[a.toUpperCase()]?(this.newid&&(n+="new "),n+="alasql.stdfn."+this.funcid.toUpperCase()+"(",this.args&&this.args.length>0&&(n+=this.args.map(function(n){return n.toJS(e,t,r)}).join(",")),n+=")"):(this.newid&&(n+="new "),n+="alasql.fn."+this.funcid+"(",this.args&&this.args.length>0&&(n+=this.args.map(function(n){return n.toJS(e,t,r)}).join(",")),n+=")"),n};var ae=A.stdlib={},se=A.stdfn={};ae.ABS=function(e){return"Math.abs("+e+")"},ae.CLONEDEEP=function(e){return"alasql.utils.cloneDeep("+e+")"},se.CONCAT=function(){return Array.prototype.slice.call(arguments).join("")},ae.EXP=function(e){return"Math.pow(Math.E,"+e+")"},ae.IIF=function(e,t,r){if(3==arguments.length)return"(("+e+")?("+t+"):("+r+"))";throw new Error("Number of arguments of IFF is not equals to 3")},ae.IFNULL=function(e,t){return"("+e+"||"+t+")"},ae.INSTR=function(e,t){return"(("+e+").indexOf("+t+")+1)"},ae.LEN=ae.LENGTH=function(e){return t(e,"y.length")},ae.LOWER=ae.LCASE=function(e){return t(e,"String(y).toLowerCase()")},ae.LTRIM=function(e){return t(e,'y.replace(/^[ ]+/,"")')},ae.RTRIM=function(e){return t(e,'y.replace(/[ ]+$/,"")')},ae.MAX=ae.GREATEST=function(){return"Math.max("+Array.prototype.join.call(arguments,",")+")"},ae.MIN=ae.LEAST=function(){return"Math.min("+Array.prototype.join.call(arguments,",")+")"},ae.SUBSTRING=ae.SUBSTR=ae.MID=function(e,r,n){return 2==arguments.length?t(e,"y.substr("+r+"-1)"):3==arguments.length?t(e,"y.substr("+r+"-1,"+n+")"):void 0},se.REGEXP_LIKE=function(e,t,r){return(e||"").search(RegExp(t,r))>-1},ae.ISNULL=ae.NULLIF=function(e,t){return"("+e+"=="+t+"?undefined:"+e+")"},ae.POWER=function(e,t){return"Math.pow("+e+","+t+")"},ae.RANDOM=function(e){return 0==arguments.length?"Math.random()":"(Math.random()*("+e+")|0)"},ae.ROUND=function(e,t){return 2==arguments.length?"Math.round(("+e+")*Math.pow(10,("+t+")))/Math.pow(10,("+t+"))":"Math.round("+e+")"},ae.CEIL=ae.CEILING=function(e){return"Math.ceil("+e+")"},ae.FLOOR=function(e){return"Math.floor("+e+")"},ae.ROWNUM=function(){return"1"},ae.ROW_NUMBER=function(){return"1"},ae.SQRT=function(e){return"Math.sqrt("+e+")"},ae.TRIM=function(e){return t(e,"y.trim()")},ae.UPPER=ae.UCASE=function(e){return t(e,"String(y).toUpperCase()")},se.CONCAT_WS=function(){return args=Array.prototype.slice.call(arguments),args.slice(1,args.length).join(args[0])},A.aggr.GROUP_CONCAT=function(e,t,r){return 1==r?e:2==r?t+","+e:void 0},A.aggr.MEDIAN=function(e,t,r){if(2===r)return null!==e&&t.push(e),t;if(1===r)return null===e?[]:[e];if(!t.length)return t;var n=t.sort(),a=(n.length+1)/2;return Number.isInteger(a)?n[a-1]:(n[Math.floor(a-1)]+n[Math.ceil(a-1)])/2},A.aggr.QUART=function(e,t,r,n){if(2===r)return null!==e&&t.push(e),t;if(1===r)return null===e?[]:[e];if(!t.length)return t;n=n||1;var a=t.sort(),s=n*(a.length+1)/4;return Number.isInteger(s)?a[s-1]:a[Math.floor(s)]},A.aggr.QUART2=function(e,t,r){return A.aggr.QUART(e,t,r,2)},A.aggr.QUART3=function(e,t,r){return A.aggr.QUART(e,t,r,3)},A.aggr.VAR=function(e,t,r){if(1===r)return null===e?{arr:[],sum:0}:{arr:[e],sum:e};if(2===r)return null===e?t:(t.arr.push(e),t.sum+=e,t);for(var n=t.arr.length,a=t.sum/n,s=0,i=0;i<n;i++)s+=(t.arr[i]-a)*(t.arr[i]-a);return s/=n-1},A.aggr.STDEV=function(e,t,r){return 1===r||2===r?A.aggr.VAR(e,t,r):Math.sqrt(A.aggr.VAR(e,t,r))},A.aggr.VARP=function(e,t,r){if(1==r)return{arr:[e],sum:e};if(2==r)return t.arr.push(e),t.sum+=e,t;for(var n=t.arr.length,a=t.sum/n,s=0,i=0;i<n;i++)s+=(t.arr[i]-a)*(t.arr[i]-a);return s/=n},A.aggr.STD=A.aggr.STDDEV=A.aggr.STDEVP=function(e,t,r){return 1==r||2==r?A.aggr.VARP(e,t,r):Math.sqrt(A.aggr.VARP(e,t,r))},A._aggrOriginal=A.aggr,A.aggr={},Object.keys(A._aggrOriginal).forEach(function(e){A.aggr[e]=function(t,r,n){if(3!==n||void 0!==r)return A._aggrOriginal[e].apply(null,arguments)}}),se.REPLACE=function(e,t,r){return(e||"").split(t).join(r)};for(var ie=[],oe=0;oe<256;oe++)ie[oe]=(oe<16?"0":"")+oe.toString(16);se.NEWID=se.UUID=se.GEN_RANDOM_UUID=function(){var e=4294967295*Math.random()|0,t=4294967295*Math.random()|0,r=4294967295*Math.random()|0,n=4294967295*Math.random()|0;return ie[255&e]+ie[e>>8&255]+ie[e>>16&255]+ie[e>>24&255]+"-"+ie[255&t]+ie[t>>8&255]+"-"+ie[t>>16&15|64]+ie[t>>24&255]+"-"+ie[63&r|128]+ie[r>>8&255]+"-"+ie[r>>16&255]+ie[r>>24&255]+ie[255&n]+ie[n>>8&255]+ie[n>>16&255]+ie[n>>24&255]},K.CaseValue=function(e){return K.extend(this,e)},K.CaseValue.prototype.toString=function(){var e="CASE ";return this.expression&&(e+=this.expression.toString()),this.whens&&(e+=this.whens.map(function(e){return" WHEN "+e.when.toString()+" THEN "+e.then.toString()}).join()),e+=" END"},K.CaseValue.prototype.findAggregator=function(e){this.expression&&this.expression.findAggregator&&this.expression.findAggregator(e),this.whens&&this.whens.length>0&&this.whens.forEach(function(t){t.when.findAggregator&&t.when.findAggregator(e),t.then.findAggregator&&t.then.findAggregator(e)}),this.elses&&this.elses.findAggregator&&this.elses.findAggregator(e)},K.CaseValue.prototype.toJS=function(e,t,r){var n="((function("+e+",params,alasql){var y,r;";return this.expression?(n+="v="+this.expression.toJS(e,t,r)+";",n+=(this.whens||[]).map(function(n){return" if(v=="+n.when.toJS(e,t,r)+") {r="+n.then.toJS(e,t,r)+"}"}).join(" else "),this.elses&&(n+=" else {r="+this.elses.toJS(e,t,r)+"}")):(n+=(this.whens||[]).map(function(n){return" if("+n.when.toJS(e,t,r)+") {r="+n.then.toJS(e,t,r)+"}"}).join(" else "),this.elses&&(n+=" else {r="+this.elses.toJS(e,t,r)+"}")),n+=";return r;}).bind(this))("+e+",params,alasql)"},K.Json=function(e){return K.extend(this,e)},K.Json.prototype.toString=function(){var e="";return e+=ue(this.value),e+=""};var ue=A.utils.JSONtoString=function(e){var t="";if("string"==typeof e)t='"'+e+'"';else if("number"==typeof e)t=e;else if("boolean"==typeof e)t=e;else{if("object"!=typeof e)throw new Error("2Can not show JSON object "+JSON.stringify(e));if(Array.isArray(e))t+="["+e.map(function(e){return ue(e)}).join(",")+"]";else if(!e.toJS||e instanceof K.Json){t="{";var r=[];for(var n in e){var a="";if("string"==typeof n)a+='"'+n+'"';else if("number"==typeof n)a+=n;else{if("boolean"!=typeof n)throw new Error("THis is not ES6... no expressions on left side yet");a+=n}a+=":"+ue(e[n]),r.push(a)}t+=r.join(",")+"}"}else{if(!e.toString)throw new Error("1Can not show JSON object "+JSON.stringify(e));t=e.toString()}}return t};K.Json.prototype.toJS=function(e,t,r){return E(this.value,e,t,r)},K.Convert=function(e){return K.extend(this,e)},K.Convert.prototype.toString=function(){var e="CONVERT(";return e+=this.dbtypeid,void 0!==this.dbsize&&(e+="("+this.dbsize,this.dbprecision&&(e+=","+dbprecision),e+=")"),e+=","+this.expression.toString(),this.style&&(e+=","+this.style),e+=")"},K.Convert.prototype.toJS=function(e,t,r){return"alasql.stdfn.CONVERT("+this.expression.toJS(e,t,r)+',{dbtypeid:"'+this.dbtypeid+'",dbsize:'+this.dbsize+",style:"+this.style+"})"},A.stdfn.CONVERT=function(e,t){var r=e;if(t.style){var n;switch(n=/\d{8}/.test(r)?new Date(+r.substr(0,4),+r.substr(4,2)-1,+r.substr(6,2)):new Date(r),t.style){case 1:r=("0"+(n.getMonth()+1)).substr(-2)+"/"+("0"+n.getDate()).substr(-2)+"/"+("0"+n.getYear()).substr(-2);break;case 2:r=("0"+n.getYear()).substr(-2)+"."+("0"+(n.getMonth()+1)).substr(-2)+"."+("0"+n.getDate()).substr(-2);break;case 3:r=("0"+n.getDate()).substr(-2)+"/"+("0"+(n.getMonth()+1)).substr(-2)+"/"+("0"+n.getYear()).substr(-2);break;case 4:r=("0"+n.getDate()).substr(-2)+"."+("0"+(n.getMonth()+1)).substr(-2)+"."+("0"+n.getYear()).substr(-2);break;case 5:r=("0"+n.getDate()).substr(-2)+"-"+("0"+(n.getMonth()+1)).substr(-2)+"-"+("0"+n.getYear()).substr(-2);break;case 6:r=("0"+n.getDate()).substr(-2)+" "+n.toString().substr(4,3).toLowerCase()+" "+("0"+n.getYear()).substr(-2);break;case 7:r=n.toString().substr(4,3)+" "+("0"+n.getDate()).substr(-2)+","+("0"+n.getYear()).substr(-2);break;case 8:case 108:r=("0"+n.getHours()).substr(-2)+":"+("0"+n.getMinutes()).substr(-2)+":"+("0"+n.getSeconds()).substr(-2);break;case 10:r=("0"+(n.getMonth()+1)).substr(-2)+"-"+("0"+n.getDate()).substr(-2)+"-"+("0"+n.getYear()).substr(-2);break;case 11:r=("0"+n.getYear()).substr(-2)+"/"+("0"+(n.getMonth()+1)).substr(-2)+"/"+("0"+n.getDate()).substr(-2);break;case 12:r=("0"+n.getYear()).substr(-2)+("0"+(n.getMonth()+1)).substr(-2)+("0"+n.getDate()).substr(-2);break;case 101:r=("0"+(n.getMonth()+1)).substr(-2)+"/"+("0"+n.getDate()).substr(-2)+"/"+n.getFullYear();break;case 102:r=n.getFullYear()+"."+("0"+(n.getMonth()+1)).substr(-2)+"."+("0"+n.getDate()).substr(-2);break;case 103:r=("0"+n.getDate()).substr(-2)+"/"+("0"+(n.getMonth()+1)).substr(-2)+"/"+n.getFullYear();break;case 104:r=("0"+n.getDate()).substr(-2)+"."+("0"+(n.getMonth()+1)).substr(-2)+"."+n.getFullYear();break;case 105:r=("0"+n.getDate()).substr(-2)+"-"+("0"+(n.getMonth()+1)).substr(-2)+"-"+n.getFullYear();break;case 106:r=("0"+n.getDate()).substr(-2)+" "+n.toString().substr(4,3).toLowerCase()+" "+n.getFullYear();break;case 107:r=n.toString().substr(4,3)+" "+("0"+n.getDate()).substr(-2)+","+n.getFullYear();break;case 110:r=("0"+(n.getMonth()+1)).substr(-2)+"-"+("0"+n.getDate()).substr(-2)+"-"+n.getFullYear();break;case 111:r=n.getFullYear()+"/"+("0"+(n.getMonth()+1)).substr(-2)+"/"+("0"+n.getDate()).substr(-2);break;case 112:r=n.getFullYear()+("0"+(n.getMonth()+1)).substr(-2)+("0"+n.getDate()).substr(-2);break;default:throw new Error("The CONVERT style "+t.style+" is not realized yet.")}}var a=t.dbtypeid.toUpperCase();if("Date"==t.dbtypeid)return new Date(r);if("DATE"==a){var s=new Date(r),i=s.getFullYear()+"."+("0"+(s.getMonth()+1)).substr(-2)+"."+("0"+s.getDate()).substr(-2);return i}if("DATETIME"==a||"DATETIME2"==a){var s=new Date(r),i=s.getFullYear()+"."+("0"+(s.getMonth()+1)).substr(-2)+"."+("0"+s.getDate()).substr(-2);return i+=" "+("0"+s.getHours()).substr(-2)+":"+("0"+s.getMinutes()).substr(-2)+":"+("0"+s.getSeconds()).substr(-2),i+="."+("00"+s.getMilliseconds()).substr(-3)}if(["MONEY"].indexOf(a)>-1){var o=+r;return(0|o)+100*o%100/100}if(["BOOLEAN"].indexOf(a)>-1)return!!r;if(["INT","INTEGER","SMALLINT","BIGINT","SERIAL","SMALLSERIAL","BIGSERIAL"].indexOf(t.dbtypeid.toUpperCase())>-1)return 0|r;if(["STRING","VARCHAR","NVARCHAR","CHARACTER VARIABLE"].indexOf(t.dbtypeid.toUpperCase())>-1)return t.dbsize?(""+r).substr(0,t.dbsize):""+r;if(["CHAR","CHARACTER","NCHAR"].indexOf(a)>-1)return(r+new Array(t.dbsize+1).join(" ")).substr(0,t.dbsize);if(["NUMBER","FLOAT"].indexOf(a)>-1){if(void 0!==t.dbprecision){var o=+r,u=Math.pow(10,t.dbprecision);return(0|o)+o*u%u/u}return+r}if(["DECIMAL","NUMERIC"].indexOf(a)>-1){var o=+r,u=Math.pow(10,t.dbprecision);return(0|o)+o*u%u/u}if(["JSON"].indexOf(a)>-1){if("object"==typeof r)return r;try{return JSON.parse(r)}catch(e){throw new Error("Cannot convert string to JSON")}}return r},K.ColumnDef=function(e){return K.extend(this,e)},K.ColumnDef.prototype.toString=function(){var e=this.columnid;return this.dbtypeid&&(e+=" "+this.dbtypeid),this.dbsize&&(e+="("+this.dbsize,this.dbprecision&&(e+=","+this.dbprecision),e+=")"),this.primarykey&&(e+=" PRIMARY KEY"),this.notnull&&(e+=" NOT NULL"),e},K.CreateTable=function(e){return K.extend(this,e)},K.CreateTable.prototype.toString=function(){var e="CREATE";if(this.temporary&&(e+=" TEMPORARY"),this.view?e+=" VIEW":e+=" "+(this.class?"CLASS":"TABLE"),this.ifnotexists&&(e+=" IF  NOT EXISTS"),e+=" "+this.table.toString(),this.viewcolumns&&(e+="("+this.viewcolumns.map(function(e){return e.toString()}).join(",")+")"),this.as)e+=" AS "+this.as;else{e+=" ("+this.columns.map(function(e){return e.toString()}).join(",")+")"}return this.view&&this.select&&(e+=" AS "+this.select.toString()),e},K.CreateTable.prototype.execute=function(e,t,r){var n=A.databases[this.table.databaseid||e],a=this.table.tableid;if(!a)throw new Error("Table name is not defined");var s=this.columns,i=this.constraints||[];if(this.ifnotexists&&n.tables[a])return r?r(0):0;if(n.tables[a])throw new Error("Can not create table '"+a+"', because it already exists in the database '"+n.databaseid+"'");var o=n.tables[a]=new A.Table;this.class&&(o.isclass=!0);var u=[],c=[];if(s&&s.forEach(function(t){var r=t.dbtypeid;A.fn[r]||(r=r.toUpperCase()),["SERIAL","SMALLSERIAL","BIGSERIAL"].indexOf(r)>-1&&(t.identity={value:1,step:1});var n={columnid:t.columnid,dbtypeid:r,dbsize:t.dbsize,dbprecision:t.dbprecision,notnull:t.notnull,identity:t.identity};if(t.identity&&(o.identities[t.columnid]={value:+t.identity.value,step:+t.identity.step}),t.check&&o.checks.push({id:t.check.constrantid,fn:new Function("r","var y;return "+t.check.expression.toJS("r",""))}),t.default&&u.push("'"+t.columnid+"':"+t.default.toJS("r","")),t.primarykey){var a=o.pk={};a.columns=[t.columnid],a.onrightfns="r['"+t.columnid+"']",a.onrightfn=new Function("r","var y;return "+a.onrightfns),a.hh=D(a.onrightfns),o.uniqs[a.hh]={}}if(t.unique){var s={};o.uk=o.uk||[],o.uk.push(s),s.columns=[t.columnid],s.onrightfns="r['"+t.columnid+"']",s.onrightfn=new Function("r","var y;return "+s.onrightfns),s.hh=D(s.onrightfns),o.uniqs[s.hh]={}}if(t.foreignkey){var i=t.foreignkey.table,l=A.databases[i.databaseid||e].tables[i.tableid];if(void 0===i.columnid){if(!(l.pk.columns&&l.pk.columns.length>0))throw new Error("FOREIGN KEY allowed only to tables with PRIMARY KEYs");i.columnid=l.pk.columns[0]}var h=function(e){var r={};if(void 0===e[t.columnid])return!0;r[i.columnid]=e[t.columnid];var n=l.pk.onrightfn(r);if(!l.uniqs[l.pk.hh][n])throw new Error('Foreign key "'+e[t.columnid]+'" is not found in table '+l.tableid);return!0};o.checks.push({fn:h})}t.onupdate&&c.push("r['"+t.columnid+"']="+t.onupdate.toJS("r","")),o.columns.push(n),o.xcolumns[n.columnid]=n}),o.defaultfns=u.join(","),o.onupdatefns=c.join(";"),i.forEach(function(t){var r;if("PRIMARY KEY"===t.type){if(o.pk)throw new Error("Primary key already exists");var n=o.pk={};n.columns=t.columns,n.onrightfns=n.columns.map(function(e){return"r['"+e+"']"}).join("+'`'+"),n.onrightfn=new Function("r","var y;return "+n.onrightfns),n.hh=D(n.onrightfns),o.uniqs[n.hh]={}}else if("CHECK"===t.type)r=new Function("r","var y;return "+t.expression.toJS("r",""));else if("UNIQUE"===t.type){var a={};o.uk=o.uk||[],o.uk.push(a),a.columns=t.columns,a.onrightfns=a.columns.map(function(e){return"r['"+e+"']"}).join("+'`'+"),a.onrightfn=new Function("r","var y;return "+a.onrightfns),a.hh=D(a.onrightfns),o.uniqs[a.hh]={}}else if("FOREIGN KEY"===t.type){var s=o.xcolumns[t.columns[0]],i=t.fktable;t.fkcolumns&&t.fkcolumns.length>0&&(i.columnid=t.fkcolumns[0]);var u=A.databases[i.databaseid||e].tables[i.tableid];void 0===i.columnid&&(i.columnid=u.pk.columns[0]),r=function(e){var t={};if(void 0===e[s.columnid])return!0;t[i.columnid]=e[s.columnid];var r=u.pk.onrightfn(t);if(!u.uniqs[u.pk.hh][r])throw new Error('Foreign key "'+e[s.columnid]+'" is not found in table '+u.tableid);return!0}}r&&o.checks.push({fn:r,id:t.constraintid,fk:"FOREIGN KEY"===t.type})}),this.view&&this.viewcolumns){var l=this;this.viewcolumns.forEach(function(e,t){l.select.columns[t].as=e.columnid})}if(this.view&&this.select&&(o.view=!0,o.select=this.select.compile(this.table.databaseid||e)),n.engineid)return A.engines[n.engineid].createTable(this.table.databaseid||e,a,this.ifnotexists,r);o.insert=function(r,n){var a=A.inserted;A.inserted=[r];var s=this,i=!1,o=!1;for(var u in s.beforeinsert){var c=s.beforeinsert[u];c&&(c.funcid?!1===A.fn[c.funcid](r)&&(o=o||!0):c.statement&&!1===c.statement.execute(e)&&(o=o||!0))}if(!o){var l=!1;for(var u in s.insteadofinsert){l=!0;var c=s.insteadofinsert[u];c&&(c.funcid?A.fn[c.funcid](r):c.statement&&c.statement.execute(e))}if(!l){for(var h in s.identities){var d=s.identities[h];r[h]=d.value}if(s.checks&&s.checks.length>0&&s.checks.forEach(function(e){if(!e.fn(r))throw new Error("Violation of CHECK constraint "+(e.id||""))}),s.columns.forEach(function(e){if(e.notnull&&void 0===r[e.columnid])throw new Error("Wrong NULL value in NOT NULL column "+e.columnid)}),s.pk){var f=s.pk,p=f.onrightfn(r);if(void 0!==s.uniqs[f.hh][p]){
 if(!n)throw new Error("Cannot insert record, because it already exists in primary key index");i=s.uniqs[f.hh][p]}}if(s.uk&&s.uk.length&&s.uk.forEach(function(e){var t=e.onrightfn(r);if(void 0!==s.uniqs[e.hh][t]){if(!n)throw new Error("Cannot insert record, because it already exists in unique index");i=s.uniqs[e.hh][t]}}),i)s.update(function(e){for(var t in r)e[t]=r[t]},s.data.indexOf(i),t);else{s.data.push(r);for(var h in s.identities){var d=s.identities[h];d.value+=d.step}if(s.pk){var f=s.pk,p=f.onrightfn(r);s.uniqs[f.hh][p]=r}s.uk&&s.uk.length&&s.uk.forEach(function(e){var t=e.onrightfn(r);s.uniqs[e.hh][t]=r})}for(var u in s.afterinsert){var c=s.afterinsert[u];c&&(c.funcid?A.fn[c.funcid](r):c.statement&&c.statement.execute(e))}A.inserted=a}}},o.delete=function(t){var r=this,n=r.data[t],a=!1;for(var s in r.beforedelete){var i=r.beforedelete[s];i&&(i.funcid?!1===A.fn[i.funcid](n)&&(a=a||!0):i.statement&&!1===i.statement.execute(e)&&(a=a||!0))}if(a)return!1;var o=!1;for(var s in r.insteadofdelete){o=!0;var i=r.insteadofdelete[s];i&&(i.funcid?A.fn[i.funcid](n):i.statement&&i.statement.execute(e))}if(!o){if(this.pk){var u=this.pk,c=u.onrightfn(n);if(void 0===this.uniqs[u.hh][c])throw new Error("Something wrong with primary key index on table");this.uniqs[u.hh][c]=void 0}r.uk&&r.uk.length&&r.uk.forEach(function(e){var t=e.onrightfn(n);if(void 0===r.uniqs[e.hh][t])throw new Error("Something wrong with unique index on table");r.uniqs[e.hh][t]=void 0})}},o.deleteall=function(){this.data.length=0,this.pk&&(this.uniqs[this.pk.hh]={}),o.uk&&o.uk.length&&o.uk.forEach(function(e){o.uniqs[e.hh]={}})},o.update=function(t,r,n){var a,s=F(this.data[r]);if(this.pk&&(a=this.pk,a.pkaddr=a.onrightfn(s,n),void 0===this.uniqs[a.hh][a.pkaddr]))throw new Error("Something wrong with index on table");o.uk&&o.uk.length&&o.uk.forEach(function(e){if(e.ukaddr=e.onrightfn(s),void 0===o.uniqs[e.hh][e.ukaddr])throw new Error("Something wrong with unique index on table")}),t(s,n,A);var i=!1;for(var u in o.beforeupdate){var c=o.beforeupdate[u];c&&(c.funcid?!1===A.fn[c.funcid](this.data[r],s)&&(i=i||!0):c.statement&&!1===c.statement.execute(e)&&(i=i||!0))}if(i)return!1;var l=!1;for(var u in o.insteadofupdate){l=!0;var c=o.insteadofupdate[u];c&&(c.funcid?A.fn[c.funcid](this.data[r],s):c.statement&&c.statement.execute(e))}if(!l){if(o.checks&&o.checks.length>0&&o.checks.forEach(function(e){if(!e.fn(s))throw new Error("Violation of CHECK constraint "+(e.id||""))}),o.columns.forEach(function(e){if(e.notnull&&void 0===s[e.columnid])throw new Error("Wrong NULL value in NOT NULL column "+e.columnid)}),this.pk&&(a.newpkaddr=a.onrightfn(s),void 0!==this.uniqs[a.hh][a.newpkaddr]&&a.newpkaddr!==a.pkaddr))throw new Error("Record already exists");o.uk&&o.uk.length&&o.uk.forEach(function(e){if(e.newukaddr=e.onrightfn(s),void 0!==o.uniqs[e.hh][e.newukaddr]&&e.newukaddr!==e.ukaddr)throw new Error("Record already exists")}),this.pk&&(this.uniqs[a.hh][a.pkaddr]=void 0,this.uniqs[a.hh][a.newpkaddr]=s),o.uk&&o.uk.length&&o.uk.forEach(function(e){o.uniqs[e.hh][e.ukaddr]=void 0,o.uniqs[e.hh][e.newukaddr]=s}),this.data[r]=s;for(var u in o.afterupdate){var c=o.afterupdate[u];c&&(c.funcid?A.fn[c.funcid](this.data[r],s):c.statement&&c.statement.execute(e))}}};var h;return A.options.nocount||(h=1),r&&(h=r(h)),h},A.fn.Date=Object,A.fn.Date=Date,A.fn.Number=Number,A.fn.String=String,A.fn.Boolean=Boolean,se.EXTEND=A.utils.extend,se.CHAR=String.fromCharCode.bind(String),se.ASCII=function(e){return e.charCodeAt(0)},se.COALESCE=function(){for(var e=0;e<arguments.length;e++)if(void 0!==arguments[e]&&("number"!=typeof arguments[e]||!isNaN(arguments[e])))return arguments[e]},se.USER=function(){return"alasql"},se.OBJECT_ID=function(e){return!!A.tables[e]},se.DATE=function(e){return/\d{8}/.test(e)?new Date(+e.substr(0,4),+e.substr(4,2)-1,+e.substr(6,2)):new Date(e)},se.NOW=function(){var e=new Date,t=e.getFullYear()+"."+("0"+(e.getMonth()+1)).substr(-2)+"."+("0"+e.getDate()).substr(-2);return t+=" "+("0"+e.getHours()).substr(-2)+":"+("0"+e.getMinutes()).substr(-2)+":"+("0"+e.getSeconds()).substr(-2),t+="."+("00"+e.getMilliseconds()).substr(-3)},se.GETDATE=se.NOW,se.CURRENT_TIMESTAMP=se.NOW,se.SECOND=function(e){var e=new Date(e);return e.getSeconds()},se.MINUTE=function(e){var e=new Date(e);return e.getMinutes()},se.HOUR=function(e){var e=new Date(e);return e.getHours()},se.DAYOFWEEK=se.WEEKDAY=function(e){var e=new Date(e);return e.getDay()},se.DAY=se.DAYOFMONTH=function(e){var e=new Date(e);return e.getDate()},se.MONTH=function(e){var e=new Date(e);return e.getMonth()+1},se.YEAR=function(e){var e=new Date(e);return e.getFullYear()};var ce={year:31536e6,quarter:7884e6,month:2592e6,week:6048e5,day:864e5,dayofyear:864e5,weekday:864e5,hour:36e5,minute:6e4,second:1e3,millisecond:1,microsecond:.001};A.stdfn.DATEDIFF=function(e,t,r){return(new Date(r).getTime()-new Date(t).getTime())/ce[e.toLowerCase()]},A.stdfn.DATEADD=function(e,t,r){var n=new Date(r).getTime()+t*ce[e.toLowerCase()];return new Date(n)},A.stdfn.INTERVAL=function(e,t){return e*ce[t.toLowerCase()]},A.stdfn.DATE_ADD=A.stdfn.ADDDATE=function(e,t){var r=new Date(e).getTime()+t;return new Date(r)},A.stdfn.DATE_SUB=A.stdfn.SUBDATE=function(e,t){var r=new Date(e).getTime()-t;return new Date(r)},K.DropTable=function(e){return K.extend(this,e)},K.DropTable.prototype.toString=function(){var e="DROP ";return this.view?e+="VIEW":e+="TABLE",this.ifexists&&(e+=" IF EXISTS"),e+=" "+this.tables.toString()},K.DropTable.prototype.execute=function(e,t,r){var n=this.ifexists,a=0,s=0,i=this.tables.length;return this.tables.forEach(function(t){var o=A.databases[t.databaseid||e],u=t.tableid;if(!n||n&&o.tables[u]){if(o.tables[u])o.engineid?A.engines[o.engineid].dropTable(t.databaseid||e,u,n,function(e){delete o.tables[u],a+=e,++s==i&&r&&r(a)}):(delete o.tables[u],a++,++s==i&&r&&r(a));else if(!A.options.dropifnotexists)throw new Error("Can not drop table '"+t.tableid+"', because it does not exist in the database.")}else++s==i&&r&&r(a)}),a},K.TruncateTable=function(e){return K.extend(this,e)},K.TruncateTable.prototype.toString=function(){var e="TRUNCATE TABLE";return e+=" "+this.table.toString()},K.TruncateTable.prototype.execute=function(e,t,r){var n=A.databases[this.table.databaseid||e],a=this.table.tableid;if(n.engineid)return A.engines[n.engineid].truncateTable(this.table.databaseid||e,a,this.ifexists,r);if(!n.tables[a])throw new Error("Cannot truncate table becaues it does not exist");return n.tables[a].data=[],r?r(0):0},K.CreateVertex=function(e){return K.extend(this,e)},K.CreateVertex.prototype.toString=function(){var e="CREATE VERTEX ";return this.class&&(e+=this.class+" "),this.sharp&&(e+="#"+this.sharp+" "),this.sets?e+=this.sets.toString():this.content?e+=this.content.toString():this.select&&(e+=this.select.toString()),e},K.CreateVertex.prototype.toJS=function(e){return"this.queriesfn["+(this.queriesidx-1)+"](this.params,null,"+e+")"},K.CreateVertex.prototype.compile=function(e){var t=e,r=this.sharp;if(void 0!==this.name)var n="x.name="+this.name.toJS(),a=new Function("x",n);if(this.sets&&this.sets.length>0)var n=this.sets.map(function(e){return"x['"+e.column.columnid+"']="+e.expression.toJS("x","")}).join(";"),s=new Function("x,params,alasql",n);return function(e,n){var i,o,u=A.databases[t];o=void 0!==r?r:u.counter++;var c={$id:o,$node:"VERTEX"};return u.objects[c.$id]=c,i=c,a&&a(c),s&&s(c,e,A),n&&(i=n(i)),i}},K.CreateEdge=function(e){return K.extend(this,e)},K.CreateEdge.prototype.toString=function(){var e="CREATE EDGE ";return this.class&&(e+=this.class+" "),e},K.CreateEdge.prototype.toJS=function(e){return"this.queriesfn["+(this.queriesidx-1)+"](this.params,null,"+e+")"},K.CreateEdge.prototype.compile=function(e){var t=e,r=new Function("params,alasql","var y;return "+this.from.toJS()),n=new Function("params,alasql","var y;return "+this.to.toJS());if(void 0!==this.name)var a="x.name="+this.name.toJS(),s=new Function("x",a);if(this.sets&&this.sets.length>0)var a=this.sets.map(function(e){return"x['"+e.column.columnid+"']="+e.expression.toJS("x","")}).join(";"),i=new Function("x,params,alasql","var y;"+a);return function(e,a){var o=0,u=A.databases[t],c={$id:u.counter++,$node:"EDGE"},l=r(e,A),h=n(e,A);return c.$in=[l.$id],c.$out=[h.$id],void 0===l.$out&&(l.$out=[]),l.$out.push(c.$id),void 0===typeof h.$in&&(h.$in=[]),h.$in.push(c.$id),u.objects[c.$id]=c,o=c,s&&s(c),i&&i(c,e,A),a&&(o=a(o)),o}},K.CreateGraph=function(e){return K.extend(this,e)},K.CreateGraph.prototype.toString=function(){var e="CREATE GRAPH ";return this.class&&(e+=this.class+" "),e},K.CreateGraph.prototype.execute=function(e,t,r){function n(e){var t=A.databases[A.useid].objects;for(var r in t)if(t[r].name===e)return t[r]}function a(r){var n={};void 0!==r.as&&(A.vars[r.as]=n),void 0!==r.prop&&(n.$id=r.prop,n.name=r.prop),void 0!==r.sharp&&(n.$id=r.sharp),void 0!==r.name&&(n.name=r.name),void 0!==r.class&&(n.$class=r.class);var a=A.databases[e];if(void 0===n.$id&&(n.$id=a.counter++),n.$node="VERTEX",void 0!==r.json&&G(n,new Function("params,alasql","var y;return "+r.json.toJS())(t,A)),a.objects[n.$id]=n,void 0!==n.$class){if(void 0===A.databases[e].tables[n.$class])throw new Error("No such class. Pleace use CREATE CLASS");A.databases[e].tables[n.$class].data.push(n)}return s.push(n.$id),n}var s=[];return this.from&&A.from[this.from.funcid]&&(this.graph=A.from[this.from.funcid.toUpperCase()]),this.graph.forEach(function(r){if(r.source){var i={};void 0!==r.as&&(A.vars[r.as]=i),void 0!==r.prop&&(i.name=r.prop),void 0!==r.sharp&&(i.$id=r.sharp),void 0!==r.name&&(i.name=r.name),void 0!==r.class&&(i.$class=r.class);var o=A.databases[e];void 0===i.$id&&(i.$id=o.counter++),i.$node="EDGE",void 0!==r.json&&G(i,new Function("params,alasql","var y;return "+r.json.toJS())(t,A));var u;if(r.source.vars){var c=A.vars[r.source.vars];u="object"==typeof c?c:o.objects[c]}else{var l=r.source.sharp;void 0===l&&(l=r.source.prop),u=A.databases[e].objects[l],void 0!==u||!A.options.autovertex||void 0===r.source.prop&&void 0===r.source.name||void 0===(u=n(r.source.prop||r.source.name))&&(u=a(r.source))}var h;if(r.source.vars){var c=A.vars[r.target.vars];h="object"==typeof c?c:o.objects[c]}else{var d=r.target.sharp;void 0===d&&(d=r.target.prop),h=A.databases[e].objects[d],void 0!==h||!A.options.autovertex||void 0===r.target.prop&&void 0===r.target.name||void 0===(h=n(r.target.prop||r.target.name))&&(h=a(r.target))}if(i.$in=[u.$id],i.$out=[h.$id],void 0===u.$out&&(u.$out=[]),u.$out.push(i.$id),void 0===h.$in&&(h.$in=[]),h.$in.push(i.$id),o.objects[i.$id]=i,void 0!==i.$class){if(void 0===A.databases[e].tables[i.$class])throw new Error("No such class. Pleace use CREATE CLASS");A.databases[e].tables[i.$class].data.push(i)}s.push(i.$id)}else a(r)}),r&&(s=r(s)),s},K.CreateGraph.prototype.compile1=function(e){var t=e,r=new Function("params,alasql","var y;return "+this.from.toJS()),n=new Function("params,alasql","var y;return "+this.to.toJS());if(void 0!==this.name)var a="x.name="+this.name.toJS(),s=new Function("x",a);if(this.sets&&this.sets.length>0)var a=this.sets.map(function(e){return"x['"+e.column.columnid+"']="+e.expression.toJS("x","")}).join(";"),i=new Function("x,params,alasql","var y;"+a);return function(e,a){var o=0,u=A.databases[t],c={$id:u.counter++,$node:"EDGE"},l=r(e,A),h=n(e,A);return c.$in=[l.$id],c.$out=[h.$id],void 0===l.$out&&(l.$out=[]),l.$out.push(c.$id),void 0===h.$in&&(h.$in=[]),h.$in.push(c.$id),u.objects[c.$id]=c,o=c,s&&s(c),i&&i(c,e,A),a&&(o=a(o)),o}},K.AlterTable=function(e){return K.extend(this,e)},K.AlterTable.prototype.toString=function(){var e="ALTER TABLE "+this.table.toString();return this.renameto&&(e+=" RENAME TO "+this.renameto),e},K.AlterTable.prototype.execute=function(e,t,r){var n=A.databases[e];if(n.dbversion=Date.now(),this.renameto){var a=this.table.tableid,s=this.renameto,i=1;if(n.tables[s])throw new Error("Can not rename a table '"+a+"' to '"+s+"', because the table with this name already exists");if(s==a)throw new Error("Can not rename a table '"+a+"' to itself");return n.tables[s]=n.tables[a],delete n.tables[a],i=1,r&&r(i),i}if(this.addcolumn){var n=A.databases[this.table.databaseid||e];n.dbversion++;var o=this.table.tableid,u=n.tables[o],c=this.addcolumn.columnid;if(u.xcolumns[c])throw new Error('Cannot add column "'+c+'", because it already exists in the table "'+o+'"');var l={columnid:c,dbtypeid:this.dbtypeid,dbsize:this.dbsize,dbprecision:this.dbprecision,dbenum:this.dbenum,defaultfns:null};u.columns.push(l),u.xcolumns[c]=l;for(var h=0,d=u.data.length;h<d;h++)u.data[h][c]=void 0;return r?r(1):1}if(this.modifycolumn){var n=A.databases[this.table.databaseid||e];n.dbversion++;var o=this.table.tableid,u=n.tables[o],c=this.modifycolumn.columnid;if(!u.xcolumns[c])throw new Error('Cannot modify column "'+c+'", because it was not found in the table "'+o+'"');var l=u.xcolumns[c];return l.dbtypeid=this.dbtypeid,l.dbsize=this.dbsize,l.dbprecision=this.dbprecision,l.dbenum=this.dbenum,r?r(1):1}if(this.renamecolumn){var n=A.databases[this.table.databaseid||e];n.dbversion++;var l,o=this.table.tableid,u=n.tables[o],c=this.renamecolumn,f=this.to;if(!u.xcolumns[c])throw new Error('Column "'+c+'" is not found in the table "'+o+'"');if(u.xcolumns[f])throw new Error('Column "'+f+'" already exists in the table "'+o+'"');if(c!=f){for(var p=0;p<u.columns.length;p++)u.columns[p].columnid==c&&(u.columns[p].columnid=f);u.xcolumns[f]=u.xcolumns[c],delete u.xcolumns[c];for(var h=0,d=u.data.length;h<d;h++)u.data[h][f]=u.data[h][c],delete u.data[h][c];return u.data.length}return r?r(0):0}if(this.dropcolumn){var n=A.databases[this.table.databaseid||e];n.dbversion++;for(var o=this.table.tableid,u=n.tables[o],c=this.dropcolumn,b=!1,p=0;p<u.columns.length;p++)if(u.columns[p].columnid==c){b=!0,u.columns.splice(p,1);break}if(!b)throw new Error('Cannot drop column "'+c+'", because it was not found in the table "'+o+'"');delete u.xcolumns[c];for(var h=0,d=u.data.length;h<d;h++)delete u.data[h][c];return r?r(u.data.length):u.data.length}throw Error("Unknown ALTER TABLE method")},K.CreateIndex=function(e){return K.extend(this,e)},K.CreateIndex.prototype.toString=function(){var e="CREATE";return this.unique&&(e+=" UNIQUE"),e+=" INDEX "+this.indexid+" ON "+this.table.toString(),e+="("+this.columns.toString()+")"},K.CreateIndex.prototype.execute=function(e,t,r){var n=A.databases[e],a=this.table.tableid,s=n.tables[a],i=this.indexid;n.indices[i]=a;var o=this.columns.map(function(e){return e.expression.toJS("r","")}).join("+'`'+"),u=new Function("r,params,alasql","return "+o);if(this.unique){s.uniqdefs[i]={rightfns:o};var c=s.uniqs[i]={};if(s.data.length>0)for(var l=0,h=s.data.length;l<h;l++){var d=o(s.data[l]);c[d]||(c[d]={num:0}),c[d].num++}}else{var f=D(o);s.inddefs[i]={rightfns:o,hh:f},s.indices[f]={};var p=s.indices[f]={};if(s.data.length>0)for(var l=0,h=s.data.length;l<h;l++){var d=u(s.data[l],t,A);p[d]||(p[d]=[]),p[d].push(s.data[l])}}var b=1;return r&&(b=r(b)),b},K.Reindex=function(e){return K.extend(this,e)},K.Reindex.prototype.toString=function(){return"REINDEX "+this.indexid},K.Reindex.prototype.execute=function(e,t,r){var n=A.databases[e],a=this.indexid,s=n.indices[a];n.tables[s].indexColumns();var i=1;return r&&(i=r(i)),i},K.DropIndex=function(e){return K.extend(this,e)},K.DropIndex.prototype.toString=function(){return"DROP INDEX"+this.indexid},K.DropIndex.prototype.compile=function(e){this.indexid;return function(){return 1}},K.WithSelect=function(e){return K.extend(this,e)},K.WithSelect.prototype.toString=function(){var e="WITH ";return e+=this.withs.map(function(e){return e.name+" AS ("+e.select.toString()+")"}).join(",")+" ",e+=this.select.toString()},K.WithSelect.prototype.execute=function(e,t,r){var n=this,a=[];n.withs.forEach(function(r){a.push(A.databases[e].tables[r.name]),(A.databases[e].tables[r.name]=new W({tableid:r.name})).data=r.select.execute(e,t)});return this.select.execute(e,t,function(t){return n.withs.forEach(function(t,r){a[r]?A.databases[e].tables[t.name]=a[r]:delete A.databases[e].tables[t.name]}),r&&(t=r(t)),t})},K.If=function(e){return K.extend(this,e)},K.If.prototype.toString=function(){var e="IF ";return e+=this.expression.toString(),e+=" "+this.thenstat.toString(),this.elsestat&&(e+=" ELSE "+this.thenstat.toString()),e},K.If.prototype.execute=function(e,t,r){var n;return new Function("params,alasql,p","var y;return "+this.expression.toJS("({})","",null)).bind(this)(t,A)?n=this.thenstat.execute(e,t,r):this.elsestat?n=this.elsestat.execute(e,t,r):r&&(n=r(n)),n},K.While=function(e){return K.extend(this,e)},K.While.prototype.toString=function(){var e="WHILE ";return e+=this.expression.toString(),e+=" "+this.loopstat.toString()},K.While.prototype.execute=function(e,t,r){function n(u){o?s.push(u):o=!0,setTimeout(function(){i(t,A)?a.loopstat.execute(e,t,n):s=r(s)},0)}var a=this,s=[],i=new Function("params,alasql,p","var y;return "+this.expression.toJS());if(r){var o=!1;n()}else for(;i(t,A);){var u=a.loopstat.execute(e,t);s.push(u)}return s},K.Break=function(e){return K.extend(this,e)},K.Break.prototype.toString=function(){return"BREAK"},K.Break.prototype.execute=function(e,t,r,n){var a=1;return r&&(a=r(a)),a},K.Continue=function(e){return K.extend(this,e)},K.Continue.prototype.toString=function(){return"CONTINUE"},K.Continue.prototype.execute=function(e,t,r,n){var a=1;return r&&(a=r(a)),a},K.BeginEnd=function(e){return K.extend(this,e)},K.BeginEnd.prototype.toString=function(){return"BEGIN "+this.statements.toString()+" END"},K.BeginEnd.prototype.execute=function(e,t,r,n){function a(){s.statements[o].execute(e,t,function(e){if(i.push(e),++o<s.statements.length)return a();r&&(i=r(i))})}var s=this,i=[],o=0;return a(),i},K.Insert=function(e){return K.extend(this,e)},K.Insert.prototype.toString=function(){var e="INSERT ";return this.orreplace&&(e+="OR REPLACE "),this.replaceonly&&(e="REPLACE "),e+="INTO "+this.into.toString(),this.columns&&(e+="("+this.columns.toString()+")"),this.values&&(e+=" VALUES "+this.values.toString()),this.select&&(e+=" "+this.select.toString()),e},K.Insert.prototype.toJS=function(e,t,r){return"this.queriesfn["+(this.queriesidx-1)+"](this.params,null,"+e+")"},K.Insert.prototype.compile=function(e){var t=this;e=t.into.databaseid||e;var r=A.databases[e],n=t.into.tableid,a=r.tables[n];if(!a)throw"Table '"+n+"' could not be found";var s,i="",o="",i="db.tables['"+n+"'].dirty=true;",u="var a,aa=[],x;";if(this.values){this.exists&&(this.existsfn=this.exists.map(function(t){var r=t.compile(e);return r.query.modifier="RECORDSET",r})),this.queries&&(this.queriesfn=this.queries.map(function(t){var r=t.compile(e);return r.query.modifier="RECORDSET",r})),t.values.forEach(function(s){var u=[];t.columns?t.columns.forEach(function(e,t){var r="'"+e.columnid+"':";a.xcolumns&&a.xcolumns[e.columnid]?["INT","FLOAT","NUMBER","MONEY"].indexOf(a.xcolumns[e.columnid].dbtypeid)>=0?r+="(x="+s[t].toJS()+",x==undefined?undefined:+x)":A.fn[a.xcolumns[e.columnid].dbtypeid]?(r+="(new "+a.xcolumns[e.columnid].dbtypeid+"(",r+=s[t].toJS(),r+="))"):r+=s[t].toJS():r+=s[t].toJS(),u.push(r)}):Array.isArray(s)&&a.columns&&a.columns.length>0?a.columns.forEach(function(e,t){var r="'"+e.columnid+"':";["INT","FLOAT","NUMBER","MONEY"].indexOf(e.dbtypeid)>=0?r+="+"+s[t].toJS():A.fn[e.dbtypeid]?(r+="(new "+e.dbtypeid+"(",r+=s[t].toJS(),r+="))"):r+=s[t].toJS(),u.push(r)}):o=E(s),r.tables[n].defaultfns&&u.unshift(r.tables[n].defaultfns),i+=o?"a="+o+";":"a={"+u.join(",")+"};",r.tables[n].isclass&&(i+="var db=alasql.databases['"+e+"'];",i+='a.$class="'+n+'";',i+="a.$id=db.counter++;",i+="db.objects[a.$id]=a;"),r.tables[n].insert?(i+="var db=alasql.databases['"+e+"'];",i+="db.tables['"+n+"'].insert(a,"+(t.orreplace?"true":"false")+");"):i+="aa.push(a);"}),s=u+i,r.tables[n].insert||(i+="alasql.databases['"+e+"'].tables['"+n+"'].data=alasql.databases['"+e+"'].tables['"+n+"'].data.concat(aa);"),r.tables[n].insert&&r.tables[n].isclass?i+="return a.$id;":i+="return "+t.values.length;var c=new Function("db, params, alasql","var y;"+u+i).bind(this)}else if(this.select){this.select.modifier="RECORDSET";var l=this.select.compile(e);if(r.engineid&&A.engines[r.engineid].intoTable){var h=function(e,t){var a=l(e);return A.engines[r.engineid].intoTable(r.databaseid,n,a.data,null,t)};return h}var d="return alasql.utils.extend(r,{"+a.defaultfns+"})",f=new Function("r,db,params,alasql",d),c=function(e,r,a){var s=l(r).data;if(e.tables[n].insert)for(var i=0,o=s.length;i<o;i++){var u=F(s[i]);f(u,e,r,a),e.tables[n].insert(u,t.orreplace)}else e.tables[n].data=e.tables[n].data.concat(s);return a.options.nocount?void 0:s.length}}else{if(!this.default)throw new Error("Wrong INSERT parameters");var p="db.tables['"+n+"'].data.push({"+a.defaultfns+"});return 1;",c=new Function("db,params,alasql",p)}if(r.engineid&&A.engines[r.engineid].intoTable&&A.options.autocommit)var h=function(e,t){var a=new Function("db,params","var y;"+s+"return aa;")(r,e);return A.engines[r.engineid].intoTable(r.databaseid,n,a,null,t)};else var h=function(t,r){var a=A.databases[e];A.options.autocommit&&a.engineid&&A.engines[a.engineid].loadTableData(e,n);var s=c(a,t,A);return A.options.autocommit&&a.engineid&&A.engines[a.engineid].saveTableData(e,n),A.options.nocount&&(s=void 0),r&&r(s),s};return h},K.Insert.prototype.execute=function(e,t,r){return this.compile(e)(t,r)},K.CreateTrigger=function(e){return K.extend(this,e)},K.CreateTrigger.prototype.toString=function(){var e="CREATE TRIGGER "+this.trigger+" ";return this.when&&(e+=this.when+" "),e+=this.action+" ON ",this.table.databaseid&&(e+=this.table.databaseid+"."),e+=this.table.tableid+" ",e+=this.statement.toString()},K.CreateTrigger.prototype.execute=function(e,t,r){var n=1,a=this.trigger;e=this.table.databaseid||e;var s=A.databases[e],i=this.table.tableid,o={action:this.action,when:this.when,statement:this.statement,funcid:this.funcid};return s.triggers[a]=o,"INSERT"==o.action&&"BEFORE"==o.when?s.tables[i].beforeinsert[a]=o:"INSERT"==o.action&&"AFTER"==o.when?s.tables[i].afterinsert[a]=o:"INSERT"==o.action&&"INSTEADOF"==o.when?s.tables[i].insteadofinsert[a]=o:"DELETE"==o.action&&"BEFORE"==o.when?s.tables[i].beforedelete[a]=o:"DELETE"==o.action&&"AFTER"==o.when?s.tables[i].afterdelete[a]=o:"DELETE"==o.action&&"INSTEADOF"==o.when?s.tables[i].insteadofdelete[a]=o:"UPDATE"==o.action&&"BEFORE"==o.when?s.tables[i].beforeupdate[a]=o:"UPDATE"==o.action&&"AFTER"==o.when?s.tables[i].afterupdate[a]=o:"UPDATE"==o.action&&"INSTEADOF"==o.when&&(s.tables[i].insteadofupdate[a]=o),r&&(n=r(n)),n},K.DropTrigger=function(e){return K.extend(this,e)},K.DropTrigger.prototype.toString=function(){return"DROP TRIGGER "+this.trigger},K.DropTrigger.prototype.execute=function(e,t,r){var n=0,a=A.databases[e],s=this.trigger,i=a.triggers[s];if(!i)throw new Error("Trigger not found");return n=1,delete a.tables[i].beforeinsert[s],delete a.tables[i].afterinsert[s],delete a.tables[i].insteadofinsert[s],delete a.tables[i].beforedelte[s],delete a.tables[i].afterdelete[s],delete a.tables[i].insteadofdelete[s],delete a.tables[i].beforeupdate[s],delete a.tables[i].afterupdate[s],delete a.tables[i].insteadofupdate[s],delete a.triggers[s],r&&(n=r(n)),n},K.Delete=function(e){return K.extend(this,e)},K.Delete.prototype.toString=function(){var e="DELETE FROM "+this.table.toString();return this.where&&(e+=" WHERE "+this.where.toString()),e},K.Delete.prototype.compile=function(e){e=this.table.databaseid||e;var t,r=this.table.tableid,n=A.databases[e];if(this.where){this.exists&&(this.existsfn=this.exists.map(function(t){var r=t.compile(e);return r.query.modifier="RECORDSET",r})),this.queries&&(this.queriesfn=this.queries.map(function(t){var r=t.compile(e);return r.query.modifier="RECORDSET",r}));var a=new Function("r,params,alasql","var y;return ("+this.where.toJS("r","")+")").bind(this);t=function(t,s){if(n.engineid&&A.engines[n.engineid].deleteFromTable)return A.engines[n.engineid].deleteFromTable(e,r,a,t,s);A.options.autocommit&&n.engineid&&"LOCALSTORAGE"==n.engineid&&A.engines[n.engineid].loadTableData(e,r);for(var i=n.tables[r],o=i.data.length,u=[],c=0,l=i.data.length;c<l;c++)a(i.data[c],t,A)?i.delete&&i.delete(c,t,A):u.push(i.data[c]);i.data=u;for(var h in i.afterdelete){var d=i.afterdelete[h];d&&(d.funcid?A.fn[d.funcid]():d.statement&&d.statement.execute(e))}var f=o-i.data.length;return A.options.autocommit&&n.engineid&&"LOCALSTORAGE"==n.engineid&&A.engines[n.engineid].saveTableData(e,r),s&&s(f),f}}else t=function(t,a){A.options.autocommit&&n.engineid&&A.engines[n.engineid].loadTableData(e,r),n.tables[r].dirty=!0;var s=n.tables[r].data.length;n.tables[r].data.length=0;for(var i in n.tables[r].uniqs)n.tables[r].uniqs[i]={};for(var i in n.tables[r].indices)n.tables[r].indices[i]={};return A.options.autocommit&&n.engineid&&A.engines[n.engineid].saveTableData(e,r),a&&a(s),s};return t},K.Delete.prototype.execute=function(e,t,r){return this.compile(e)(t,r)},K.Update=function(e){return K.extend(this,e)},K.Update.prototype.toString=function(){var e="UPDATE "+this.table.toString();return this.columns&&(e+=" SET "+this.columns.toString()),this.where&&(e+=" WHERE "+this.where.toString()),e},K.SetColumn=function(e){return K.extend(this,e)},K.SetColumn.prototype.toString=function(){return this.column.toString()+"="+this.expression.toString()},K.Update.prototype.compile=function(e){e=this.table.databaseid||e;var t=this.table.tableid;if(this.where){this.exists&&(this.existsfn=this.exists.map(function(t){var r=t.compile(e);return r.query.modifier="RECORDSET",r})),this.queries&&(this.queriesfn=this.queries.map(function(t){var r=t.compile(e);return r.query.modifier="RECORDSET",r}));var r=new Function("r,params,alasql","var y;return "+this.where.toJS("r","")).bind(this)}var n=A.databases[e].tables[t].onupdatefns||"";n+=";",this.columns.forEach(function(e){n+="r['"+e.column.columnid+"']="+e.expression.toJS("r","")+";"});var a=new Function("r,params,alasql","var y;"+n);return function(n,s){var i=A.databases[e];if(i.engineid&&A.engines[i.engineid].updateTable)return A.engines[i.engineid].updateTable(e,t,a,r,n,s);A.options.autocommit&&i.engineid&&A.engines[i.engineid].loadTableData(e,t);var o=i.tables[t];if(!o)throw new Error("Table '"+t+"' not exists");for(var u=0,c=0,l=o.data.length;c<l;c++)r&&!r(o.data[c],n,A)||(o.update?o.update(a,c,n):a(o.data[c],n,A),u++);return A.options.autocommit&&i.engineid&&A.engines[i.engineid].saveTableData(e,t),s&&s(u),u}},K.Update.prototype.execute=function(e,t,r){return this.compile(e)(t,r)},K.Merge=function(e){return K.extend(this,e)},K.Merge.prototype.toString=function(){var e="MERGE ";return e+=this.into.tableid+" ",this.into.as&&(e+="AS "+this.into.as+" "),e+="USING "+this.using.tableid+" ",this.using.as&&(e+="AS "+this.using.as+" "),e+="ON "+this.on.toString()+" ",this.matches.forEach(function(t){e+="WHEN ",t.matched||(e+="NOT "),e+="MATCHED ",t.bytarget&&(e+="BY TARGET "),t.bysource&&(e+="BY SOURCE "),t.expr&&(e+="AND "+t.expr.toString()+" "),e+="THEN ",t.action.delete&&(e+="DELETE "),t.action.insert&&(e+="INSERT ",t.action.columns&&(e+="("+t.action.columns.toString()+") "),t.action.values&&(e+="VALUES ("+t.action.values.toString()+") "),t.action.defaultvalues&&(e+="DEFAULT VALUES ")),t.action.update&&(e+="UPDATE ",e+=t.action.update.map(function(e){return e.toString()}).join(",")+" ")}),e},K.Merge.prototype.execute=function(e,t,r){var n=1;return r&&(n=r(n)),n},K.CreateDatabase=function(e){return K.extend(this,e)},K.CreateDatabase.prototype.toString=function(){var e="CREATE";return this.engineid&&(e+=" "+this.engineid),e+=" DATABASE",this.ifnotexists&&(e+=" IF NOT EXISTS"),e+=" "+this.databaseid,this.args&&this.args.length>0&&(e+="("+this.args.map(function(e){return e.toString()}).join(", ")+")"),this.as&&(e+=" AS "+this.as),e},K.CreateDatabase.prototype.execute=function(e,t,r){if(this.args&&this.args.length>0&&this.args.map(function(e){return new Function("params,alasql","var y;return "+e.toJS())(t,A)}),this.engineid){var n=A.engines[this.engineid].createDatabase(this.databaseid,this.args,this.ifnotexists,this.as,r);return n}var a=this.databaseid;if(A.databases[a])throw new Error("Database '"+a+"' already exists");var n=(new A.Database(a),1);return r?r(n):n},K.AttachDatabase=function(e){return K.extend(this,e)},K.AttachDatabase.prototype.toString=function(){var e="ATTACH";return this.engineid&&(e+=" "+this.engineid),e+=" DATABASE "+this.databaseid,args&&(e+="(",args.length>0&&(e+=args.map(function(e){return e.toString()}).join(", ")),e+=")"),this.as&&(e+=" AS "+this.as),e},K.AttachDatabase.prototype.execute=function(e,t,r){if(!A.engines[this.engineid])throw new Error('Engine "'+this.engineid+'" is not defined.');return A.engines[this.engineid].attachDatabase(this.databaseid,this.as,this.args,t,r)},K.DetachDatabase=function(e){return K.extend(this,e)},K.DetachDatabase.prototype.toString=function(){var e="DETACH";return e+=" DATABASE "+this.databaseid},K.DetachDatabase.prototype.execute=function(e,t,r){if(!A.databases[this.databaseid].engineid)throw new Error('Cannot detach database "'+this.engineid+'", because it was not attached.');var n,a=this.databaseid;if(a==A.DEFAULTDATABASEID)throw new Error("Drop of default database is prohibited");if(A.databases[a])delete A.databases[a],a==A.useid&&A.use(),n=1;else{if(!this.ifexists)throw new Error("Database '"+a+"' does not exist");n=0}return r&&r(n),n},K.UseDatabase=function(e){return K.extend(this,e)},K.UseDatabase.prototype.toString=function(){return"USE DATABASE "+this.databaseid},K.UseDatabase.prototype.execute=function(e,t,r){var n=this.databaseid;if(!A.databases[n])throw new Error("Database '"+n+"' does not exist");A.use(n);return r&&r(1),1},K.DropDatabase=function(e){return K.extend(this,e)},K.DropDatabase.prototype.toString=function(){var e="DROP";return this.ifexists&&(e+=" IF EXISTS"),e+=" DATABASE "+this.databaseid},K.DropDatabase.prototype.execute=function(e,t,r){if(this.engineid)return A.engines[this.engineid].dropDatabase(this.databaseid,this.ifexists,r);var n,a=this.databaseid;if(a==A.DEFAULTDATABASEID)throw new Error("Drop of default database is prohibited");if(A.databases[a]){if(A.databases[a].engineid)throw new Error("Cannot drop database '"+a+"', because it is attached. Detach it.");delete A.databases[a],a==A.useid&&A.use(),n=1}else{if(!this.ifexists)throw new Error("Database '"+a+"' does not exist");n=0}return r&&r(n),n},K.Declare=function(e){return K.extend(this,e)},K.Declare.prototype.toString=function(){var e="DECLARE ";return this.declares&&this.declares.length>0&&(e=this.declares.map(function(e){var t="";return t+="@"+e.variable+" ",t+=e.dbtypeid,this.dbsize&&(t+="("+this.dbsize,this.dbprecision&&(t+=","+this.dbprecision),t+=")"),e.expression&&(t+=" = "+e.expression.toString()),t}).join(",")),e},K.Declare.prototype.execute=function(e,t,r){var n=1;return this.declares&&this.declares.length>0&&this.declares.map(function(e){var r=e.dbtypeid;A.fn[r]||(r=r.toUpperCase()),A.declares[e.variable]={dbtypeid:r,dbsize:e.dbsize,dbprecision:e.dbprecision},e.expression&&(A.vars[e.variable]=new Function("params,alasql","return "+e.expression.toJS("({})","",null))(t,A),A.declares[e.variable]&&(A.vars[e.variable]=A.stdfn.CONVERT(A.vars[e.variable],A.declares[e.variable])))}),r&&(n=r(n)),n},K.ShowDatabases=function(e){return K.extend(this,e)},K.ShowDatabases.prototype.toString=function(){var e="SHOW DATABASES";return this.like&&(e+="LIKE "+this.like.toString()),e},K.ShowDatabases.prototype.execute=function(e,t,r){if(this.engineid)return A.engines[this.engineid].showDatabases(this.like,r);var n=this,a=[];for(dbid in A.databases)a.push({databaseid:dbid});return n.like&&a&&a.length>0&&(a=a.filter(function(e){return A.utils.like(n.like.value,e.databaseid)})),r&&r(a),a},K.ShowTables=function(e){return K.extend(this,e)},K.ShowTables.prototype.toString=function(){var e="SHOW TABLES";return this.databaseid&&(e+=" FROM "+this.databaseid),this.like&&(e+=" LIKE "+this.like.toString()),e},K.ShowTables.prototype.execute=function(e,t,r){
 var n=A.databases[this.databaseid||e],a=this,s=[];for(tableid in n.tables)s.push({tableid:tableid});return a.like&&s&&s.length>0&&(s=s.filter(function(e){return A.utils.like(a.like.value,e.tableid)})),r&&r(s),s},K.ShowColumns=function(e){return K.extend(this,e)},K.ShowColumns.prototype.toString=function(){var e="SHOW COLUMNS";return this.table.tableid&&(e+=" FROM "+this.table.tableid),this.databaseid&&(e+=" FROM "+this.databaseid),e},K.ShowColumns.prototype.execute=function(e,t,r){var n=A.databases[this.databaseid||e],a=n.tables[this.table.tableid];if(a&&a.columns){var s=a.columns.map(function(e){return{columnid:e.columnid,dbtypeid:e.dbtypeid,dbsize:e.dbsize}});return r&&r(s),s}return r&&r([]),[]},K.ShowIndex=function(e){return K.extend(this,e)},K.ShowIndex.prototype.toString=function(){var e="SHOW INDEX";return this.table.tableid&&(e+=" FROM "+this.table.tableid),this.databaseid&&(e+=" FROM "+this.databaseid),e},K.ShowIndex.prototype.execute=function(e,t,r){var n=A.databases[this.databaseid||e],a=n.tables[this.table.tableid],s=[];if(a&&a.indices)for(var i in a.indices)s.push({hh:i,len:Object.keys(a.indices[i]).length});return r&&r(s),s},K.ShowCreateTable=function(e){return K.extend(this,e)},K.ShowCreateTable.prototype.toString=function(){var e="SHOW CREATE TABLE "+this.table.tableid;return this.databaseid&&(e+=" FROM "+this.databaseid),e},K.ShowCreateTable.prototype.execute=function(e){var t=A.databases[this.databaseid||e],r=t.tables[this.table.tableid];if(r){var n="CREATE TABLE "+this.table.tableid+" (",a=[];return r.columns&&(r.columns.forEach(function(e){var t=e.columnid+" "+e.dbtypeid;e.dbsize&&(t+="("+e.dbsize+")"),e.primarykey&&(t+=" PRIMARY KEY"),a.push(t)}),n+=a.join(", ")),n+=")"}throw new Error('There is no such table "'+this.table.tableid+'"')},K.SetVariable=function(e){return K.extend(this,e)},K.SetVariable.prototype.toString=function(){var e="SET ";return void 0!==this.value&&(e+=this.variable.toUpperCase()+" "+(this.value?"ON":"OFF")),this.expression&&(e+=this.method+this.variable+" = "+this.expression.toString()),e},K.SetVariable.prototype.execute=function(e,t,r){if(void 0!==this.value){var n=this.value;"ON"==n?n=!0:"OFF"==n&&(n=!1),A.options[this.variable]=n}else if(this.expression){this.exists&&(this.existsfn=this.exists.map(function(t){var r=t.compile(e);return r.query&&!r.query.modifier&&(r.query.modifier="RECORDSET"),r})),this.queries&&(this.queriesfn=this.queries.map(function(t){var r=t.compile(e);return r.query&&!r.query.modifier&&(r.query.modifier="RECORDSET"),r}));var a=new Function("params,alasql","return "+this.expression.toJS("({})","",null)).bind(this)(t,A);if(A.declares[this.variable]&&(a=A.stdfn.CONVERT(a,A.declares[this.variable])),this.props&&this.props.length>0){if("@"==this.method)var s="alasql.vars['"+this.variable+"']";else var s="params['"+this.variable+"']";s+=this.props.map(function(e){return"string"==typeof e?"['"+e+"']":"number"==typeof e?"["+e+"]":"["+e.toJS()+"]"}).join(),new Function("value,params,alasql","var y;"+s+"=value")(a,t,A)}else"@"==this.method?A.vars[this.variable]=a:t[this.variable]=a}var a=1;return r&&(a=r(a)),a},A.test=function(e,t,r){if(0===arguments.length)return void A.log(A.con.results);if(1===arguments.length){var n=Date.now();return r(),void A.con.log(Date.now()-n)}2===arguments.length&&(r=t,t=1);for(var n=Date.now(),a=0;a<t;a++)r();A.con.results[e]=Date.now()-n},A.log=function(e,t){var r=A.useid,n=A.options.logtarget;C.isNode&&(n="console");var a;if(a="string"==typeof e?A(e,t):e,"console"===n||C.isNode)"string"==typeof e&&A.options.logprompt&&console.log(r+">",e),Array.isArray(a)&&console.table?console.table(a):console.log(ue(a));else{var s;s="output"===n?document.getElementsByTagName("output")[0]:"string"==typeof n?document.getElementById(n):n;var i="";if("string"==typeof e&&A.options.logprompt&&(i+="<pre><code>"+A.pretty(e)+"</code></pre>"),Array.isArray(a))if(0===a.length)i+="<p>[ ]</p>";else if("object"!=typeof a[0]||Array.isArray(a[0]))for(var o=0,u=a.length;o<u;o++)i+="<p>"+g(a[o])+"</p>";else i+=g(a);else i+=g(a);s.innerHTML+=i}},A.clear=function(){var e=A.options.logtarget;if(C.isNode||C.isMeteorServer)console.clear&&console.clear();else{var t;t="output"===e?document.getElementsByTagName("output")[0]:"string"==typeof e?document.getElementById(e):e,t.innerHTML=""}},A.write=function(e){var t=A.options.logtarget;if(C.isNode||C.isMeteorServer)console.log&&console.log(e);else{var r;r="output"===t?document.getElementsByTagName("output")[0]:"string"==typeof t?document.getElementById(t):t,r.innerHTML+=e}},A.prompt=function(e,t,r){if(C.isNode)throw new Error("The prompt not realized for Node.js");var n=0;if("string"==typeof e&&(e=document.getElementById(e)),"string"==typeof t&&(t=document.getElementById(t)),t.textContent=A.useid,r){A.prompthistory.push(r),n=A.prompthistory.length;try{var a=Date.now();A.log(r),A.write('<p style="color:blue">'+(Date.now()-a)+" ms</p>")}catch(e){A.write("<p>"+olduseid+"&gt;&nbsp;<b>"+sql+"</b></p>"),A.write('<p style="color:red">'+e+"<p>")}}var s=e.getBoundingClientRect().top+document.getElementsByTagName("body")[0].scrollTop;m(document.getElementsByTagName("body")[0],s,500),e.onkeydown=function(r){if(13===r.which){var a=e.value,s=A.useid;e.value="",A.prompthistory.push(a),n=A.prompthistory.length;try{var i=Date.now();A.log(a),A.write('<p style="color:blue">'+(Date.now()-i)+" ms</p>")}catch(e){A.write("<p>"+s+"&gt;&nbsp;"+A.pretty(a,!1)+"</p>"),A.write('<p style="color:red">'+e+"<p>")}e.focus(),t.textContent=A.useid;var o=e.getBoundingClientRect().top+document.getElementsByTagName("body")[0].scrollTop;m(document.getElementsByTagName("body")[0],o,500)}else 38===r.which?(n--,n<0&&(n=0),A.prompthistory[n]&&(e.value=A.prompthistory[n],r.preventDefault())):40===r.which&&(n++,n>=A.prompthistory.length?(n=A.prompthistory.length,e.value=""):A.prompthistory[n]&&(e.value=A.prompthistory[n],r.preventDefault()))}},K.BeginTransaction=function(e){return K.extend(this,e)},K.BeginTransaction.prototype.toString=function(){return"BEGIN TRANSACTION"},K.BeginTransaction.prototype.execute=function(e,t,r){return A.databases[e].engineid?A.engines[A.databases[A.useid].engineid].begin(e,r):(r&&r(1),1)},K.CommitTransaction=function(e){return K.extend(this,e)},K.CommitTransaction.prototype.toString=function(){return"COMMIT TRANSACTION"},K.CommitTransaction.prototype.execute=function(e,t,r){return A.databases[e].engineid?A.engines[A.databases[A.useid].engineid].commit(e,r):(r&&r(1),1)},K.RollbackTransaction=function(e){return K.extend(this,e)},K.RollbackTransaction.prototype.toString=function(){return"ROLLBACK TRANSACTION"},K.RollbackTransaction.prototype.execute=function(e,t,r){return A.databases[e].engineid?A.engines[A.databases[e].engineid].rollback(e,r):(r&&r(1),1)},A.options.tsql&&(A.stdfn.OBJECT_ID=function(e,t){void 0===t&&(t="T"),t=t.toUpperCase();var r=e.split("."),n=A.useid,a=r[0];2==r.length&&(n=r[0],a=r[1]);var s=A.databases[n].tables;n=A.databases[n].databaseid;for(var i in s)if(i==a){if(s[i].view&&"V"==t)return n+"."+i;if(!s[i].view&&"T"==t)return n+"."+i;return}}),A.options.mysql,(A.options.mysql||A.options.sqlite)&&(A.from.INFORMATION_SCHEMA=function(e,t,r,n,a){if("VIEWS"==e||"TABLES"==e){var s=[];for(var i in A.databases){var o=A.databases[i].tables;for(var u in o)(o[u].view&&"VIEWS"==e||!o[u].view&&"TABLES"==e)&&s.push({TABLE_CATALOG:i,TABLE_NAME:u})}return r&&(s=r(s,n,a)),s}throw new Error("Unknown INFORMATION_SCHEMA table")}),A.options.postgres,A.options.oracle,A.options.sqlite,A.into.SQL=function(e,t,r,n,a){var s;"object"==typeof e&&(t=e,e=void 0);var i={};if(A.utils.extend(i,t),void 0===i.tableid)throw new Error("Table for INSERT TO is not defined.");var o="";0===n.length&&"object"==typeof r[0]&&(n=Object.keys(r[0]).map(function(e){return{columnid:e}}));for(var u=0,c=r.length;u<c;u++)o+="INSERT INTO "+t.tableid+"(",o+=n.map(function(e){return e.columnid}).join(","),o+=") VALUES (",o+=n.map(function(e){var t=r[u][e.columnid];return e.typeid?"STRING"!==e.typeid&&"VARCHAR"!==e.typeid&&"NVARCHAR"!==e.typeid&&"CHAR"!==e.typeid&&"NCHAR"!==e.typeid||(t="'"+O(t)+"'"):"string"==typeof t&&(t="'"+O(t)+"'"),t}),o+=");\n";return e=A.utils.autoExtFilename(e,"sql",t),s=A.utils.saveFile(e,o),a&&(s=a(s)),s},A.into.HTML=function(e,t,r,n,a){var s=1;if(false){var i={headers:!0};A.utils.extend(i,t);var o=document.querySelector(e);if(!o)throw new Error("Selected HTML element is not found");0===n.length&&"object"==typeof r[0]&&(n=Object.keys(r[0]).map(function(e){return{columnid:e}}));var u=document.createElement("table"),c=document.createElement("thead");if(u.appendChild(c),i.headers){for(var l=document.createElement("tr"),h=0;h<n.length;h++){var d=document.createElement("th");d.textContent=n[h].columnid,l.appendChild(d)}c.appendChild(l)}var f=document.createElement("tbody");u.appendChild(f);for(var p=0;p<r.length;p++){for(var l=document.createElement("tr"),h=0;h<n.length;h++){var d=document.createElement("td");d.textContent=r[p][n[h].columnid],l.appendChild(d)}f.appendChild(l)}A.utils.domEmptyChildren(o),o.appendChild(u)}return a&&(s=a(s)),s},A.into.JSON=function(e,t,r,n,a){var s=1;"object"==typeof e&&(t=e,e=void 0);var i=JSON.stringify(r);return e=A.utils.autoExtFilename(e,"json",t),s=A.utils.saveFile(e,i),a&&(s=a(s)),s},A.into.TXT=function(e,t,r,n,a){0===n.length&&r.length>0&&(n=Object.keys(r[0]).map(function(e){return{columnid:e}})),"object"==typeof e&&(t=e,e=void 0);var s=r.length,i="";if(r.length>0){var o=n[0].columnid;i+=r.map(function(e){return e[o]}).join("\n")}return e=A.utils.autoExtFilename(e,"txt",t),s=A.utils.saveFile(e,i),a&&(s=a(s)),s},A.into.TAB=A.into.TSV=function(e,t,r,n,a){var s={};return A.utils.extend(s,t),s.separator="\t",e=A.utils.autoExtFilename(e,"tab",t),s.autoExt=!1,A.into.CSV(e,s,r,n,a)},A.into.CSV=function(e,t,r,n,a){0===n.length&&r.length>0&&(n=Object.keys(r[0]).map(function(e){return{columnid:e}})),"object"==typeof e&&(t=e,e=void 0);var s={headers:!0};s.separator=";",s.quote='"',s.utf8Bom=!0,t&&!t.headers&&void 0!==t.headers&&(s.utf8Bom=!1),A.utils.extend(s,t);var i=r.length,o=s.utf8Bom?"\ufeff":"";return s.headers&&(o+=s.quote+n.map(function(e){return e.columnid.trim()}).join(s.quote+s.separator+s.quote)+s.quote+"\r\n"),r.forEach(function(e){o+=n.map(function(t){var r=e[t.columnid];return""!==s.quote&&(r=(r+"").replace(new RegExp("\\"+s.quote,"g"),s.quote+s.quote)),+r!=r&&(r=s.quote+r+s.quote),r}).join(s.separator)+"\r\n"}),e=A.utils.autoExtFilename(e,"csv",t),i=A.utils.saveFile(e,o,null,{disableAutoBom:!0}),a&&(i=a(i)),i},A.into.XLS=function(e,t,r,n,a){"object"==typeof e&&(t=e,e=void 0);var s={};t&&t.sheets&&(s=t.sheets);var i={headers:!0};void 0!==s.Sheet1?i=s[0]:void 0!==t&&(i=t),void 0===i.sheetid&&(i.sheetid="Sheet1");var o=function(){var e='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" \t\txmlns="http://www.w3.org/TR/REC-html40"><head> \t\t<meta charset="utf-8" /> \t\t\x3c!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets> ';if(e+=" <x:ExcelWorksheet><x:Name>"+i.sheetid+"</x:Name><x:WorksheetOptions><x:DisplayGridlines/>     </x:WorksheetOptions> \t\t</x:ExcelWorksheet>",e+="</x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--\x3e</head>",e+="<body",void 0!==i.style&&(e+=' style="',"function"==typeof i.style?e+=i.style(i):e+=i.style,e+='"'),e+=">",e+="<table>",void 0!==i.caption){var a=i.caption;"string"==typeof a&&(a={title:a}),e+="<caption",void 0!==a.style&&(e+=' style="',"function"==typeof a.style?e+=a.style(i,a):e+=a.style,e+='" '),e+=">",e+=a.title,e+="</caption>"}return void 0!==i.columns?n=i.columns:0==n.length&&r.length>0&&"object"==typeof r[0]&&(n=Array.isArray(r[0])?r[0].map(function(e,t){return{columnid:t}}):Object.keys(r[0]).map(function(e){return{columnid:e}})),n.forEach(function(e,t){void 0!==i.column&&G(e,i.column),void 0===e.width&&(i.column&&"undefined"!=i.column.width?e.width=i.column.width:e.width="120px"),"number"==typeof e.width&&(e.width=e.width+"px"),void 0===e.columnid&&(e.columnid=t),void 0===e.title&&(e.title=""+e.columnid.trim()),i.headers&&Array.isArray(i.headers)&&(e.title=i.headers[t])}),e+="<colgroups>",n.forEach(function(t){e+='<col style="width: '+t.width+'"></col>'}),e+="</colgroups>",i.headers&&(e+="<thead>",e+="<tr>",n.forEach(function(t,r){e+="<th ",void 0!==t.style&&(e+=' style="',"function"==typeof t.style?e+=t.style(i,t,r):e+=t.style,e+='" '),e+=">",void 0!==t.title&&("function"==typeof t.title?e+=t.title(i,t,r):e+=t.title),e+="</th>"}),e+="</tr>",e+="</thead>"),e+="<tbody>",r&&r.length>0&&r.forEach(function(r,a){if(!(a>i.limit)){e+="<tr";var s={};G(s,i.row),i.rows&&i.rows[a]&&G(s,i.rows[a]),void 0!==s&&void 0!==s.style&&(e+=' style="',"function"==typeof s.style?e+=s.style(i,r,a):e+=s.style,e+='" '),e+=">",n.forEach(function(n,o){var u={};G(u,i.cell),G(u,s.cell),void 0!==i.column&&G(u,i.column.cell),G(u,n.cell),i.cells&&i.cells[a]&&i.cells[a][o]&&G(u,i.cells[a][o]);var c=r[n.columnid];"function"==typeof u.value&&(c=u.value(c,i,r,n,u,a,o));var l=u.typeid;"function"==typeof l&&(l=l(c,i,r,n,u,a,o)),void 0===l&&("number"==typeof c?l="number":"string"==typeof c?l="string":"boolean"==typeof c?l="boolean":"object"==typeof c&&c instanceof Date&&(l="date"));var h="";"money"==l?h='mso-number-format:"\\#\\,\\#\\#0\\\\ _р_\\.";white-space:normal;':"number"==l?h=" ":"date"==l?h='mso-number-format:"Short Date";':t.types&&t.types[l]&&t.types[l].typestyle&&(h=t.types[l].typestyle),h=h||'mso-number-format:"\\@";',e+="<td style='"+h+"' ",void 0!==u.style&&(e+=' style="',"function"==typeof u.style?e+=u.style(c,i,r,n,a,o):e+=u.style,e+='" '),e+=">";var d=u.format;if(void 0===c)e+="";else if(void 0!==d)if("function"==typeof d)e+=d(c);else{if("string"!=typeof d)throw new Error("Unknown format type. Should be function or string");e+=c}else e+="number"==l||"date"==l?c.toString():"money"==l?(+c).toFixed(2):c;e+="</td>"}),e+="</tr>"}}),e+="</tbody>",e+="</table>",e+="</body>",e+="</html>"}();e=A.utils.autoExtFilename(e,"xls",t);var u=A.utils.saveFile(e,o);return a&&(u=a(u)),u},A.into.XLSXML=function(e,t,r,n,a){t=t||{},"object"==typeof e&&(t=e,e=void 0);var s={};t&&t.sheets?s=t.sheets:s.Sheet1=t,e=A.utils.autoExtFilename(e,"xls",t);var i=A.utils.saveFile(e,function(){function e(e){var t="";for(var r in e){t+="<"+r;for(var n in e[r])t+=" ","x:"==n.substr(0,2)?t+=n:t+="ss:",t+=n+'="'+e[r][n]+'"';t+="/>"}var s=D(t);return o[s]||(o[s]={styleid:u},a+='<Style ss:ID="s'+u+'">',a+=t,a+="</Style>",u++),"s"+o[s].styleid}var a="",i=" </Styles>",o={},u=62;for(var c in s){var l=s[c];void 0!==l.columns?n=l.columns:0==n.length&&r.length>0&&"object"==typeof r[0]&&(n=Array.isArray(r[0])?r[0].map(function(e,t){return{columnid:t}}):Object.keys(r[0]).map(function(e){return{columnid:e}})),n.forEach(function(e,t){void 0!==l.column&&G(e,l.column),void 0===e.width&&(l.column&&void 0!==l.column.width?e.width=l.column.width:e.width=120),"number"==typeof e.width&&(e.width=e.width),void 0===e.columnid&&(e.columnid=t),void 0===e.title&&(e.title=""+e.columnid.trim()),l.headers&&Array.isArray(l.headers)&&(e.title=l.headers[idx])}),i+='<Worksheet ss:Name="'+c+'"> \t  \t\t\t<Table ss:ExpandedColumnCount="'+n.length+'" ss:ExpandedRowCount="'+((l.headers?1:0)+Math.min(r.length,l.limit||r.length))+'" x:FullColumns="1" \t   \t\t\tx:FullRows="1" ss:DefaultColumnWidth="65" ss:DefaultRowHeight="15">',n.forEach(function(e,t){i+='<Column ss:Index="'+(t+1)+'" ss:AutoFitWidth="0" ss:Width="'+e.width+'"/>'}),l.headers&&(i+='<Row ss:AutoFitHeight="0">',n.forEach(function(t,r){if(i+="<Cell ",void 0!==t.style){var n={};"function"==typeof t.style?G(n,t.style(l,t,r)):G(n,t.style),i+='ss:StyleID="'+e(n)+'"'}i+='><Data ss:Type="String">',void 0!==t.title&&("function"==typeof t.title?i+=t.title(l,t,r):i+=t.title),i+="</Data></Cell>"}),i+="</Row>"),r&&r.length>0&&r.forEach(function(r,a){if(!(a>l.limit)){var s={};if(G(s,l.row),l.rows&&l.rows[a]&&G(s,l.rows[a]),i+="<Row ",void 0!==s){var o={};void 0!==s.style&&("function"==typeof s.style?G(o,s.style(l,r,a)):G(o,s.style),i+='ss:StyleID="'+e(o)+'"')}i+=">",n.forEach(function(n,o){var u={};G(u,l.cell),G(u,s.cell),void 0!==l.column&&G(u,l.column.cell),G(u,n.cell),l.cells&&l.cells[a]&&l.cells[a][o]&&G(u,l.cells[a][o]);var c=r[n.columnid];"function"==typeof u.value&&(c=u.value(c,l,r,n,u,a,o));var h=u.typeid;"function"==typeof h&&(h=h(c,l,r,n,u,a,o)),void 0===h&&("number"==typeof c?h="number":"string"==typeof c?h="string":"boolean"==typeof c?h="boolean":"object"==typeof c&&c instanceof Date&&(h="date"));var d="String";"number"==h?d="Number":"date"==h&&(d="Date");var f="";"money"==h?f='mso-number-format:"\\#\\,\\#\\#0\\\\ _р_\\.";white-space:normal;':"number"==h?f=" ":"date"==h?f='mso-number-format:"Short Date";':t.types&&t.types[h]&&t.types[h].typestyle&&(f=t.types[h].typestyle),f=f||'mso-number-format:"\\@";',i+="<Cell ";var p={};void 0!==u.style&&("function"==typeof u.style?G(p,u.style(c,l,r,n,a,o)):G(p,u.style),i+='ss:StyleID="'+e(p)+'"'),i+=">",i+='<Data ss:Type="'+d+'">';var b=u.format;if(void 0===c)i+="";else if(void 0!==b)if("function"==typeof b)i+=b(c);else{if("string"!=typeof b)throw new Error("Unknown format type. Should be function or string");i+=c}else i+="number"==h||"date"==h?c.toString():"money"==h?(+c).toFixed(2):c;i+="</Data></Cell>"}),i+="</Row>"}}),i+="</Table></Worksheet>"}return i+="</Workbook>",'<?xml version="1.0"?> \t\t<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" \t\t xmlns:o="urn:schemas-microsoft-com:office:office" \t\t xmlns:x="urn:schemas-microsoft-com:office:excel" \t\t xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" \t\t xmlns:html="http://www.w3.org/TR/REC-html40"> \t\t <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office"> \t\t </DocumentProperties> \t\t <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office"> \t\t  <AllowPNG/> \t\t </OfficeDocumentSettings> \t\t <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel"> \t\t  <ActiveSheet>0</ActiveSheet> \t\t </ExcelWorkbook> \t\t <Styles> \t\t  <Style ss:ID="Default" ss:Name="Normal"> \t\t   <Alignment ss:Vertical="Bottom"/> \t\t   <Borders/> \t\t   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="12" ss:Color="#000000"/> \t\t   <Interior/> \t\t   <NumberFormat/> \t\t   <Protection/> \t\t  </Style>'+a+i}());return a&&(i=a(i)),i},A.into.XLSX=function(e,t,r,n,s){function i(){"object"==typeof t&&Array.isArray(t)?r&&r.length>0&&r.forEach(function(e,r){o(t[r],e,void 0,r+1)}):o(t,r,n,1),u(s)}function o(e,t,r,n){var a={sheetid:"Sheet "+n,headers:!0};A.utils.extend(a,e);var s=Object.keys(t).length;(!r||0==r.length)&&s>0&&(r=Object.keys(t[0]).map(function(e){return{columnid:e}}));var i={};h.SheetNames.indexOf(a.sheetid)>-1?i=h.Sheets[a.sheetid]:(h.SheetNames.push(a.sheetid),h.Sheets[a.sheetid]={},i=h.Sheets[a.sheetid]);var o="A1";a.range&&(o=a.range);var u=A.utils.xlscn(o.match(/[A-Z]+/)[0]),c=+o.match(/[0-9]+/)[0]-1;if(h.Sheets[a.sheetid]["!ref"])var l=h.Sheets[a.sheetid]["!ref"],d=A.utils.xlscn(l.match(/[A-Z]+/)[0]),f=+l.match(/[0-9]+/)[0]-1;else var d=1,f=1;var p=Math.max(u+r.length,d),b=Math.max(c+s+2,f),E=c+1;h.Sheets[a.sheetid]["!ref"]="A1:"+A.utils.xlsnc(p)+b,a.headers&&(r.forEach(function(e,t){i[A.utils.xlsnc(u+t)+""+E]={v:e.columnid.trim()}}),E++);for(var g=0;g<s;g++)r.forEach(function(e,r){var n={v:t[g][e.columnid]};"number"==typeof t[g][e.columnid]?n.t="n":"string"==typeof t[g][e.columnid]?n.t="s":"boolean"==typeof t[g][e.columnid]?n.t="b":"object"==typeof t[g][e.columnid]&&t[g][e.columnid]instanceof Date&&(n.t="d"),i[A.utils.xlsnc(u+r)+""+E]=n}),E++}function u(t){var r;if(void 0===e)c=h;else if(r=B(),C.isNode||C.isMeteorServer)r.writeFile(h,e);else{var n={bookType:"xlsx",bookSST:!1,type:"binary"},s=r.write(h,n);if(9==a())throw new Error("Cannot save XLSX files in IE9. Please use XLS() export function");be(new Blob([function(e){for(var t=new ArrayBuffer(e.length),r=new Uint8Array(t),n=0;n!=e.length;++n)r[n]=255&e.charCodeAt(n);return t}(s)],{type:"application/octet-stream"}),e)}}var c=1;P(n,[{columnid:"_"}])&&(r=r.map(function(e){return e._}),n=void 0),e=A.utils.autoExtFilename(e,"xlsx",t);var l=B();"object"==typeof e&&(t=e,e=void 0);var h={SheetNames:[],Sheets:{}};return t.sourcefilename?A.utils.loadBinaryFile(t.sourcefilename,!!s,function(e){h=l.read(e,{type:"binary"}),i()}):i(),s&&(c=s(c)),c},A.from.METEOR=function(e,t,r,n,a){var s=e.find(t).fetch();return r&&(s=r(s,n,a)),s},A.from.TABLETOP=function(e,t,r,n,a){var s=[],i={headers:!0,simpleSheet:!0,key:e};return A.utils.extend(i,t),i.callback=function(e){s=e,r&&(s=r(s,n,a))},Tabletop.init(i),null},A.from.HTML=function(e,t,r,n,a){var s={};A.utils.extend(s,t);var i=document.querySelector(e);if(!i&&"TABLE"!==i.tagName)throw new Error("Selected HTML element is not a TABLE");var o=[],u=s.headers;if(u&&!Array.isArray(u)){u=[];for(var c=i.querySelector("thead tr").children,l=0;l<c.length;l++)c.item(l).style&&"none"===c.item(l).style.display&&s.skipdisplaynone?u.push(void 0):u.push(c.item(l).textContent)}for(var h=i.querySelectorAll("tbody tr"),d=0;d<h.length;d++){for(var f=h.item(d).children,p={},l=0;l<f.length;l++)f.item(l).style&&"none"===f.item(l).style.display&&s.skipdisplaynone||(u?p[u[l]]=f.item(l).textContent:p[l]=f.item(l).textContent);o.push(p)}return r&&(o=r(o,n,a)),o},A.from.RANGE=function(e,t,r,n,a){for(var s=[],i=e;i<=t;i++)s.push(i);return r&&(s=r(s,n,a)),s},A.from.FILE=function(e,t,r,n,a){var s;if("string"==typeof e)s=e;else{if(!(e instanceof Event))throw new Error("Wrong usage of FILE() function");s=e.target.files[0].name}var i=s.split("."),o=i[i.length-1].toUpperCase();if(A.from[o])return A.from[o](e,t,r,n,a);throw new Error("Cannot recognize file type for loading")},A.from.JSON=function(e,t,r,n,a){var s;return e=A.utils.autoExtFilename(e,"json",t),A.utils.loadFile(e,!!r,function(e){s=JSON.parse(e),r&&(s=r(s,n,a))}),s},A.from.TXT=function(e,t,r,n,a){var s;return e=A.utils.autoExtFilename(e,"txt",t),A.utils.loadFile(e,!!r,function(e){s=e.split(/\r?\n/),""===s[s.length-1]&&s.pop();for(var t=0,i=s.length;t<i;t++)s[t]==+s[t]&&(s[t]=+s[t]),s[t]=[s[t]];r&&(s=r(s,n,a))}),s},A.from.TAB=A.from.TSV=function(e,t,r,n,a){return t=t||{},t.separator="\t",e=A.utils.autoExtFilename(e,"tab",t),t.autoext=!1,A.from.CSV(e,t,r,n,a)},A.from.CSV=function(e,t,r,n,a){function s(e){function t(){if(E>=b)return f;if(c)return c=!1,d;var t=E;if(e.charCodeAt(t)===h){for(var r=t;r++<b;)if(e.charCodeAt(r)===h){if(e.charCodeAt(r+1)!==h)break;++r}E=r+2;var n=e.charCodeAt(r+1);return 13===n?(c=!0,10===e.charCodeAt(r+2)&&++E):10===n&&(c=!0),e.substring(t+1,r).replace(/""/g,'"')}for(;E<b;){var n=e.charCodeAt(E++),a=1;if(10===n)c=!0;else if(13===n)c=!0,10===e.charCodeAt(E)&&(++E,++a);else if(n!==l)continue;return e.substring(t,E-a)}return e.substring(t)}for(var s,c,l=i.separator.charCodeAt(0),h=i.quote.charCodeAt(0),d={},f={},p=[],b=e.length,E=0,g=0;(s=t())!==f;){for(var m=[];s!==d&&s!==f;)m.push(s.trim()),s=t();if(i.headers){if(0===g){if("boolean"==typeof i.headers)u=m;else if(Array.isArray(i.headers)){u=i.headers;var v={};u.forEach(function(e,t){v[e]=m[t],void 0!==v[e]&&0!==v[e].length&&v[e].trim()==+v[e]&&(v[e]=+v[e])}),p.push(v)}}else{var v={};u.forEach(function(e,t){v[e]=m[t],void 0!==v[e]&&0!==v[e].length&&v[e].trim()==+v[e]&&(v[e]=+v[e])}),p.push(v)}g++}else p.push(m)}if(o=p,i.headers&&a&&a.sources&&a.sources[n]){var S=a.sources[n].columns=[];u.forEach(function(e){S.push({columnid:e})})}r&&(o=r(o,n,a))}var i={separator:",",quote:'"',headers:!0};A.utils.extend(i,t);var o,u=[];return new RegExp("\n").test(e)?s(e):(e=A.utils.autoExtFilename(e,"csv",t),A.utils.loadFile(e,!!r,s)),o},A.from.XLS=function(e,t,r,n,a){return t=t||{},e=A.utils.autoExtFilename(e,"xls",t),t.autoExt=!1,S(B(),e,t,r,n,a)},A.from.XLSX=function(e,t,r,n,a){return t=t||{},e=A.utils.autoExtFilename(e,"xlsx",t),t.autoExt=!1,S(B(),e,t,r,n,a)},A.from.ODS=function(e,t,r,n,a){return t=t||{},e=A.utils.autoExtFilename(e,"ods",t),t.autoExt=!1,S(B(),e,t,r,n,a)},A.from.XML=function(e,t,r,n,a){var s;return A.utils.loadFile(e,!!r,function(e){s=T(e).root,r&&(s=r(s,n,a))}),s},A.from.GEXF=function(e,t,r,n,a){var s;return A("SEARCH FROM XML("+e+")",[],function(e){s=e,console.log(s),r&&(s=r(s))}),s},K.Print=function(e){return K.extend(this,e)},K.Print.prototype.toString=function(){var e="PRINT";return this.statement&&(e+=" "+this.statement.toString()),e},K.Print.prototype.execute=function(e,t,r){var n=this,a=1;if(A.precompile(this,e,t),this.exprs&&this.exprs.length>0){var s=this.exprs.map(function(e){var r=new Function("params,alasql,p","var y;return "+e.toJS("({})","",null)).bind(n),a=r(t,A);return ue(a)});console.log.apply(console,s)}else if(this.select){var i=this.select.execute(e,t);console.log(ue(i))}else console.log();return r&&(a=r(a)),a},K.Source=function(e){return K.extend(this,e)},K.Source.prototype.toString=function(){var e="SOURCE";return this.url&&(e+=" '"+this.url+" '"),e},K.Source.prototype.execute=function(e,t,r){var n;return x(this.url,!!r,function(e){return n=A(e),r&&(n=r(n)),n},function(e){throw e}),n},K.Require=function(e){return K.extend(this,e)},K.Require.prototype.toString=function(){var e="REQUIRE";return this.paths&&this.paths.length>0&&(e+=this.paths.map(function(e){return e.toString()}).join(",")),this.plugins&&this.plugins.length>0&&(e+=this.plugins.map(function(e){return e.toUpperCase()}).join(",")),e},K.Require.prototype.execute=function(e,t,r){var n=this,a=0,s="";return this.paths&&this.paths.length>0?this.paths.forEach(function(e){x(e.value,!!r,function(e){a++,s+=e,a<n.paths.length||(new Function("params,alasql",s)(t,A),r&&(a=r(a)))})}):this.plugins&&this.plugins.length>0?this.plugins.forEach(function(e){A.plugins[e]||x(A.path+"/alasql-"+e.toLowerCase()+".js",!!r,function(i){a++,s+=i,a<n.plugins.length||(new Function("params,alasql",s)(t,A),A.plugins[e]=!0,r&&(a=r(a)))})}):r&&(a=r(a)),a},K.Assert=function(e){return K.extend(this,e)},K.Source.prototype.toString=function(){var e="ASSERT";return this.value&&(e+=" "+JSON.stringify(this.value)),e},K.Assert.prototype.execute=function(e){if(!P(A.res,this.value))throw new Error((this.message||"Assert wrong")+": "+JSON.stringify(A.res)+" == "+JSON.stringify(this.value));return 1};var le=A.engines.WEBSQL=function(){};le.createDatabase=function(e,t,r,n){var a=openDatabase(e,t[0],t[1],t[2]);if(this.dbid){var s=A.createDatabase(this.dbid);s.engineid="WEBSQL",s.wdbid=e,sb.wdb=s}if(!a)throw new Error('Cannot create WebSQL database "'+databaseid+'"');return n&&n(1),1},le.dropDatabase=function(e){throw new Error("This is impossible to drop WebSQL database.")},le.attachDatabase=function(e,t,r,n,a){if(A.databases[t])throw new Error('Unable to attach database as "'+t+'" because it already exists');return alasqlopenDatabase(e,r[0],r[1],r[2]),1};var he=A.engines.INDEXEDDB=function(){};C.hasIndexedDB&&("function"==typeof C.global.indexedDB.webkitGetDatabaseNames?he.getDatabaseNames=C.global.indexedDB.webkitGetDatabaseNames.bind(C.global.indexedDB):(he.getDatabaseNames=function(){var e={},t={contains:function(e){return!0},notsupported:!0};return setTimeout(function(){var r={target:{result:t}};e.onsuccess(r)},0),e},he.getDatabaseNamesNotSupported=!0)),he.showDatabases=function(e,t){he.getDatabaseNames().onsuccess=function(r){var n=r.target.result;if(he.getDatabaseNamesNotSupported)throw new Error("SHOW DATABASE is not supported in this browser");var a=[];if(e)var s=new RegExp(e.value.replace(/\%/g,".*"),"g");for(var i=0;i<n.length;i++)e&&!n[i].match(s)||a.push({databaseid:n[i]});t(a)}},he.createDatabase=function(e,t,r,n,a){console.log(arguments);var s=C.global.indexedDB;if(r){s.open(e,1).onsuccess=function(e){e.target.result.close(),a&&a(1)}}else{var i=s.open(e,1);i.onupgradeneeded=function(e){console.log("abort"),e.target.transaction.abort()},i.onsuccess=function(t){if(console.log("success"),!r)throw new Error('IndexedDB: Cannot create new database "'+e+'" because it already exists');a&&a(0)}}},he.createDatabase=function(e,t,r,n,a){var s=C.global.indexedDB;if(he.getDatabaseNamesNotSupported)if(r){var i=!0,o=s.open(e);o.onupgradeneeded=function(e){i=!1},o.onsuccess=function(e){e.target.result.close(),i?a&&a(0):a&&a(1)}}else{var u=s.open(e);u.onupgradeneeded=function(e){e.target.transaction.abort()},u.onabort=function(e){a&&a(1)},u.onsuccess=function(t){throw t.target.result.close(),new Error('IndexedDB: Cannot create new database "'+e+'" because it already exists')}}else{var u=he.getDatabaseNames();u.onsuccess=function(t){if(t.target.result.contains(e)){if(r)return void(a&&a(0));throw new Error('IndexedDB: Cannot create new database "'+e+'" because it already exists')}s.open(e,1).onsuccess=function(e){e.target.result.close(),a&&a(1)}}}},he.dropDatabase=function(e,t,r){var n=C.global.indexedDB;he.getDatabaseNames().onsuccess=function(a){if(!a.target.result.contains(e)){if(t)return void(r&&r(0));throw new Error('IndexedDB: Cannot drop new database "'+e+'" because it does not exist')}n.deleteDatabase(e).onsuccess=function(e){r&&r(1)}}},he.attachDatabase=function(e,t,r,n,a){if(!C.hasIndexedDB)throw new Error("The current browser does not support IndexedDB");var s=C.global.indexedDB;he.getDatabaseNames().onsuccess=function(r){if(!r.target.result.contains(e))throw new Error('IndexedDB: Cannot attach database "'+e+'" because it does not exist');s.open(e).onsuccess=function(r){var n=r.target.result,s=new A.Database(t||e);s.engineid="INDEXEDDB",s.ixdbid=e,s.tables=[];for(var i=n.objectStoreNames,o=0;o<i.length;o++)s.tables[i[o]]={};r.target.result.close(),a&&a(1)}}},he.createTable=function(e,t,r,n){var a=C.global.indexedDB,s=A.databases[e].ixdbid;he.getDatabaseNames().onsuccess=function(r){if(!r.target.result.contains(s))throw new Error('IndexedDB: Cannot create table in database "'+s+'" because it does not exist');var i=a.open(s);i.onversionchange=function(e){e.target.result.close()},i.onsuccess=function(r){var i=r.target.result.version;r.target.result.close();var o=a.open(s,i+1);o.onupgradeneeded=function(e){e.target.result.createObjectStore(t,{autoIncrement:!0})},o.onsuccess=function(e){e.target.result.close(),n&&n(1)},o.onerror=function(e){throw e},o.onblocked=function(r){throw new Error('Cannot create table "'+t+'" because database "'+e+'"  is blocked')}}}},he.dropTable=function(e,t,r,n){var a=C.global.indexedDB,s=A.databases[e].ixdbid;he.getDatabaseNames().onsuccess=function(i){if(!i.target.result.contains(s))throw new Error('IndexedDB: Cannot drop table in database "'+s+'" because it does not exist');var o=a.open(s);o.onversionchange=function(e){e.target.result.close()},o.onsuccess=function(i){var o=i.target.result.version;i.target.result.close();var u=a.open(s,o+1);u.onupgradeneeded=function(n){var a=n.target.result;if(a.objectStoreNames.contains(t))a.deleteObjectStore(t),delete A.databases[e].tables[t];else if(!r)throw new Error('IndexedDB: Cannot drop table "'+t+'" because it does not exist')},u.onsuccess=function(e){e.target.result.close(),n&&n(1)},u.onerror=function(e){throw e},u.onblocked=function(r){throw new Error('Cannot drop table "'+t+'" because database "'+e+'" is blocked')}}}},he.intoTable=function(e,t,r,n,a){var s=C.global.indexedDB,i=A.databases[e].ixdbid;s.open(i).onsuccess=function(e){for(var n=e.target.result,s=n.transaction([t],"readwrite"),i=s.objectStore(t),o=0,u=r.length;o<u;o++)i.add(r[o]);s.oncomplete=function(){n.close(),a&&a(u)}}},he.fromTable=function(e,t,r,n,a){var s=C.global.indexedDB,i=A.databases[e].ixdbid;s.open(i).onsuccess=function(e){var s=[],i=e.target.result,o=i.transaction([t]),u=o.objectStore(t),c=u.openCursor();c.onblocked=function(e){},c.onerror=function(e){},c.onsuccess=function(e){var t=e.target.result;t?(s.push(t.value),t.continue()):(i.close(),r&&r(s,n,a))}}},he.deleteFromTable=function(e,t,r,n,a){var s=C.global.indexedDB,i=A.databases[e].ixdbid;s.open(i).onsuccess=function(e){var s=e.target.result,i=s.transaction([t],"readwrite"),o=i.objectStore(t),u=o.openCursor(),c=0;u.onblocked=function(e){},u.onerror=function(e){},u.onsuccess=function(e){
-var t=e.target.result;t?(r&&!r(t.value,n)||(t.delete(),c++),t.continue()):(s.close(),a&&a(c))}}},he.updateTable=function(e,t,r,n,a,s){var i=C.global.indexedDB,o=A.databases[e].ixdbid;i.open(o).onsuccess=function(e){var i=e.target.result,o=i.transaction([t],"readwrite"),u=o.objectStore(t),c=u.openCursor(),l=0;c.onblocked=function(e){},c.onerror=function(e){},c.onsuccess=function(e){var t=e.target.result;if(t){if(!n||n(t.value,a)){var o=t.value;r(o,a),t.update(o),l++}t.continue()}else i.close(),s&&s(l)}}};var de=A.engines.LOCALSTORAGE=function(){};de.get=function(e){var t=localStorage.getItem(e);if(void 0!==t){var r=void 0;try{r=JSON.parse(t)}catch(e){throw new Error("Cannot parse JSON object from localStorage"+t)}return r}},de.set=function(e,t){void 0===t?localStorage.removeItem(e):localStorage.setItem(e,JSON.stringify(t))},de.storeTable=function(e,t){var r=A.databases[e],n=r.tables[t],a={};a.columns=n.columns,a.data=n.data,a.identities=n.identities,de.set(r.lsdbid+"."+t,a)},de.restoreTable=function(e,t){var r=A.databases[e],n=de.get(r.lsdbid+"."+t),a=new A.Table;for(var s in n)a[s]=n[s];return r.tables[t]=a,a.indexColumns(),a},de.removeTable=function(e,t){var r=A.databases[e];localStorage.removeItem(r.lsdbid+"."+t)},de.createDatabase=function(e,t,r,n,a){var s=1,i=de.get("alasql");if(r&&i&&i.databases&&i.databases[e])s=0;else{if(i||(i={databases:{}}),i.databases&&i.databases[e])throw new Error('localStorage: Cannot create new database "'+e+'" because it already exists');i.databases[e]=!0,de.set("alasql",i),de.set(e,{databaseid:e,tables:{}})}return a&&(s=a(s)),s},de.dropDatabase=function(e,t,r){var n=1,a=de.get("alasql");if(t&&a&&a.databases&&!a.databases[e])n=0;else{if(!a){if(t)return r?r(0):0;throw new Error("There is no any AlaSQL databases in localStorage")}if(a.databases&&!a.databases[e])throw new Error('localStorage: Cannot drop database "'+e+'" because there is no such database');delete a.databases[e],de.set("alasql",a);var s=de.get(e);for(var i in s.tables)localStorage.removeItem(e+"."+i);localStorage.removeItem(e)}return r&&(n=r(n)),n},de.attachDatabase=function(e,t,r,n,a){var s=1;if(A.databases[t])throw new Error('Unable to attach database as "'+t+'" because it already exists');t||(t=e);var i=new A.Database(t);if(i.engineid="LOCALSTORAGE",i.lsdbid=e,i.tables=de.get(e).tables,!A.options.autocommit&&i.tables)for(var o in i.tables)de.restoreTable(t,o);return a&&(s=a(s)),s},de.showDatabases=function(e,t){var r=[],n=de.get("alasql");if(e)var a=new RegExp(e.value.replace(/\%/g,".*"),"g");if(n&&n.databases){for(dbid in n.databases)r.push({databaseid:dbid});e&&r&&r.length>0&&(r=r.filter(function(e){return e.databaseid.match(a)}))}return t&&(r=t(r)),r},de.createTable=function(e,t,r,n){var a=1,s=A.databases[e].lsdbid;if(de.get(s+"."+t)&&!r)throw new Error('Table "'+t+'" alsready exists in localStorage database "'+s+'"');var i=de.get(s);A.databases[e].tables[t];return i.tables[t]=!0,de.set(s,i),de.storeTable(e,t),n&&(a=n(a)),a},de.truncateTable=function(e,t,r,n){var a=1,s=A.databases[e].lsdbid;if(A.options.autocommit)var i=de.get(s);else var i=A.databases[e];if(!r&&!i.tables[t])throw new Error('Cannot truncate table "'+t+'" in localStorage, because it does not exist');return de.restoreTable(e,t).data=[],de.storeTable(e,t),n&&(a=n(a)),a},de.dropTable=function(e,t,r,n){var a=1,s=A.databases[e].lsdbid;if(A.options.autocommit)var i=de.get(s);else var i=A.databases[e];if(!r&&!i.tables[t])throw new Error('Cannot drop table "'+t+'" in localStorage, because it does not exist');return delete i.tables[t],de.set(s,i),de.removeTable(e,t),n&&(a=n(a)),a},de.fromTable=function(e,t,r,n,a){var s=(A.databases[e].lsdbid,de.restoreTable(e,t).data);return r&&(s=r(s,n,a)),s},de.intoTable=function(e,t,r,n,a){var s=(A.databases[e].lsdbid,r.length),i=de.restoreTable(e,t);return i.data||(i.data=[]),i.data=i.data.concat(r),de.storeTable(e,t),a&&(s=a(s)),s},de.loadTableData=function(e,t){A.databases[e],A.databases[e].lsdbid;de.restoreTable(e,t)},de.saveTableData=function(e,t){var r=A.databases[e],n=A.databases[e].lsdbid;de.storeTable(n,t),r.tables[t].data=void 0},de.commit=function(e,t){var r=A.databases[e],n=A.databases[e].lsdbid,a={databaseid:n,tables:{}};if(r.tables)for(var s in r.tables)a.tables[s]=!0,de.storeTable(e,s);return de.set(n,a),t?t(1):1},de.begin=de.commit,de.rollback=function(e,t){return};var fe=A.engines.SQLITE=function(){};fe.createDatabase=function(e,t,r,n,a){throw new Error("Connot create SQLITE database in memory. Attach it.")},fe.dropDatabase=function(e){throw new Error("This is impossible to drop SQLite database. Detach it.")},fe.attachDatabase=function(e,t,r,n,a){if(A.databases[t])throw new Error('Unable to attach database as "'+t+'" because it already exists');if(r[0]&&r[0]instanceof K.StringValue||r[0]instanceof K.ParamValue){if(r[0]instanceof K.StringValue)var s=r[0].value;else if(r[0]instanceof K.ParamValue)var s=n[r[0].param];return A.utils.loadBinaryFile(s,!0,function(r){var n=new A.Database(t||e);n.engineid="SQLITE",n.sqldbid=e;var s=n.sqldb=new SQL.Database(r);n.tables=[],s.exec("SELECT * FROM sqlite_master WHERE type='table'")[0].values.forEach(function(e){n.tables[e[1]]={};var t=n.tables[e[1]].columns=[],r=A.parse(e[4]),a=r.statements[0].columns;a&&a.length>0&&a.forEach(function(e){t.push(e)})}),a(1)},function(e){throw new Error('Cannot open SQLite database file "'+r[0].value+'"')}),1}throw new Error("Cannot attach SQLite database without a file")},fe.fromTable=function(e,t,r,n,a){var s=A.databases[e].sqldb.exec("SELECT * FROM "+t),i=a.sources[n].columns=[];s[0].columns.length>0&&s[0].columns.forEach(function(e){i.push({columnid:e})});var o=[];s[0].values.length>0&&s[0].values.forEach(function(e){var t={};i.forEach(function(r,n){t[r.columnid]=e[n]}),o.push(t)}),r&&r(o,n,a)},fe.intoTable=function(e,t,r,n,a){for(var s=A.databases[e].sqldb,i=0,o=r.length;i<o;i++){var u="INSERT INTO "+t+" (",c=r[i],l=Object.keys(c);u+=l.join(","),u+=") VALUES (",u+=l.map(function(e){return v=c[e],"string"==typeof v&&(v="'"+v+"'"),v}).join(","),u+=")",s.exec(u)}var h=o;return a&&a(h),h};var pe=A.engines.FILESTORAGE=A.engines.FILE=function(){};if(pe.createDatabase=function(e,t,r,n,a){var s=1,i=t[0].value;return A.utils.fileExists(i,function(e){if(e){if(r)return s=0,a&&(s=a(s)),s;throw new Error("Cannot create new database file, because it alreagy exists")}var t={tables:{}};A.utils.saveFile(i,JSON.stringify(t),function(e){a&&(s=a(s))})}),s},pe.dropDatabase=function(e,t,r){var n,a=e.value;return A.utils.fileExists(a,function(e){if(e)n=1,A.utils.deleteFile(a,function(){n=1,r&&(n=r(n))});else{if(!t)throw new Error("Cannot drop database file, because it does not exist");n=0,r&&(n=r(n))}}),n},pe.attachDatabase=function(e,t,r,n,a){var s=1;if(A.databases[t])throw new Error('Unable to attach database as "'+t+'" because it already exists');var i=new A.Database(t||e);return i.engineid="FILESTORAGE",i.filename=r[0].value,x(i.filename,!!a,function(e){try{i.data=JSON.parse(e)}catch(e){throw new Error("Data in FileStorage database are corrupted")}if(i.tables=i.data.tables,!A.options.autocommit&&i.tables)for(var t in i.tables)i.tables[t].data=i.data[t];a&&(s=a(s))}),s},pe.createTable=function(e,t,r,n){var a=A.databases[e],s=a.data[t];if(s&&!r)throw new Error('Table "'+t+'" alsready exists in the database "'+fsdbid+'"');var i=A.databases[e].tables[t];return a.data.tables[t]={columns:i.columns},a.data[t]=[],pe.updateFile(e),n&&n(1),1},pe.updateFile=function(e){var t=A.databases[e];if(t.issaving)return void(t.postsave=!0);t.issaving=!0,t.postsave=!1,A.utils.saveFile(t.filename,JSON.stringify(t.data),function(){t.issaving=!1,t.postsave&&setTimeout(function(){pe.updateFile(e)},50)})},pe.dropTable=function(e,t,r,n){var a=A.databases[e];if(!r&&!a.tables[t])throw new Error('Cannot drop table "'+t+'" in fileStorage, because it does not exist');return delete a.tables[t],delete a.data.tables[t],delete a.data[t],pe.updateFile(e),n&&n(1),1},pe.fromTable=function(e,t,r,n,a){var s=A.databases[e],i=s.data[t];return r&&(i=r(i,n,a)),i},pe.intoTable=function(e,t,r,n,a){var s=A.databases[e],i=r.length,o=s.data[t];return o||(o=[]),s.data[t]=o.concat(r),pe.updateFile(e),a&&a(i),i},pe.loadTableData=function(e,t){var r=A.databases[e];r.tables[t].data=r.data[t]},pe.saveTableData=function(e,t){var r=A.databases[e];r.data[t]=r.tables[t].data,r.tables[t].data=null,pe.updateFile(e)},pe.commit=function(e,t){var r=A.databases[e];if(r.tables)for(var n in r.tables)r.data.tables[n]={columns:r.tables[n].columns},r.data[n]=r.tables[n].data;return pe.updateFile(e),t?t(1):1},pe.begin=pe.commit,pe.rollback=function(e,t){function r(){setTimeout(function(){if(a.issaving)return r();A.loadFile(a.filename,!!t,function(r){a.data=r,a.tables={};for(var s in a.data.tables){var i=new A.Table({columns:a.data.tables[s].columns});G(i,a.data.tables[s]),a.tables[s]=i,A.options.autocommit||(a.tables[s].data=a.data[s]),a.tables[s].indexColumns()}delete A.databases[e],A.databases[e]=new A.Database(e),G(A.databases[e],a),A.databases[e].engineid="FILESTORAGE",A.databases[e].filename=a.filename,t&&(n=t(n))})},100)}var n=1,a=A.databases[e];a.dbversion++,r()},C.isBrowser&&!C.isWebWorker){if(!(A=A||!1))throw new Error("alasql was not found");A.worker=function(){throw new Error("Can find webworker in this enviroment")},"undefined"!=typeof Worker&&(A.worker=function(e,t,r){if(!0===e&&(e=void 0),void 0===e)for(var n=document.getElementsByTagName("script"),a=0;a<n.length;a++){if("alasql-worker.js"===n[a].src.substr(-16).toLowerCase()){e=n[a].src.substr(0,n[a].src.length-16)+"alasql.js";break}if("alasql-worker.min.js"===n[a].src.substr(-20).toLowerCase()){e=n[a].src.substr(0,n[a].src.length-20)+"alasql.min.js";break}if("alasql.js"===n[a].src.substr(-9).toLowerCase()){e=n[a].src;break}if("alasql.min.js"===n[a].src.substr(-13).toLowerCase()){e=n[a].src.substr(0,n[a].src.length-13)+"alasql.min.js";break}}if(void 0===e)throw new Error("Path to alasql.js is not specified");if(!1!==e){var s="importScripts('";s+=e,s+="');self.onmessage = function(event) {alasql(event.data.sql,event.data.params, function(data){postMessage({id:event.data.id, data:data});});}";var i=new Blob([s],{type:"text/plain"});if(A.webworker=new Worker(URL.createObjectURL(i)),A.webworker.onmessage=function(e){var t=e.data.id;A.buffer[t](e.data.data),delete A.buffer[t]},A.webworker.onerror=function(e){throw e},arguments.length>1){var o="REQUIRE "+t.map(function(e){return'"'+e+'"'}).join(",");A(o,[],r)}}else if(!1===e)return void delete A.webworker});var be=be||function(e){"use strict";if(!(void 0===e||"undefined"!=typeof navigator&&/MSIE [1-9]\./.test(navigator.userAgent))){var t=e.document,r=function(){return e.URL||e.webkitURL||e},n=t.createElementNS("http://www.w3.org/1999/xhtml","a"),a="download"in n,s=function(e){var t=new MouseEvent("click");e.dispatchEvent(t)},i=/constructor/i.test(e.HTMLElement)||e.safari,o=/CriOS\/[\d]+/.test(navigator.userAgent),u=function(t){(e.setImmediate||e.setTimeout)(function(){throw t},0)},c=function(e){var t=function(){"string"==typeof e?r().revokeObjectURL(e):e.remove()};setTimeout(t,4e4)},l=function(e,t,r){t=[].concat(t);for(var n=t.length;n--;){var a=e["on"+t[n]];if("function"==typeof a)try{a.call(e,r||e)}catch(e){u(e)}}},h=function(e){return/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(e.type)?new Blob([String.fromCharCode(65279),e],{type:e.type}):e},d=function(t,u,d){d||(t=h(t));var f,p=this,b=t.type,E="application/octet-stream"===b,g=function(){l(p,"writestart progress write writeend".split(" "))};if(p.readyState=p.INIT,a)return f=r().createObjectURL(t),void setTimeout(function(){n.href=f,n.download=u,s(n),g(),c(f),p.readyState=p.DONE});!function(){if((o||E&&i)&&e.FileReader){var n=new FileReader;return n.onloadend=function(){var t=o?n.result:n.result.replace(/^data:[^;]*;/,"data:attachment/file;");e.open(t,"_blank")||(e.location.href=t),t=void 0,p.readyState=p.DONE,g()},n.readAsDataURL(t),void(p.readyState=p.INIT)}if(f||(f=r().createObjectURL(t)),E)e.location.href=f;else{e.open(f,"_blank")||(e.location.href=f)}p.readyState=p.DONE,g(),c(f)}()},f=d.prototype,p=function(e,t,r){return new d(e,t||e.name||"download",r)};return"undefined"!=typeof navigator&&navigator.msSaveOrOpenBlob?function(e,t,r){return t=t||e.name||"download",r||(e=h(e)),navigator.msSaveOrOpenBlob(e,t)}:(f.abort=function(){},f.readyState=f.INIT=0,f.WRITING=1,f.DONE=2,f.error=f.onwritestart=f.onprogress=f.onwrite=f.onabort=f.onerror=f.onwriteend=null,p)}}("undefined"!=typeof self&&self||"undefined"!=typeof window&&window||this.content);"undefined"!=typeof module&&module.exports?module.exports.saveAs=be:"undefined"!="function"&&null!==__webpack_require__(133)&&null!==__webpack_require__(134)&&!(__WEBPACK_AMD_DEFINE_RESULT__ = (function(){return be}).call(exports, __webpack_require__, exports, module),
+var t=e.target.result;t?(r&&!r(t.value,n)||(t.delete(),c++),t.continue()):(s.close(),a&&a(c))}}},he.updateTable=function(e,t,r,n,a,s){var i=C.global.indexedDB,o=A.databases[e].ixdbid;i.open(o).onsuccess=function(e){var i=e.target.result,o=i.transaction([t],"readwrite"),u=o.objectStore(t),c=u.openCursor(),l=0;c.onblocked=function(e){},c.onerror=function(e){},c.onsuccess=function(e){var t=e.target.result;if(t){if(!n||n(t.value,a)){var o=t.value;r(o,a),t.update(o),l++}t.continue()}else i.close(),s&&s(l)}}};var de=A.engines.LOCALSTORAGE=function(){};de.get=function(e){var t=localStorage.getItem(e);if(void 0!==t){var r=void 0;try{r=JSON.parse(t)}catch(e){throw new Error("Cannot parse JSON object from localStorage"+t)}return r}},de.set=function(e,t){void 0===t?localStorage.removeItem(e):localStorage.setItem(e,JSON.stringify(t))},de.storeTable=function(e,t){var r=A.databases[e],n=r.tables[t],a={};a.columns=n.columns,a.data=n.data,a.identities=n.identities,de.set(r.lsdbid+"."+t,a)},de.restoreTable=function(e,t){var r=A.databases[e],n=de.get(r.lsdbid+"."+t),a=new A.Table;for(var s in n)a[s]=n[s];return r.tables[t]=a,a.indexColumns(),a},de.removeTable=function(e,t){var r=A.databases[e];localStorage.removeItem(r.lsdbid+"."+t)},de.createDatabase=function(e,t,r,n,a){var s=1,i=de.get("alasql");if(r&&i&&i.databases&&i.databases[e])s=0;else{if(i||(i={databases:{}}),i.databases&&i.databases[e])throw new Error('localStorage: Cannot create new database "'+e+'" because it already exists');i.databases[e]=!0,de.set("alasql",i),de.set(e,{databaseid:e,tables:{}})}return a&&(s=a(s)),s},de.dropDatabase=function(e,t,r){var n=1,a=de.get("alasql");if(t&&a&&a.databases&&!a.databases[e])n=0;else{if(!a){if(t)return r?r(0):0;throw new Error("There is no any AlaSQL databases in localStorage")}if(a.databases&&!a.databases[e])throw new Error('localStorage: Cannot drop database "'+e+'" because there is no such database');delete a.databases[e],de.set("alasql",a);var s=de.get(e);for(var i in s.tables)localStorage.removeItem(e+"."+i);localStorage.removeItem(e)}return r&&(n=r(n)),n},de.attachDatabase=function(e,t,r,n,a){var s=1;if(A.databases[t])throw new Error('Unable to attach database as "'+t+'" because it already exists');t||(t=e);var i=new A.Database(t);if(i.engineid="LOCALSTORAGE",i.lsdbid=e,i.tables=de.get(e).tables,!A.options.autocommit&&i.tables)for(var o in i.tables)de.restoreTable(t,o);return a&&(s=a(s)),s},de.showDatabases=function(e,t){var r=[],n=de.get("alasql");if(e)var a=new RegExp(e.value.replace(/\%/g,".*"),"g");if(n&&n.databases){for(dbid in n.databases)r.push({databaseid:dbid});e&&r&&r.length>0&&(r=r.filter(function(e){return e.databaseid.match(a)}))}return t&&(r=t(r)),r},de.createTable=function(e,t,r,n){var a=1,s=A.databases[e].lsdbid;if(de.get(s+"."+t)&&!r)throw new Error('Table "'+t+'" alsready exists in localStorage database "'+s+'"');var i=de.get(s);A.databases[e].tables[t];return i.tables[t]=!0,de.set(s,i),de.storeTable(e,t),n&&(a=n(a)),a},de.truncateTable=function(e,t,r,n){var a=1,s=A.databases[e].lsdbid;if(A.options.autocommit)var i=de.get(s);else var i=A.databases[e];if(!r&&!i.tables[t])throw new Error('Cannot truncate table "'+t+'" in localStorage, because it does not exist');return de.restoreTable(e,t).data=[],de.storeTable(e,t),n&&(a=n(a)),a},de.dropTable=function(e,t,r,n){var a=1,s=A.databases[e].lsdbid;if(A.options.autocommit)var i=de.get(s);else var i=A.databases[e];if(!r&&!i.tables[t])throw new Error('Cannot drop table "'+t+'" in localStorage, because it does not exist');return delete i.tables[t],de.set(s,i),de.removeTable(e,t),n&&(a=n(a)),a},de.fromTable=function(e,t,r,n,a){var s=(A.databases[e].lsdbid,de.restoreTable(e,t).data);return r&&(s=r(s,n,a)),s},de.intoTable=function(e,t,r,n,a){var s=(A.databases[e].lsdbid,r.length),i=de.restoreTable(e,t);return i.data||(i.data=[]),i.data=i.data.concat(r),de.storeTable(e,t),a&&(s=a(s)),s},de.loadTableData=function(e,t){A.databases[e],A.databases[e].lsdbid;de.restoreTable(e,t)},de.saveTableData=function(e,t){var r=A.databases[e],n=A.databases[e].lsdbid;de.storeTable(n,t),r.tables[t].data=void 0},de.commit=function(e,t){var r=A.databases[e],n=A.databases[e].lsdbid,a={databaseid:n,tables:{}};if(r.tables)for(var s in r.tables)a.tables[s]=!0,de.storeTable(e,s);return de.set(n,a),t?t(1):1},de.begin=de.commit,de.rollback=function(e,t){return};var fe=A.engines.SQLITE=function(){};fe.createDatabase=function(e,t,r,n,a){throw new Error("Connot create SQLITE database in memory. Attach it.")},fe.dropDatabase=function(e){throw new Error("This is impossible to drop SQLite database. Detach it.")},fe.attachDatabase=function(e,t,r,n,a){if(A.databases[t])throw new Error('Unable to attach database as "'+t+'" because it already exists');if(r[0]&&r[0]instanceof K.StringValue||r[0]instanceof K.ParamValue){if(r[0]instanceof K.StringValue)var s=r[0].value;else if(r[0]instanceof K.ParamValue)var s=n[r[0].param];return A.utils.loadBinaryFile(s,!0,function(r){var n=new A.Database(t||e);n.engineid="SQLITE",n.sqldbid=e;var s=n.sqldb=new SQL.Database(r);n.tables=[],s.exec("SELECT * FROM sqlite_master WHERE type='table'")[0].values.forEach(function(e){n.tables[e[1]]={};var t=n.tables[e[1]].columns=[],r=A.parse(e[4]),a=r.statements[0].columns;a&&a.length>0&&a.forEach(function(e){t.push(e)})}),a(1)},function(e){throw new Error('Cannot open SQLite database file "'+r[0].value+'"')}),1}throw new Error("Cannot attach SQLite database without a file")},fe.fromTable=function(e,t,r,n,a){var s=A.databases[e].sqldb.exec("SELECT * FROM "+t),i=a.sources[n].columns=[];s[0].columns.length>0&&s[0].columns.forEach(function(e){i.push({columnid:e})});var o=[];s[0].values.length>0&&s[0].values.forEach(function(e){var t={};i.forEach(function(r,n){t[r.columnid]=e[n]}),o.push(t)}),r&&r(o,n,a)},fe.intoTable=function(e,t,r,n,a){for(var s=A.databases[e].sqldb,i=0,o=r.length;i<o;i++){var u="INSERT INTO "+t+" (",c=r[i],l=Object.keys(c);u+=l.join(","),u+=") VALUES (",u+=l.map(function(e){return v=c[e],"string"==typeof v&&(v="'"+v+"'"),v}).join(","),u+=")",s.exec(u)}var h=o;return a&&a(h),h};var pe=A.engines.FILESTORAGE=A.engines.FILE=function(){};if(pe.createDatabase=function(e,t,r,n,a){var s=1,i=t[0].value;return A.utils.fileExists(i,function(e){if(e){if(r)return s=0,a&&(s=a(s)),s;throw new Error("Cannot create new database file, because it alreagy exists")}var t={tables:{}};A.utils.saveFile(i,JSON.stringify(t),function(e){a&&(s=a(s))})}),s},pe.dropDatabase=function(e,t,r){var n,a=e.value;return A.utils.fileExists(a,function(e){if(e)n=1,A.utils.deleteFile(a,function(){n=1,r&&(n=r(n))});else{if(!t)throw new Error("Cannot drop database file, because it does not exist");n=0,r&&(n=r(n))}}),n},pe.attachDatabase=function(e,t,r,n,a){var s=1;if(A.databases[t])throw new Error('Unable to attach database as "'+t+'" because it already exists');var i=new A.Database(t||e);return i.engineid="FILESTORAGE",i.filename=r[0].value,x(i.filename,!!a,function(e){try{i.data=JSON.parse(e)}catch(e){throw new Error("Data in FileStorage database are corrupted")}if(i.tables=i.data.tables,!A.options.autocommit&&i.tables)for(var t in i.tables)i.tables[t].data=i.data[t];a&&(s=a(s))}),s},pe.createTable=function(e,t,r,n){var a=A.databases[e],s=a.data[t];if(s&&!r)throw new Error('Table "'+t+'" alsready exists in the database "'+fsdbid+'"');var i=A.databases[e].tables[t];return a.data.tables[t]={columns:i.columns},a.data[t]=[],pe.updateFile(e),n&&n(1),1},pe.updateFile=function(e){var t=A.databases[e];if(t.issaving)return void(t.postsave=!0);t.issaving=!0,t.postsave=!1,A.utils.saveFile(t.filename,JSON.stringify(t.data),function(){t.issaving=!1,t.postsave&&setTimeout(function(){pe.updateFile(e)},50)})},pe.dropTable=function(e,t,r,n){var a=A.databases[e];if(!r&&!a.tables[t])throw new Error('Cannot drop table "'+t+'" in fileStorage, because it does not exist');return delete a.tables[t],delete a.data.tables[t],delete a.data[t],pe.updateFile(e),n&&n(1),1},pe.fromTable=function(e,t,r,n,a){var s=A.databases[e],i=s.data[t];return r&&(i=r(i,n,a)),i},pe.intoTable=function(e,t,r,n,a){var s=A.databases[e],i=r.length,o=s.data[t];return o||(o=[]),s.data[t]=o.concat(r),pe.updateFile(e),a&&a(i),i},pe.loadTableData=function(e,t){var r=A.databases[e];r.tables[t].data=r.data[t]},pe.saveTableData=function(e,t){var r=A.databases[e];r.data[t]=r.tables[t].data,r.tables[t].data=null,pe.updateFile(e)},pe.commit=function(e,t){var r=A.databases[e];if(r.tables)for(var n in r.tables)r.data.tables[n]={columns:r.tables[n].columns},r.data[n]=r.tables[n].data;return pe.updateFile(e),t?t(1):1},pe.begin=pe.commit,pe.rollback=function(e,t){function r(){setTimeout(function(){if(a.issaving)return r();A.loadFile(a.filename,!!t,function(r){a.data=r,a.tables={};for(var s in a.data.tables){var i=new A.Table({columns:a.data.tables[s].columns});G(i,a.data.tables[s]),a.tables[s]=i,A.options.autocommit||(a.tables[s].data=a.data[s]),a.tables[s].indexColumns()}delete A.databases[e],A.databases[e]=new A.Database(e),G(A.databases[e],a),A.databases[e].engineid="FILESTORAGE",A.databases[e].filename=a.filename,t&&(n=t(n))})},100)}var n=1,a=A.databases[e];a.dbversion++,r()},C.isBrowser&&!C.isWebWorker){if(!(A=A||!1))throw new Error("alasql was not found");A.worker=function(){throw new Error("Can find webworker in this enviroment")},"undefined"!=typeof Worker&&(A.worker=function(e,t,r){if(!0===e&&(e=void 0),void 0===e)for(var n=document.getElementsByTagName("script"),a=0;a<n.length;a++){if("alasql-worker.js"===n[a].src.substr(-16).toLowerCase()){e=n[a].src.substr(0,n[a].src.length-16)+"alasql.js";break}if("alasql-worker.min.js"===n[a].src.substr(-20).toLowerCase()){e=n[a].src.substr(0,n[a].src.length-20)+"alasql.min.js";break}if("alasql.js"===n[a].src.substr(-9).toLowerCase()){e=n[a].src;break}if("alasql.min.js"===n[a].src.substr(-13).toLowerCase()){e=n[a].src.substr(0,n[a].src.length-13)+"alasql.min.js";break}}if(void 0===e)throw new Error("Path to alasql.js is not specified");if(!1!==e){var s="importScripts('";s+=e,s+="');self.onmessage = function(event) {alasql(event.data.sql,event.data.params, function(data){postMessage({id:event.data.id, data:data});});}";var i=new Blob([s],{type:"text/plain"});if(A.webworker=new Worker(URL.createObjectURL(i)),A.webworker.onmessage=function(e){var t=e.data.id;A.buffer[t](e.data.data),delete A.buffer[t]},A.webworker.onerror=function(e){throw e},arguments.length>1){var o="REQUIRE "+t.map(function(e){return'"'+e+'"'}).join(",");A(o,[],r)}}else if(!1===e)return void delete A.webworker});var be=be||function(e){"use strict";if(!(void 0===e||"undefined"!=typeof navigator&&/MSIE [1-9]\./.test(navigator.userAgent))){var t=e.document,r=function(){return e.URL||e.webkitURL||e},n=t.createElementNS("http://www.w3.org/1999/xhtml","a"),a="download"in n,s=function(e){var t=new MouseEvent("click");e.dispatchEvent(t)},i=/constructor/i.test(e.HTMLElement)||e.safari,o=/CriOS\/[\d]+/.test(navigator.userAgent),u=function(t){(e.setImmediate||e.setTimeout)(function(){throw t},0)},c=function(e){var t=function(){"string"==typeof e?r().revokeObjectURL(e):e.remove()};setTimeout(t,4e4)},l=function(e,t,r){t=[].concat(t);for(var n=t.length;n--;){var a=e["on"+t[n]];if("function"==typeof a)try{a.call(e,r||e)}catch(e){u(e)}}},h=function(e){return/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(e.type)?new Blob([String.fromCharCode(65279),e],{type:e.type}):e},d=function(t,u,d){d||(t=h(t));var f,p=this,b=t.type,E="application/octet-stream"===b,g=function(){l(p,"writestart progress write writeend".split(" "))};if(p.readyState=p.INIT,a)return f=r().createObjectURL(t),void setTimeout(function(){n.href=f,n.download=u,s(n),g(),c(f),p.readyState=p.DONE});!function(){if((o||E&&i)&&e.FileReader){var n=new FileReader;return n.onloadend=function(){var t=o?n.result:n.result.replace(/^data:[^;]*;/,"data:attachment/file;");e.open(t,"_blank")||(e.location.href=t),t=void 0,p.readyState=p.DONE,g()},n.readAsDataURL(t),void(p.readyState=p.INIT)}if(f||(f=r().createObjectURL(t)),E)e.location.href=f;else{e.open(f,"_blank")||(e.location.href=f)}p.readyState=p.DONE,g(),c(f)}()},f=d.prototype,p=function(e,t,r){return new d(e,t||e.name||"download",r)};return"undefined"!=typeof navigator&&navigator.msSaveOrOpenBlob?function(e,t,r){return t=t||e.name||"download",r||(e=h(e)),navigator.msSaveOrOpenBlob(e,t)}:(f.abort=function(){},f.readyState=f.INIT=0,f.WRITING=1,f.DONE=2,f.error=f.onwritestart=f.onprogress=f.onwrite=f.onabort=f.onerror=f.onwriteend=null,p)}}("undefined"!=typeof self&&self||"undefined"!=typeof window&&window||this.content);"undefined"!=typeof module&&module.exports?module.exports.saveAs=be:"undefined"!="function"&&null!==__webpack_require__(134)&&null!==__webpack_require__(135)&&!(__WEBPACK_AMD_DEFINE_RESULT__ = (function(){return be}).call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)),(C.isCordova||C.isMeteorServer||C.isNode)&&console.warn("It looks like you are using the browser version of AlaSQL. Please use the alasql.fs.js file instead."),A.utils.saveAs=be}return new J("alasql"),A.use("alasql"),A});
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(131), __webpack_require__(7)(module), __webpack_require__(132)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(9)(module), __webpack_require__(7)))
 
 /***/ }),
-/* 131 */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-/* 132 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 133 */
+/* 134 */
 /***/ (function(module, exports) {
 
 module.exports = function() {
@@ -17732,7 +17731,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 134 */
+/* 135 */
 /***/ (function(module, exports) {
 
 /* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
@@ -17741,34 +17740,32 @@ module.exports = __webpack_amd_options__;
 /* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ }),
-/* 135 */
+/* 136 */,
+/* 137 */,
+/* 138 */,
+/* 139 */,
+/* 140 */,
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
  * @namespace Chart
  */
-var Chart = __webpack_require__(136)();
+var Chart = __webpack_require__(142)();
 
 Chart.helpers = __webpack_require__(1);
 
 // @todo dispatch these helpers into appropriated helpers/helpers.* file and write unit tests!
-__webpack_require__(140)(Chart);
+__webpack_require__(146)(Chart);
 
 Chart.defaults = __webpack_require__(2);
 Chart.Element = __webpack_require__(3);
 Chart.elements = __webpack_require__(4);
-Chart.Interaction = __webpack_require__(9);
-Chart.platform = __webpack_require__(10);
+Chart.Interaction = __webpack_require__(12);
+Chart.platform = __webpack_require__(13);
 
-__webpack_require__(151)(Chart);
-__webpack_require__(152)(Chart);
-__webpack_require__(153)(Chart);
-__webpack_require__(154)(Chart);
-__webpack_require__(155)(Chart);
-__webpack_require__(156)(Chart);
 __webpack_require__(157)(Chart);
 __webpack_require__(158)(Chart);
-
 __webpack_require__(159)(Chart);
 __webpack_require__(160)(Chart);
 __webpack_require__(161)(Chart);
@@ -17776,31 +17773,38 @@ __webpack_require__(162)(Chart);
 __webpack_require__(163)(Chart);
 __webpack_require__(164)(Chart);
 
-// Controllers must be loaded after elements
-// See Chart.core.datasetController.dataElementType
+__webpack_require__(165)(Chart);
 __webpack_require__(166)(Chart);
 __webpack_require__(167)(Chart);
 __webpack_require__(168)(Chart);
 __webpack_require__(169)(Chart);
 __webpack_require__(170)(Chart);
-__webpack_require__(171)(Chart);
-__webpack_require__(172)(Chart);
 
+// Controllers must be loaded after elements
+// See Chart.core.datasetController.dataElementType
+__webpack_require__(172)(Chart);
 __webpack_require__(173)(Chart);
 __webpack_require__(174)(Chart);
 __webpack_require__(175)(Chart);
 __webpack_require__(176)(Chart);
 __webpack_require__(177)(Chart);
 __webpack_require__(178)(Chart);
+
 __webpack_require__(179)(Chart);
+__webpack_require__(180)(Chart);
+__webpack_require__(181)(Chart);
+__webpack_require__(182)(Chart);
+__webpack_require__(183)(Chart);
+__webpack_require__(184)(Chart);
+__webpack_require__(185)(Chart);
 
 // Loading built-it plugins
 var plugins = [];
 
 plugins.push(
-	__webpack_require__(180)(Chart),
-	__webpack_require__(181)(Chart),
-	__webpack_require__(182)(Chart)
+	__webpack_require__(186)(Chart),
+	__webpack_require__(187)(Chart),
+	__webpack_require__(188)(Chart)
 );
 
 Chart.plugins.register(plugins);
@@ -17825,7 +17829,7 @@ Chart.canvasHelpers = Chart.helpers.canvas;
 
 
 /***/ }),
-/* 136 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17881,7 +17885,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 137 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18138,7 +18142,7 @@ helpers.easingEffects = effects;
 
 
 /***/ }),
-/* 138 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18359,7 +18363,7 @@ helpers.drawRoundedRectangle = function(ctx) {
 
 
 /***/ }),
-/* 139 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18462,7 +18466,7 @@ module.exports = {
 
 
 /***/ }),
-/* 140 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18470,7 +18474,7 @@ module.exports = {
 /* global document: false */
 
 
-var color = __webpack_require__(8);
+var color = __webpack_require__(11);
 var defaults = __webpack_require__(2);
 var helpers = __webpack_require__(1);
 
@@ -19072,10 +19076,10 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 141 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var conversions = __webpack_require__(142);
+var conversions = __webpack_require__(148);
 
 var convert = function() {
    return new Converter();
@@ -19169,7 +19173,7 @@ Converter.prototype.getValues = function(space) {
 module.exports = convert;
 
 /***/ }),
-/* 142 */
+/* 148 */
 /***/ (function(module, exports) {
 
 /* MIT license */
@@ -19873,11 +19877,11 @@ for (var key in cssKeywords) {
 
 
 /***/ }),
-/* 143 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
-var colorNames = __webpack_require__(144);
+var colorNames = __webpack_require__(150);
 
 module.exports = {
    getRgba: getRgba,
@@ -20100,7 +20104,7 @@ for (var name in colorNames) {
 
 
 /***/ }),
-/* 144 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20259,7 +20263,7 @@ module.exports = {
 
 
 /***/ }),
-/* 145 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20373,7 +20377,7 @@ module.exports = Element.extend({
 
 
 /***/ }),
-/* 146 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20471,7 +20475,7 @@ module.exports = Element.extend({
 
 
 /***/ }),
-/* 147 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20584,7 +20588,7 @@ module.exports = Element.extend({
 
 
 /***/ }),
-/* 148 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20808,7 +20812,7 @@ module.exports = Element.extend({
 
 
 /***/ }),
-/* 149 */
+/* 155 */
 /***/ (function(module, exports) {
 
 /**
@@ -20829,7 +20833,7 @@ module.exports = {
 
 
 /***/ }),
-/* 150 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21293,7 +21297,7 @@ helpers.removeEvent = removeEventListener;
 
 
 /***/ }),
-/* 151 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21695,7 +21699,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 152 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21874,7 +21878,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 153 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21882,8 +21886,8 @@ module.exports = function(Chart) {
 
 var defaults = __webpack_require__(2);
 var helpers = __webpack_require__(1);
-var Interaction = __webpack_require__(9);
-var platform = __webpack_require__(10);
+var Interaction = __webpack_require__(12);
+var platform = __webpack_require__(13);
 
 module.exports = function(Chart) {
 	var plugins = Chart.plugins;
@@ -22785,7 +22789,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 154 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23122,7 +23126,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 155 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23551,7 +23555,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 156 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23603,7 +23607,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 157 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24541,7 +24545,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 158 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25496,7 +25500,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 159 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25635,7 +25639,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 160 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25775,7 +25779,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 161 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25974,7 +25978,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 162 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26225,7 +26229,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 163 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26762,7 +26766,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 164 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27525,240 +27529,240 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 165 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./af": 11,
-	"./af.js": 11,
-	"./ar": 12,
-	"./ar-dz": 13,
-	"./ar-dz.js": 13,
-	"./ar-kw": 14,
-	"./ar-kw.js": 14,
-	"./ar-ly": 15,
-	"./ar-ly.js": 15,
-	"./ar-ma": 16,
-	"./ar-ma.js": 16,
-	"./ar-sa": 17,
-	"./ar-sa.js": 17,
-	"./ar-tn": 18,
-	"./ar-tn.js": 18,
-	"./ar.js": 12,
-	"./az": 19,
-	"./az.js": 19,
-	"./be": 20,
-	"./be.js": 20,
-	"./bg": 21,
-	"./bg.js": 21,
-	"./bn": 22,
-	"./bn.js": 22,
-	"./bo": 23,
-	"./bo.js": 23,
-	"./br": 24,
-	"./br.js": 24,
-	"./bs": 25,
-	"./bs.js": 25,
-	"./ca": 26,
-	"./ca.js": 26,
-	"./cs": 27,
-	"./cs.js": 27,
-	"./cv": 28,
-	"./cv.js": 28,
-	"./cy": 29,
-	"./cy.js": 29,
-	"./da": 30,
-	"./da.js": 30,
-	"./de": 31,
-	"./de-at": 32,
-	"./de-at.js": 32,
-	"./de-ch": 33,
-	"./de-ch.js": 33,
-	"./de.js": 31,
-	"./dv": 34,
-	"./dv.js": 34,
-	"./el": 35,
-	"./el.js": 35,
-	"./en-au": 36,
-	"./en-au.js": 36,
-	"./en-ca": 37,
-	"./en-ca.js": 37,
-	"./en-gb": 38,
-	"./en-gb.js": 38,
-	"./en-ie": 39,
-	"./en-ie.js": 39,
-	"./en-nz": 40,
-	"./en-nz.js": 40,
-	"./eo": 41,
-	"./eo.js": 41,
-	"./es": 42,
-	"./es-do": 43,
-	"./es-do.js": 43,
-	"./es.js": 42,
-	"./et": 44,
-	"./et.js": 44,
-	"./eu": 45,
-	"./eu.js": 45,
-	"./fa": 46,
-	"./fa.js": 46,
-	"./fi": 47,
-	"./fi.js": 47,
-	"./fo": 48,
-	"./fo.js": 48,
-	"./fr": 49,
-	"./fr-ca": 50,
-	"./fr-ca.js": 50,
-	"./fr-ch": 51,
-	"./fr-ch.js": 51,
-	"./fr.js": 49,
-	"./fy": 52,
-	"./fy.js": 52,
-	"./gd": 53,
-	"./gd.js": 53,
-	"./gl": 54,
-	"./gl.js": 54,
-	"./gom-latn": 55,
-	"./gom-latn.js": 55,
-	"./he": 56,
-	"./he.js": 56,
-	"./hi": 57,
-	"./hi.js": 57,
-	"./hr": 58,
-	"./hr.js": 58,
-	"./hu": 59,
-	"./hu.js": 59,
-	"./hy-am": 60,
-	"./hy-am.js": 60,
-	"./id": 61,
-	"./id.js": 61,
-	"./is": 62,
-	"./is.js": 62,
-	"./it": 63,
-	"./it.js": 63,
-	"./ja": 64,
-	"./ja.js": 64,
-	"./jv": 65,
-	"./jv.js": 65,
-	"./ka": 66,
-	"./ka.js": 66,
-	"./kk": 67,
-	"./kk.js": 67,
-	"./km": 68,
-	"./km.js": 68,
-	"./kn": 69,
-	"./kn.js": 69,
-	"./ko": 70,
-	"./ko.js": 70,
-	"./ky": 71,
-	"./ky.js": 71,
-	"./lb": 72,
-	"./lb.js": 72,
-	"./lo": 73,
-	"./lo.js": 73,
-	"./lt": 74,
-	"./lt.js": 74,
-	"./lv": 75,
-	"./lv.js": 75,
-	"./me": 76,
-	"./me.js": 76,
-	"./mi": 77,
-	"./mi.js": 77,
-	"./mk": 78,
-	"./mk.js": 78,
-	"./ml": 79,
-	"./ml.js": 79,
-	"./mr": 80,
-	"./mr.js": 80,
-	"./ms": 81,
-	"./ms-my": 82,
-	"./ms-my.js": 82,
-	"./ms.js": 81,
-	"./my": 83,
-	"./my.js": 83,
-	"./nb": 84,
-	"./nb.js": 84,
-	"./ne": 85,
-	"./ne.js": 85,
-	"./nl": 86,
-	"./nl-be": 87,
-	"./nl-be.js": 87,
-	"./nl.js": 86,
-	"./nn": 88,
-	"./nn.js": 88,
-	"./pa-in": 89,
-	"./pa-in.js": 89,
-	"./pl": 90,
-	"./pl.js": 90,
-	"./pt": 91,
-	"./pt-br": 92,
-	"./pt-br.js": 92,
-	"./pt.js": 91,
-	"./ro": 93,
-	"./ro.js": 93,
-	"./ru": 94,
-	"./ru.js": 94,
-	"./sd": 95,
-	"./sd.js": 95,
-	"./se": 96,
-	"./se.js": 96,
-	"./si": 97,
-	"./si.js": 97,
-	"./sk": 98,
-	"./sk.js": 98,
-	"./sl": 99,
-	"./sl.js": 99,
-	"./sq": 100,
-	"./sq.js": 100,
-	"./sr": 101,
-	"./sr-cyrl": 102,
-	"./sr-cyrl.js": 102,
-	"./sr.js": 101,
-	"./ss": 103,
-	"./ss.js": 103,
-	"./sv": 104,
-	"./sv.js": 104,
-	"./sw": 105,
-	"./sw.js": 105,
-	"./ta": 106,
-	"./ta.js": 106,
-	"./te": 107,
-	"./te.js": 107,
-	"./tet": 108,
-	"./tet.js": 108,
-	"./th": 109,
-	"./th.js": 109,
-	"./tl-ph": 110,
-	"./tl-ph.js": 110,
-	"./tlh": 111,
-	"./tlh.js": 111,
-	"./tr": 112,
-	"./tr.js": 112,
-	"./tzl": 113,
-	"./tzl.js": 113,
-	"./tzm": 114,
-	"./tzm-latn": 115,
-	"./tzm-latn.js": 115,
-	"./tzm.js": 114,
-	"./uk": 116,
-	"./uk.js": 116,
-	"./ur": 117,
-	"./ur.js": 117,
-	"./uz": 118,
-	"./uz-latn": 119,
-	"./uz-latn.js": 119,
-	"./uz.js": 118,
-	"./vi": 120,
-	"./vi.js": 120,
-	"./x-pseudo": 121,
-	"./x-pseudo.js": 121,
-	"./yo": 122,
-	"./yo.js": 122,
-	"./zh-cn": 123,
-	"./zh-cn.js": 123,
-	"./zh-hk": 124,
-	"./zh-hk.js": 124,
-	"./zh-tw": 125,
-	"./zh-tw.js": 125
+	"./af": 14,
+	"./af.js": 14,
+	"./ar": 15,
+	"./ar-dz": 16,
+	"./ar-dz.js": 16,
+	"./ar-kw": 17,
+	"./ar-kw.js": 17,
+	"./ar-ly": 18,
+	"./ar-ly.js": 18,
+	"./ar-ma": 19,
+	"./ar-ma.js": 19,
+	"./ar-sa": 20,
+	"./ar-sa.js": 20,
+	"./ar-tn": 21,
+	"./ar-tn.js": 21,
+	"./ar.js": 15,
+	"./az": 22,
+	"./az.js": 22,
+	"./be": 23,
+	"./be.js": 23,
+	"./bg": 24,
+	"./bg.js": 24,
+	"./bn": 25,
+	"./bn.js": 25,
+	"./bo": 26,
+	"./bo.js": 26,
+	"./br": 27,
+	"./br.js": 27,
+	"./bs": 28,
+	"./bs.js": 28,
+	"./ca": 29,
+	"./ca.js": 29,
+	"./cs": 30,
+	"./cs.js": 30,
+	"./cv": 31,
+	"./cv.js": 31,
+	"./cy": 32,
+	"./cy.js": 32,
+	"./da": 33,
+	"./da.js": 33,
+	"./de": 34,
+	"./de-at": 35,
+	"./de-at.js": 35,
+	"./de-ch": 36,
+	"./de-ch.js": 36,
+	"./de.js": 34,
+	"./dv": 37,
+	"./dv.js": 37,
+	"./el": 38,
+	"./el.js": 38,
+	"./en-au": 39,
+	"./en-au.js": 39,
+	"./en-ca": 40,
+	"./en-ca.js": 40,
+	"./en-gb": 41,
+	"./en-gb.js": 41,
+	"./en-ie": 42,
+	"./en-ie.js": 42,
+	"./en-nz": 43,
+	"./en-nz.js": 43,
+	"./eo": 44,
+	"./eo.js": 44,
+	"./es": 45,
+	"./es-do": 46,
+	"./es-do.js": 46,
+	"./es.js": 45,
+	"./et": 47,
+	"./et.js": 47,
+	"./eu": 48,
+	"./eu.js": 48,
+	"./fa": 49,
+	"./fa.js": 49,
+	"./fi": 50,
+	"./fi.js": 50,
+	"./fo": 51,
+	"./fo.js": 51,
+	"./fr": 52,
+	"./fr-ca": 53,
+	"./fr-ca.js": 53,
+	"./fr-ch": 54,
+	"./fr-ch.js": 54,
+	"./fr.js": 52,
+	"./fy": 55,
+	"./fy.js": 55,
+	"./gd": 56,
+	"./gd.js": 56,
+	"./gl": 57,
+	"./gl.js": 57,
+	"./gom-latn": 58,
+	"./gom-latn.js": 58,
+	"./he": 59,
+	"./he.js": 59,
+	"./hi": 60,
+	"./hi.js": 60,
+	"./hr": 61,
+	"./hr.js": 61,
+	"./hu": 62,
+	"./hu.js": 62,
+	"./hy-am": 63,
+	"./hy-am.js": 63,
+	"./id": 64,
+	"./id.js": 64,
+	"./is": 65,
+	"./is.js": 65,
+	"./it": 66,
+	"./it.js": 66,
+	"./ja": 67,
+	"./ja.js": 67,
+	"./jv": 68,
+	"./jv.js": 68,
+	"./ka": 69,
+	"./ka.js": 69,
+	"./kk": 70,
+	"./kk.js": 70,
+	"./km": 71,
+	"./km.js": 71,
+	"./kn": 72,
+	"./kn.js": 72,
+	"./ko": 73,
+	"./ko.js": 73,
+	"./ky": 74,
+	"./ky.js": 74,
+	"./lb": 75,
+	"./lb.js": 75,
+	"./lo": 76,
+	"./lo.js": 76,
+	"./lt": 77,
+	"./lt.js": 77,
+	"./lv": 78,
+	"./lv.js": 78,
+	"./me": 79,
+	"./me.js": 79,
+	"./mi": 80,
+	"./mi.js": 80,
+	"./mk": 81,
+	"./mk.js": 81,
+	"./ml": 82,
+	"./ml.js": 82,
+	"./mr": 83,
+	"./mr.js": 83,
+	"./ms": 84,
+	"./ms-my": 85,
+	"./ms-my.js": 85,
+	"./ms.js": 84,
+	"./my": 86,
+	"./my.js": 86,
+	"./nb": 87,
+	"./nb.js": 87,
+	"./ne": 88,
+	"./ne.js": 88,
+	"./nl": 89,
+	"./nl-be": 90,
+	"./nl-be.js": 90,
+	"./nl.js": 89,
+	"./nn": 91,
+	"./nn.js": 91,
+	"./pa-in": 92,
+	"./pa-in.js": 92,
+	"./pl": 93,
+	"./pl.js": 93,
+	"./pt": 94,
+	"./pt-br": 95,
+	"./pt-br.js": 95,
+	"./pt.js": 94,
+	"./ro": 96,
+	"./ro.js": 96,
+	"./ru": 97,
+	"./ru.js": 97,
+	"./sd": 98,
+	"./sd.js": 98,
+	"./se": 99,
+	"./se.js": 99,
+	"./si": 100,
+	"./si.js": 100,
+	"./sk": 101,
+	"./sk.js": 101,
+	"./sl": 102,
+	"./sl.js": 102,
+	"./sq": 103,
+	"./sq.js": 103,
+	"./sr": 104,
+	"./sr-cyrl": 105,
+	"./sr-cyrl.js": 105,
+	"./sr.js": 104,
+	"./ss": 106,
+	"./ss.js": 106,
+	"./sv": 107,
+	"./sv.js": 107,
+	"./sw": 108,
+	"./sw.js": 108,
+	"./ta": 109,
+	"./ta.js": 109,
+	"./te": 110,
+	"./te.js": 110,
+	"./tet": 111,
+	"./tet.js": 111,
+	"./th": 112,
+	"./th.js": 112,
+	"./tl-ph": 113,
+	"./tl-ph.js": 113,
+	"./tlh": 114,
+	"./tlh.js": 114,
+	"./tr": 115,
+	"./tr.js": 115,
+	"./tzl": 116,
+	"./tzl.js": 116,
+	"./tzm": 117,
+	"./tzm-latn": 118,
+	"./tzm-latn.js": 118,
+	"./tzm.js": 117,
+	"./uk": 119,
+	"./uk.js": 119,
+	"./ur": 120,
+	"./ur.js": 120,
+	"./uz": 121,
+	"./uz-latn": 122,
+	"./uz-latn.js": 122,
+	"./uz.js": 121,
+	"./vi": 123,
+	"./vi.js": 123,
+	"./x-pseudo": 124,
+	"./x-pseudo.js": 124,
+	"./yo": 125,
+	"./yo.js": 125,
+	"./zh-cn": 126,
+	"./zh-cn.js": 126,
+	"./zh-hk": 127,
+	"./zh-hk.js": 127,
+	"./zh-tw": 128,
+	"./zh-tw.js": 128
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -27774,10 +27778,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 165;
+webpackContext.id = 171;
 
 /***/ }),
-/* 166 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28205,7 +28209,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 167 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28392,7 +28396,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 168 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28698,7 +28702,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 169 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29038,7 +29042,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 170 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29267,7 +29271,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 171 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29442,7 +29446,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 172 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29491,7 +29495,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 173 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29509,7 +29513,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 174 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29526,7 +29530,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 175 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29544,7 +29548,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 176 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29562,7 +29566,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 177 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29580,7 +29584,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 178 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29598,7 +29602,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 179 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29613,7 +29617,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 180 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29941,7 +29945,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 181 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30515,7 +30519,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 182 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
