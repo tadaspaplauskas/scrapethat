@@ -3,10 +3,6 @@ var alasql = require('alasql');
 var Chart = require('chart.js');
 
 // global data
-query = {
-    select: [],
-    conditions: []
-};
 chart = null;
 
 window.addElementTo = function (sourceSelector, targetSelector) {
@@ -162,6 +158,7 @@ window.drawChart = function (results) {
         };
     });
 
+    // chart scope is global
     if (!chart) {
         chart = new Chart(document.querySelector('#chart'), {
             type: 'line',

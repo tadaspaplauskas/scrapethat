@@ -17293,10 +17293,6 @@ var alasql = __webpack_require__(130);
 var Chart = __webpack_require__(135);
 
 // global data
-query = {
-    select: [],
-    conditions: []
-};
 chart = null;
 
 window.addElementTo = function (sourceSelector, targetSelector) {
@@ -17445,6 +17441,7 @@ window.drawChart = function (results) {
         };
     });
 
+    // chart scope is global
     if (!chart) {
         chart = new Chart(document.querySelector('#chart'), {
             type: 'line',
