@@ -1,3 +1,6 @@
+{{-- builder template cannot work until scripts are fully loaded --}}
+<script src="{{ asset('js/data_explorer.js') }}"></script>
+
 <p>
     <label for="name">Mode</label>
     <select onchange="showOneOfMany('#' + this.value, '.mode')">
@@ -89,6 +92,3 @@
 <h5>Dataset</h5>
 
 <p id="sql-output"></p>
-
-<script src="{{ asset('js/data_explorer.js') }}"></script>
-
