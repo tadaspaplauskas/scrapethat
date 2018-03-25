@@ -1,5 +1,6 @@
 // global dependencies
 alasql = require('alasql');
+XLSX = require('xlsx');
 Chart = require('chart.js');
 
 // global data
@@ -141,7 +142,7 @@ window.runQuery = function (query, verboseErrors) {
     outputElement.className = '';
     outputElement.innerHTML = html;
 
-    return drawChart(results);
+    drawChart(results);
 };
 
 window.drawChart = function (results) {
@@ -187,6 +188,25 @@ window.exportToCSV = function (query) {
         }).catch(function(error){
              console.log('Error:', error);
         });
+};
+
+// using XLSX manually
+window.exportToXLSX = function (query) {
+    var results = alasql(query, [dataset]);
+
+    var data = [];
+    data.push(Object.keys(results[0]));
+
+    for (var i = 0; i < results.length; i++) {
+        data.push(Object.values(results[i]));
+    }
+
+    var wb = XLSX.utils.book_new(),
+        ws = XLSX.utils.aoa_to_sheet(data);
+     
+    XLSX.utils.book_append_sheet(wb, ws, 'results');
+
+    XLSX.writeFile(wb, 'query_results.xlsx');
 };
 
 window.onload = function () {
