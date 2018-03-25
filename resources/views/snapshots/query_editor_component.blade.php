@@ -83,7 +83,7 @@
 <div id="advanced" class="mode" style="display: none">
     <textarea id="query" class="full-width">SELECT * FROM ?</textarea>
 
-    <button onclick="runQuery(qs('#query').value)">Run query</button>
+    <button onclick="runQuery(qs('#query').value, true)">Run query</button>
 </div>
 
 <h5>Dataset</h5>

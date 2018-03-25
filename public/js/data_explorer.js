@@ -17397,18 +17397,16 @@ window.makeQuery = function () {
     return sql;
 };
 
-window.runQuery = function (query) {
-    var outputElement, html;
-
-    outputElement = document.querySelector('#sql-output');
+window.runQuery = function (query, verboseErrors) {
+    var outputElement = document.querySelector('#sql-output');
     if (!query) {
         return false;
     }
 
     try {
-        results = alasql(query, [dataset]);
+        var results = alasql(query, [dataset]);
     } catch (exception) {
-        outputElement.innerText = exception;
+        outputElement.innerText = verboseErrors ? exception : 'Something went wrong with the query. Please refresh and try again or contact administrator if it keeps repeating.';
         outputElement.className = 'red';
 
         return false;
@@ -17416,7 +17414,7 @@ window.runQuery = function (query) {
 
     if (results.length) {
         // format table
-        html = '<table>';
+        var html = '<table>';
 
         // add header row
         html += '<tr><th>#</th><th>' + Object.keys(results[0]).join('</th><th>') + '</th></tr>';
@@ -17428,7 +17426,7 @@ window.runQuery = function (query) {
 
         html += '<table>';
     } else {
-        html = '<p>Nothing found.</p>';
+        var html = '<p>Nothing found.</p>';
     }
 
     // set output
