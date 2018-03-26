@@ -6,10 +6,6 @@
 vim /etc/ssh/sshd_config
 systemctl reload sshd
 
-# enable firewall
-ufw allow 'OpenSSH'
-ufw enable
-
 # Dependencies
 apt install software-properties-common
 add-apt-repository ppa:ondrej/php
@@ -23,7 +19,12 @@ apt install php7.2-cli
 apt install postgres
 apt install redis
 
-# Setup nginx
-# https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-16-04
+# Configuration
+# ttps://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-16-04
 # https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04
+# https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04
+
+# enable firewall
 ufw allow 'Nginx HTTP'
+ufw allow 'OpenSSH'
+ufw enable
