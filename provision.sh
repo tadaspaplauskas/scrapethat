@@ -10,6 +10,8 @@ dpkg-reconfigure locales
 sed -i 's/PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
 systemctl reload sshd
 
+sysctl -w vm.swappiness=0
+
 # INSTALL DEPENDENCIES
 apt install software-properties-common -y
 LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
@@ -59,6 +61,20 @@ service apache2 restart
 
 # CONFIGURE MARIADB
 mysql_secure_installation
+echo 'innodb_file_per_table=1' >> /etc/mysql/mariadb.cnf
+echo 'innodb_buffer_pool_size=256M' >> /etc/mysql/mariadb.cnf
+echo 'host_cache_size=16' >> /etc/mysql/mariadb.cnf
+echo 'key_buffer_size=64K' >> /etc/mysql/mariadb.cnf
+echo 'max_connections=200' >> /etc/mysql/mariadb.cnf
+echo 'thread_cache_size=200' >> /etc/mysql/mariadb.cnf
+echo 'slow_query_log=1' >> /etc/mysql/mariadb.cnf
+echo 'slow_query_log_file=slow_queries.log' >> /etc/mysql/mariadb.cnf
+echo 'long_query_time=3' >> /etc/mysql/mariadb.cnf
+echo 'skip-name-resolve' >> /etc/mysql/mariadb.cnf
+echo 'query_cache_type=1' >> /etc/mysql/mariadb.cnf
+echo 'query_cache_size=128M' >> /etc/mysql/mariadb.cnf
+echo 'query_cache_limit=256K' >> /etc/mysql/mariadb.cnf
+echo 'query_cache_min_res_unit=2K' >> /etc/mysql/mariadb.cnf
 
 systemctl restart mysql.service
 systemctl enable mysql.service
