@@ -9,6 +9,7 @@ systemctl reload sshd
 # Dependencies
 apt install software-properties-common
 add-apt-repository ppa:ondrej/php
+LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/nginx
 
 apt update
 apt upgrade
