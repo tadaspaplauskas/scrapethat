@@ -36,9 +36,11 @@ echo 'ServerTokens Prod' >> /etc/apache2/apache2.conf
 
 # setup vhost
 echo '<VirtualHost *:80>
-    DocumentRoot /var/www/datascraper
+    DocumentRoot /var/www/datascraper/current/public
     LogLevel error
     ErrorLog ${APACHE_LOG_DIR}/error.log
+
+    ErrorDocument  404  /index.php
 </VirtualHost>
 ' > /etc/apache2/sites-available/datascraper.conf
 
