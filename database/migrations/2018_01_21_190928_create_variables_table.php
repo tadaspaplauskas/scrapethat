@@ -19,7 +19,7 @@ class CreatevariablesTable extends Migration
             $table->string('name');
             $table->string('selector');
             $table->smallinteger('scanned')->unsigned()->default(0);
-            $table->json('values')->nullable();
+            $table->text('values')->nullable();
             $table->boolean('selected')->default(0);
             $table->timestamps();
 
