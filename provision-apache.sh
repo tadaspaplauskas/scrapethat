@@ -1,6 +1,13 @@
 #!/bin/bash
 
 # Initial server setup
+
+export LANGUAGE=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+locale-gen en_US.UTF-8
+dpkg-reconfigure locales
+
 # https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-16-04
 # Set PasswordAuthentication no
 vim /etc/ssh/sshd_config
@@ -55,7 +62,7 @@ echo 'max_execution_time = 5' >> /etc/php/7.2/apache2/php.ini
 echo 'memory_limit = 128M' >> /etc/php/7.2/apache2/php.ini
 echo 'expose_php = Off' >> /etc/php/7.2/apache2/php.ini
 
-service apache2 reload
+service apache2 restart
 
 # configure database
 mysql_secure_installation
