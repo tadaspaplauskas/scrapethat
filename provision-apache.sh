@@ -31,13 +31,29 @@ sed -i 's/MaxConnectionsPerChild.*/MaxConnectionsPerChild 10000/' /etc/apache2/m
 sed -i 's/Timeout.*/Timeout 30/' /etc/apache2/apache2.conf
 sed -i 's/KeepAlive.*/KeepAlive Off/' /etc/apache2/apache2.conf
 echo 'ServerName 195.201.102.167' >> /etc/apache2/apache2.conf
+echo 'ServerSignature Off' >> /etc/apache2/apache2.conf
+echo 'ServerTokens Prod' >> /etc/apache2/apache2.conf
 
-# configure php
+# setup vhost
+echo '<VirtualHost *:80>
+    DocumentRoot /var/www/datascraper
+    LogLevel error
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+</VirtualHost>
+' > /etc/apache2/sites-available/datascraper.conf
+
+a2enmod rewrite
+a2dissite 000-default
+a2ensite datascraper
+
+# configure apache's php
 echo 'date.timezone = UTC' >> /etc/php/7.2/apache2/php.ini
 # aggresive timeout to avoid hanging processe
 echo 'max_execution_time = 5' >> /etc/php/7.2/apache2/php.ini
 echo 'memory_limit = 128M' >> /etc/php/7.2/apache2/php.ini
-systemctl restart apache2
+echo 'expose_php = Off' >> /etc/php/7.2/apache2/php.ini
+
+service apache2 reload
 
 # configure database
 mysql_secure_installation
