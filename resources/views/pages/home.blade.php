@@ -2,11 +2,10 @@
 
 @section('content')
 
-<h2>A website can be a database</h2>
-<h3>With just a few clicks</h3>
+<h2>Turn any website into a database</h2>
 
 <p>
-    Extract any structured data and use it for your needs.
+    Extract structured data from the web and start using it with just a few clicks.
 </p>
 
 <p>
