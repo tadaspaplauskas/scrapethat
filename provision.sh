@@ -41,10 +41,11 @@ echo 'ServerTokens Prod' >> /etc/apache2/apache2.conf
 
 echo '<VirtualHost *:80>
     DocumentRoot /var/www/datascraper/current/public
+    DirectoryIndex /index.php 
+    FallbackResource /index.php
+
     LogLevel error
     ErrorLog ${APACHE_LOG_DIR}/error.log
-
-    ErrorDocument  404  /
 </VirtualHost>
 ' > /etc/apache2/sites-available/datascraper.conf
 
