@@ -1,5 +1,5 @@
 {{-- builder template cannot work until scripts are fully loaded --}}
-<script src="{{ asset('js/data_explorer.js') }}"></script>
+<script src="{{ mix('js/data_explorer.js') }}"></script>
 
 <p>
     <label for="name">Mode</label>

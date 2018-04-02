@@ -12,11 +12,11 @@ let mix = require('laravel-mix');
  */
 
 mix.js('resources/assets/js/data_explorer.js', 'public/js')
-    // .js('resources/assets/js/app.js', 'public/js')
     .styles([
         'resources/assets/css/skeleton/css/skeleton.css',
         'resources/assets/css/app.css'
     ], 'public/css/app.css');
 
-
-   // .sass('resources/assets/sass/app.scss', 'public/css');
+if (mix.inProduction()) {
+    mix.version();
+}

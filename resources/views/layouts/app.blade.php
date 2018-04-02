@@ -11,7 +11,7 @@
     <title>@yield('title', env('APP_NAME'))</title>
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
     <header class="container mt1">
