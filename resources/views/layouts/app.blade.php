@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', env('APP_NAME'))</title>
+    <title>@yield('title', 'Scrape That')</title>
 
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
@@ -17,7 +17,7 @@
     <header class="container mt1">
         <nav>
             <ul>
-                <li class="inline mr1"><a href="{{ route('home') }}">{{ env('APP_NAME') }}</a></li>
+                <li class="inline mr1"><a href="{{ route('home') }}">Scrape That</a></li>
                 <li class="inline mr1"><a href="{{ route('about') }}">About</a></li>
             @guest
                 <li class="inline mr1"><a href="{{ route('login') }}">Log in</a></li>
