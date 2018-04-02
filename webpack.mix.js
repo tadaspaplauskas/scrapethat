@@ -11,10 +11,9 @@ let mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/assets/js/app.js', 'public/js')
-    .js('resources/assets/js/data_explorer.js', 'public/js')
+mix.js('resources/assets/js/data_explorer.js', 'public/js')
+    // .js('resources/assets/js/app.js', 'public/js')
     .styles([
-        'resources/assets/css/skeleton/css/normalize.css',
         'resources/assets/css/skeleton/css/skeleton.css',
         'resources/assets/css/app.css'
     ], 'public/css/app.css');
