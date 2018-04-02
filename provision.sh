@@ -62,6 +62,7 @@ service apache2 restart
 
 # CONFIGURE MARIADB
 mysql_secure_installation
+echo '[mysqld]' >> /etc/mysql/mariadb.cnf
 echo 'innodb_file_per_table=1' >> /etc/mysql/mariadb.cnf
 echo 'innodb_buffer_pool_size=256M' >> /etc/mysql/mariadb.cnf
 echo 'host_cache_size=16' >> /etc/mysql/mariadb.cnf
@@ -76,6 +77,18 @@ echo 'query_cache_type=1' >> /etc/mysql/mariadb.cnf
 echo 'query_cache_size=128M' >> /etc/mysql/mariadb.cnf
 echo 'query_cache_limit=256K' >> /etc/mysql/mariadb.cnf
 echo 'query_cache_min_res_unit=2K' >> /etc/mysql/mariadb.cnf
+
+# CREATE DATABASE AND USER
+echo 'Enter database password'
+read DATABASE
+
+DB_PASSWORD='$(openssl rand -base64 20)'
+echo 'Generated password: '
+echo DB_PASSWORD
+
+mysql -e 'CREATE DATABASE ${DATABASE};'
+mysql -e 'CREATE USER ${DATABASE}@"127.0.0.1" IDENTIFIED BY "${DB_PASSWORD}";'
+mysql -e 'GRANT ALL PRIVILEGES ON ${DATABASE}.* TO "${DATABASE}"@"127.0.0.1";'
 
 systemctl restart mysql.service
 systemctl enable mysql.service
