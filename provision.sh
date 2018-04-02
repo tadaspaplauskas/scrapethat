@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # BASIC SERVER SETUP
-export LANGUAGE=en_US.UTF-8
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
+echo 'export LANGUAGE=en_US.UTF-8' >> ~/.bash_profile
+echo 'export LANG=en_US.UTF-8' >> ~/.bash_profile
+echo 'export LC_ALL=en_US.UTF-8' >> ~/.bash_profile
 locale-gen en_US.UTF-8
 dpkg-reconfigure locales
 
@@ -19,7 +19,7 @@ LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
 apt update
 apt upgrade -y
 
-apt install apache2 php7.2 libapache2-mod-php7.2 php-pear php7.2-curl php7.2-gd php7.2-mbstring php7.2-zip php7.2-xml php7.2-mysql mariadb-server mariadb-client
+apt install apache2 php7.2 libapache2-mod-php7.2 php-pear php7.2-curl php7.2-gd php7.2-mbstring php7.2-zip php7.2-xml php7.2-mysql mariadb-server mariadb-client supervisor
 
 # SETUP FIREWALL
 ufw allow 'OpenSSH'
@@ -104,6 +104,22 @@ mysql -e 'GRANT ALL PRIVILEGES ON ${DATABASE}.* TO "${DATABASE}"@"127.0.0.1";'
 
 systemctl restart mysql.service
 systemctl enable mysql.service
+
+# SETUP QUEUE WORKERS
+echo '[program:datascraper-workers]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/datascraper/current/artisan queue:work default --sleep=3 --tries=3
+autostart=true
+autorestart=true
+user=www-data
+numprocs=2
+redirect_stderr=true
+stdout_logfile=/var/www/datascraper/current/storage/logs/workers.log
+' > /etc/supervisor/conf.d/datascraper-workers.conf
+touch /var/www/datascraper/current/storage/logs/workers.log
+supervisorctl reread
+supervisorctl update
+supervisorctl start datascraper-workers:*
 
 # UTILITIES
 echo 'alias ls="ls -halp"' >> ~/.bash_profile
