@@ -107,12 +107,12 @@ systemctl enable mysql.service
 
 # SETUP QUEUE WORKERS
 echo '[program:datascraper-workers]
-process_name=%(program_name)s_%(process_num)02d
-command=php /var/www/datascraper/current/artisan queue:work default --sleep=3 --tries=3
+process_name=\%(program_name)s_\%(process_num)02d
+command=php /var/www/datascraper/current/artisan queue:work --sleep=3 --tries=3
 autostart=true
 autorestart=true
 user=www-data
-numprocs=2
+numprocs=3
 redirect_stderr=true
 stdout_logfile=/var/www/datascraper/current/storage/logs/workers.log
 ' > /etc/supervisor/conf.d/datascraper-workers.conf
