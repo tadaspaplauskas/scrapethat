@@ -34,7 +34,8 @@
 
 <h5>Danger zone</h5>
 <p>
-    <a href="{{ route('snapshots.delete', $snapshot) }}">Delete snapshot</a>
+    <a href="{{ route('snapshots.delete', $snapshot) }}">Delete snapshot</a>.
+    We will ask you to confirm the action.
 </p>
 
 <script>
