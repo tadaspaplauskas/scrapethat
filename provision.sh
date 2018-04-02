@@ -39,10 +39,22 @@ echo 'ServerName 195.201.102.167' >> /etc/apache2/apache2.conf
 echo 'ServerSignature Off' >> /etc/apache2/apache2.conf
 echo 'ServerTokens Prod' >> /etc/apache2/apache2.conf
 
+a2enmod expires
+# A604800 => cache for 7 days after client's access time
 echo '<VirtualHost *:80>
     DocumentRoot /var/www/datascraper/current/public
     DirectoryIndex /index.php 
     FallbackResource /index.php
+
+    ExpiresActive On
+    ExpiresByType image/jpg A604800
+    ExpiresByType image/png A604800
+    ExpiresByType image/gif A604800
+    ExpiresByType image/jpeg A604800
+    ExpiresByType text/css A604800
+    ExpiresByType text/javascript A604800
+    ExpiresByType application/x-javascript A604800
+    ExpiresByType application/javascript A604800
 
     LogLevel error
     ErrorLog ${APACHE_LOG_DIR}/error.log
