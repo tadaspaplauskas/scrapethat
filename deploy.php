@@ -36,3 +36,4 @@ after('deploy:failed', 'deploy:unlock');
 before('deploy:symlink', 'artisan:migrate');
 
 after('deploy', 'artisan:queue:restart');
+after('deploy', 'artisan:route:cache');
