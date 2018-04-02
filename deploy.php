@@ -4,10 +4,10 @@ namespace Deployer;
 require 'recipe/laravel.php';
 
 // Project name
-set('application', 'datascraper');
+set('application', 'scrapethat');
 
 // Project repository
-set('repository', 'git@gitlab.com:tadaspaplauskas/datascraper.git');
+set('repository', 'git@gitlab.com:tadaspaplauskas/scrapethat.git');
 
 // [Optional] Allocate tty for git clone. Default value is false.
 set('git_tty', false); 
@@ -22,10 +22,10 @@ add('writable_dirs', []);
 
 // Hosts
 
-host('datascraper')
+host('scrapethat')
     ->stage('production')
     ->user('root')
-    ->set('deploy_path', '/var/www/datascraper');
+    ->set('deploy_path', '/var/www/scrapethat');
     
 // Tasks
 

@@ -41,8 +41,17 @@ echo 'ServerTokens Prod' >> /etc/apache2/apache2.conf
 
 a2enmod expires
 # A604800 => cache for 7 days after client's access time
-echo '<VirtualHost *:80>
-    DocumentRoot /var/www/datascraper/current/public
+echo '
+<VirtualHost *:80>
+    ServerName scrapethat.com
+    Redirect permanent / http://www.scrapethat.com/
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerAdmin admin@scrapethat.com
+    ServerName www.scrapethat.com
+
+    DocumentRoot /var/www/scrapethat/current/public
     DirectoryIndex /index.php 
     FallbackResource /index.php
 
@@ -59,10 +68,10 @@ echo '<VirtualHost *:80>
     LogLevel error
     ErrorLog ${APACHE_LOG_DIR}/error.log
 </VirtualHost>
-' > /etc/apache2/sites-available/datascraper.conf
+' > /etc/apache2/sites-available/scrapethat.conf
 
 a2dissite 000-default
-a2ensite datascraper
+a2ensite scrapethat
 
 # CONFIGURE PHP
 echo 'date.timezone = UTC' >> /etc/php/7.2/apache2/php.ini
@@ -106,20 +115,20 @@ systemctl restart mysql.service
 systemctl enable mysql.service
 
 # SETUP QUEUE WORKERS
-echo '[program:datascraper-workers]
+echo '[program:scrapethat-workers]
 process_name=\%(program_name)s_\%(process_num)02d
-command=php /var/www/datascraper/current/artisan queue:work --sleep=3 --tries=3
+command=php /var/www/scrapethat/current/artisan queue:work --sleep=3 --tries=3
 autostart=true
 autorestart=true
 user=www-data
 numprocs=3
 redirect_stderr=true
-stdout_logfile=/var/www/datascraper/current/storage/logs/workers.log
-' > /etc/supervisor/conf.d/datascraper-workers.conf
-touch /var/www/datascraper/current/storage/logs/workers.log
+stdout_logfile=/var/www/scrapethat/current/storage/logs/workers.log
+' > /etc/supervisor/conf.d/scrapethat-workers.conf
+touch /var/www/scrapethat/current/storage/logs/workers.log
 supervisorctl reread
 supervisorctl update
-supervisorctl start datascraper-workers:*
+supervisorctl start scrapethat-workers:*
 
 # UTILITIES
 echo 'alias ls="ls -halp"' >> ~/.bash_profile
