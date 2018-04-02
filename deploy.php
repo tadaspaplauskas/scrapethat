@@ -23,7 +23,6 @@ add('writable_dirs', []);
 // Hosts
 
 host('scrapethat')
-    ->stage('production')
     ->user('root')
     ->set('deploy_path', '/var/www/scrapethat');
     
