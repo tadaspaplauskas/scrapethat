@@ -23,7 +23,6 @@
     @empty
         <p>
             No snapshots yet.
-            <a href="{{ route('snapshots.create') }}">Make a first one.</a>
         </p>
     @endforelse
 
