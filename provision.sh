@@ -15,6 +15,7 @@ sysctl -w vm.swappiness=0
 # INSTALL DEPENDENCIES
 apt install software-properties-common -y
 LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
+add-apt-repository ppa:certbot/certbot
 
 apt update
 apt upgrade -y
@@ -130,10 +131,19 @@ supervisorctl reread
 supervisorctl update
 supervisorctl start scrapethat-workers:*
 
+# SETUP LETSENCRYPT CERTS
+apt install python-certbot-apache
+certbot --apache
+
+crontab -l > tmpcron
+echo '55 4 * * * certbot renew --post-hook "service apache2 reload"' >> tmpcron
+crontab tmpcron
+rm tmpcron
+
 # UTILITIES
 echo 'alias ls="ls -halp"' >> ~/.bash_profile
 
-git clone git@github.com:tadaspaplauskas/vimrc.git
+git clone git@github.com:tadaspaplauskas/vimrc.git ~/.vimrc
 
 
 # testing web server configuration
