@@ -61,17 +61,10 @@ class DownloadPage implements ShouldQueue
 
         $driver = ChromeDriver::start();
 
-        $driver->get('http://scrapethat.loc/about');
+        $driver->get($url);
 
         $html = $driver->getPageSource();
 
-        // $statusCode = $driver->execute(DriverCommand::STATUS);
-
-        // cleanup
-        // $driver->execute(DriverCommand::DELETE_ALL_COOKIES);
-        // $driver->execute(DriverCommand::CLEAR_LOCAL_STORAGE);
-        // $driver->execute(DriverCommand::CLEAR_APP_CACHE);
-        // $driver->execute(DriverCommand::CLEAR_SESSION_STORAGE);
         $driver->quit();
 
         $page = $snapshot->pages()->create([
