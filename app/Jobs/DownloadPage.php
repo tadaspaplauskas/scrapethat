@@ -7,8 +7,9 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use Facebook\WebDriver\Chrome\ChromeDriver;
+use Facebook\WebDriver\Remote\DriverCommand;
+use ChromeDriverStandalone\Environment;
 
 use App\Snapshot;
 
@@ -17,6 +18,7 @@ class DownloadPage implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $snapshot;
+    protected $driver;
 
     protected $userAgents = [
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36',
@@ -37,6 +39,8 @@ class DownloadPage implements ShouldQueue
     public function __construct(Snapshot $snapshot)
     {
         $this->snapshot = $snapshot;
+
+        Environment::setup();
     }
 
     /**
@@ -55,29 +59,24 @@ class DownloadPage implements ShouldQueue
             return;
         }
 
-        $client = new Client();
+        $driver = ChromeDriver::start();
 
-        try {
-            $response = $client->request('GET', $url, [
-                'timeout' => self::CONNECT_TIMEOUT,
-                'connect_timeout' => self::CONNECT_TIMEOUT,
-                'headers' => [
-                    'User-Agent' => $this->userAgent(),
-                ],
-            ]);
+        $driver->get('http://scrapethat.loc/about');
 
-        } catch (ClientException $e) {
-            $response = $e->getResponse();
-        }
+        $html = $driver->getPageSource();
 
-        $html = $response->getBody()->getContents();
-        $statusCode = $response->getStatusCode();
-        $reasonPhrase = $response->getReasonPhrase();
+        // $statusCode = $driver->execute(DriverCommand::STATUS);
+
+        // cleanup
+        // $driver->execute(DriverCommand::DELETE_ALL_COOKIES);
+        // $driver->execute(DriverCommand::CLEAR_LOCAL_STORAGE);
+        // $driver->execute(DriverCommand::CLEAR_APP_CACHE);
+        // $driver->execute(DriverCommand::CLEAR_SESSION_STORAGE);
+        $driver->quit();
 
         $page = $snapshot->pages()->create([
             'url' => $url,
-            'status_code' => $statusCode,
-            'reason_phrase' => $reasonPhrase,
+            // 'status_code' => $statusCode,
             'html' => $html,
         ]);
 
