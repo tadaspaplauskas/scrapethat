@@ -23,7 +23,7 @@ class SnapshotSeeder extends Seeder
         Snapshot::create([
             'user_id' => User::first()->id,
             'name' => 'Most recent HN submisisons',
-            'url' => 'http://crawler.loc/tests/*.html',
+            'url' => 'http://scrapethat.loc/tests/*.html',
             'from' => 1,
             'to' => 5,
             'downloaded' => 0,
@@ -34,7 +34,7 @@ class SnapshotSeeder extends Seeder
             Snapshot::create([
                 'user_id' => User::first()->id,
                 'name' => $faker->company,
-                'url' => 'http://crawler.loc/tests/*.html',
+                'url' => 'http://scrapethat.loc/tests/*.html',
                 'from' => 1,
                 'to' => 5,
                 'downloaded' => 0,

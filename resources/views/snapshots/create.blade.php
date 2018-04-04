@@ -15,8 +15,8 @@
     <label for="name" class="">Name</label>
     <input type="text" id="name" name="name" value="{{ old('name') }}">
 
-    <label for="url" class="">URL to pages</label>
-    <input type="url" id="url" name="url" class="full-width" value="{{ old('url') }}" required placeholder="https://news.ycombinator.com/news?p=">
+    <label for="url" class="">Page URL template</label>
+    <input type="url" id="url" name="url" class="full-width" value="{{ old('url') }}" required placeholder="https://news.ycombinator.com/news?p=*">
 
     @if ($errors->has('url'))
         <p class="red">
