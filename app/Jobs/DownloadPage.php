@@ -10,6 +10,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Facebook\WebDriver\Chrome\ChromeDriver;
 use Facebook\WebDriver\Remote\DriverCommand;
 use ChromeDriverStandalone\Environment;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 
 use App\Snapshot;
 
@@ -59,6 +61,26 @@ class DownloadPage implements ShouldQueue
             return;
         }
 
+        $guzzle = new Client();
+
+        try {
+            $response = $guzzle->request('HEAD', $url, [
+                'timeout' => self::CONNECT_TIMEOUT,
+                'connect_timeout' => self::CONNECT_TIMEOUT,
+                'headers' => [
+                    'User-Agent' => $this->userAgent(),
+                ],
+            ]);
+
+        } catch (ClientException $e) {
+            $response = $e->getResponse();
+        }
+
+        $statusCode = $response->getStatusCode();
+        $reasonPhrase = $response->getReasonPhrase();
+
+        // get HTML through separately
+
         $driver = ChromeDriver::start();
 
         $driver->get($url);
@@ -69,7 +91,8 @@ class DownloadPage implements ShouldQueue
 
         $page = $snapshot->pages()->create([
             'url' => $url,
-            // 'status_code' => $statusCode,
+            'status_code' => $statusCode,
+            'reason_phrase' => $reasonPhrase,
             'html' => $html,
         ]);
 
