@@ -25,9 +25,9 @@ class SnapshotSeeder extends Seeder
             'name' => 'Most recent HN submisisons',
             'url' => 'http://scrapethat.loc/tests/*.html',
             'from' => 1,
-            'to' => 5,
+            'to' => 2,
             'downloaded' => 0,
-            'total' => 5,
+            'total' => 2,
         ]);
 
         for ($i = 1; $i < 10; $i++) {
@@ -36,9 +36,9 @@ class SnapshotSeeder extends Seeder
                 'name' => $faker->company,
                 'url' => 'http://scrapethat.loc/tests/*.html',
                 'from' => 1,
-                'to' => 5,
+                'to' => 2,
                 'downloaded' => 0,
-                'total' => 5,
+                'total' => 2,
             ]);
         }
     }

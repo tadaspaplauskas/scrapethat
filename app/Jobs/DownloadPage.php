@@ -61,6 +61,7 @@ class DownloadPage implements ShouldQueue
             return;
         }
 
+        // using guzzle for status code checks
         $guzzle = new Client();
 
         try {
@@ -79,8 +80,7 @@ class DownloadPage implements ShouldQueue
         $statusCode = $response->getStatusCode();
         $reasonPhrase = $response->getReasonPhrase();
 
-        // get HTML through separately
-
+        // get HTML separately through chrome driver
         $driver = ChromeDriver::start();
 
         $driver->get($url);
