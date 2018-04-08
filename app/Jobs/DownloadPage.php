@@ -80,14 +80,20 @@ class DownloadPage implements ShouldQueue
         $statusCode = $response->getStatusCode();
         $reasonPhrase = $response->getReasonPhrase();
 
-        // get HTML separately through chrome driver
-        $driver = ChromeDriver::start();
+        $success = mb_substr($statusCode, 0, 1) === '2';
 
-        $driver->get($url);
+        // get HTML separately through chrome driver if we got successful status code
+        $html = $success;
 
-        $html = $driver->getPageSource();
+        if ($success) {
+            $driver = ChromeDriver::start();
 
-        $driver->quit();
+            $driver->get($url);
+
+            $html = $driver->getPageSource();
+
+            $driver->quit();
+        }
 
         $page = $snapshot->pages()->create([
             'url' => $url,
@@ -101,7 +107,7 @@ class DownloadPage implements ShouldQueue
         $snapshot->save();
 
         // queue next page
-        if (!$snapshot->isCompleted()) {
+        if (!$snapshot->isCompleted() && $success) {
             static::dispatch($snapshot);
         }
     }
