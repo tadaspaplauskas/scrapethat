@@ -19,7 +19,7 @@ class CreatePagesTable extends Migration
             $table->string('url');
             $table->string('status_code')->nullable();
             $table->string('reason_phrase')->nullable();
-            $table->longText('html');
+            $table->longText('html')->nullable();
             $table->timestamps();
         });
     }

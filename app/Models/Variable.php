@@ -27,6 +27,6 @@ class Variable extends Model
 
     public function isCompleted()
     {
-        return $this->scanned >= $this->snapshot->total;
+        return $this->scanned >= $this->snapshot->pages()->count();
     }
 }

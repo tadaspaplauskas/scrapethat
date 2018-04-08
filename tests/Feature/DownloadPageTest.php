@@ -4,21 +4,19 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Jobs\DownloadPage;
+use App\User;
 use App\Snapshot;
 
 class DownloadPageTest extends TestCase
 {
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->seed(\DatabaseSeeder::class);
-    }
+    use RefreshDatabase;
 
     public function testDownloadPage()
     {
-        $snapshot = Snapshot::first();
+        $user = factory(User::class)->create();
+        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
 
         $this->assertTrue($snapshot->crawled == 0);
 
@@ -36,9 +34,11 @@ class DownloadPageTest extends TestCase
 
     public function testDownloadPageNotFound()
     {
-        $snapshot = Snapshot::first();
+        $user = factory(User::class)->create();
+        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
 
-        $snapshot->total = 6;
+        // go to an non-existant number
+        $snapshot->total = 3;
 
         $job = new DownloadPage($snapshot);
 

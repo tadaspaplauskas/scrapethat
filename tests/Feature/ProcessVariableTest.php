@@ -3,21 +3,23 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Jobs\ProcessVariable;
+use App\User;
+use App\Snapshot;
 use App\Variable;
+use App\Page;
 
 class ProcessVariableTest extends TestCase
 {
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->seed(\DatabaseSeeder::class);
-    }
+    use RefreshDatabase;
 
     public function testProcessVariable()
     {
-        $variable = Variable::first();
+        $user = factory(User::class)->create();
+        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
+        $page = $snapshot->pages()->save(factory(Page::class)->make());
+        $variable = $snapshot->variables()->save(factory(Variable::class)->make());
 
         $variable->values = null;
 

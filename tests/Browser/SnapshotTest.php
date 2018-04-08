@@ -11,10 +11,14 @@ use App\Snapshot;
 
 class SnapshotTest extends DuskTestCase
 {
+    use DatabaseMigrations;
+
     public function testIndex()
     {
-        $this->browse(function (Browser $browser) {
-            $browser->loginAs(User::first())
+        $user = factory(User::class)->create();
+
+        $this->browse(function (Browser $browser) use ($user) {
+            $browser->loginAs($user)
                 ->visit('/snapshots')
                 ->assertSee('Snapshots');
         });
@@ -22,8 +26,10 @@ class SnapshotTest extends DuskTestCase
 
     public function testCreate()
     {
-        $this->browse(function (Browser $browser) {
-            $browser->loginAs(User::first())
+        $user = factory(User::class)->create();
+        
+        $this->browse(function (Browser $browser) use ($user) {
+            $browser->loginAs($user)
                 ->visit('/snapshots/create')
                 ->type('name', 'Sample snapshot')
                 ->type('url', 'http://crawler.loc/tests/*.html')
@@ -37,25 +43,33 @@ class SnapshotTest extends DuskTestCase
 
     public function testShow()
     {
-        $this->browse(function (Browser $browser) {
-            $browser->loginAs(User::first())
-                ->visit('/snapshots/' . Snapshot::first()->id)
-                ->assertSee('Most recent HN submisisons');
+        $user = factory(User::class)->create();
+
+        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
+
+        $this->browse(function (Browser $browser) use ($user, $snapshot) {
+            $browser->loginAs($user)
+                ->visit('/snapshots/' . $snapshot->id)
+                ->assertSee($snapshot->name);
         });
     }
 
     public function testDeleteAndRestore()
     {
-        $this->browse(function (Browser $browser) {
-            $browser->loginAs(User::first())
-                ->visit('/snapshots/' . Snapshot::first()->id)
+        $user = factory(User::class)->create();
+
+        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
+
+        $this->browse(function (Browser $browser) use ($user, $snapshot) {
+            $browser->loginAs($user)
+                ->visit('/snapshots/' . $snapshot->id)
                 ->clickLink('Delete snapshot')
                 ->press('DELETE')
                 ->assertSee('was deleted')
                 ->assertDontSeeLink('Most recent HN submisisons')
                 ->clickLink('Undo')
                 ->waitForText('restored')
-                ->assertSeeLink('Most recent HN submisisons');
+                ->assertSeeLink($snapshot->name);
         });
     }
 }

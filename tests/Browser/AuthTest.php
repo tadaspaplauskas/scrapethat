@@ -8,6 +8,8 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class AuthTest extends DuskTestCase
 {
+    use DatabaseMigrations;
+
     public function testRegistration()
     {
         $this->browse(function (Browser $browser) {
@@ -20,7 +22,7 @@ class AuthTest extends DuskTestCase
                 ->assertSee('Log out');
         });
 
-        $this->assertDatabaseHas('users', ['email' => 'tadas@paplauskas.lt']);
+        $this->assertDatabaseHas('users', ['email' => 'tadas+test@paplauskas.lt']);
     }
 
     public function testLogin()

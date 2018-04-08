@@ -78,6 +78,11 @@ return [
             'prefix' => '',
         ],
         
+        'testing' => [
+            'driver' => 'sqlite',
+            'database' => database_path('tests.sqlite'),
+            'prefix' => '',
+        ],
     ],
 
     /*
