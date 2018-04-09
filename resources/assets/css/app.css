@@ -17,12 +17,19 @@
 .ml3 { margin-left: 3rem }
 
 .p1 { padding: 1rem }
+.pl1 { padding-left: 1rem }
 
 .inline { display: inline }
 .inline-block { display: inline-block }
 .block { display: block }
 
 .red { color: #990000 }
+.dimgrey { color: dimgrey }
+
+.shade { background-color: #efefef }
+
+.bg-pink { background-color: pink }
+.bg-mintcream { background-color: mintcream }
 
 .full-width { width: 100% }
 .min-width-10 { min-width: 10rem }
@@ -38,10 +45,6 @@
 
 .flexbox { display: flex; flex-wrap: wrap; }
 
-.shade { background-color: #efefef }
-
-.bg-pink { background-color: pink }
-
 /* helps with rudimental tab implementation */
 .hidden:not(:target) { display: none }
 .hidden:target { display: block }
@@ -49,3 +52,8 @@
 .list-none { list-style: none }
 
 .small { font-size: 0.9rem }
+
+.italic { font-style: italic }
+
+.round-corners { border-radius: 1rem }
+.slim-border { border: 1px solid lightslategray }

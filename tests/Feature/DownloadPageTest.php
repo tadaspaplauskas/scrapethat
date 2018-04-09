@@ -48,5 +48,7 @@ class DownloadPageTest extends TestCase
 
         $this->assertTrue($snapshot->pages()->where('status_code', '>', '200')->exists());
         $this->assertTrue($snapshot->isCompleted());
+
+        $this->assertTrue(\DB::table('notifications')->count() > 0);
     }
 }

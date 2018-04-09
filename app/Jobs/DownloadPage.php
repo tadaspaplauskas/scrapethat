@@ -15,6 +15,8 @@ use GuzzleHttp\Exception\ClientException;
 
 use App\Snapshot;
 
+use App\Notifications\DownloadPageProblem;
+
 class DownloadPage implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -106,9 +108,14 @@ class DownloadPage implements ShouldQueue
 
         $snapshot->save();
 
+        // notify user, stop
+        if (!$success) {
+            return $snapshot->user->notify(new DownloadPageProblem($page));
+        }
+
         // queue next page
-        if (!$snapshot->isCompleted() && $success) {
-            static::dispatch($snapshot);
+        if (!$snapshot->isCompleted()) {
+            return static::dispatch($snapshot);
         }
     }
 

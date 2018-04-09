@@ -32,6 +32,8 @@
     </header>
 
     <main class="container">
+        @include('layouts.components.notifications')
+
         <h2>@yield('title')</h2>
 
         @if (session('message'))
