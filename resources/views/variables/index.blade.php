@@ -12,27 +12,45 @@
         <a href="{{ route('variables.create', $snapshot) }}">Make a new one</a>.
     </p>
 
-    @forelse ($variables as $variable)
-        <article class="m0 center column one-half">
-            <h5>
-                {{ $variable->name }}
-            </h5>
-            <p>
-                <small>
-                    {{ $variable->selector }}
+    @if ($variables->isEmpty())
 
-                    <form method="POST" action="{{ route('variables.destroy', [$snapshot, $variable]) }}">
-                        {{ csrf_field() }}
-                        {{ method_field('DELETE') }}
-                        <button>Delete</button>
-                    </form>
-                </small>
-            </p>
-        </article>
-    @empty
         <p>
-            No snapshots yet.
+            No variables yet.
         </p>
-    @endforelse
+
+    @else
+
+        <table class="full-width">
+            <tr>
+                <th>Name</th>
+                <th>Selector</th>
+                <th>Created at</th>
+                <th>Delete</th>
+            </tr>
+
+            @foreach ($variables as $variable)
+                <tr>
+                    <td>
+                        {{ $variable->name }}
+                    </td>
+                    <td>
+                        {{ $variable->selector }}
+                    </td>
+                    <td>
+                        {{ $variable->created_at->diffForHumans() }}
+                    </td>
+                    <td>
+                        <form method="POST" action="{{ route('variables.destroy', [$snapshot, $variable]) }}" class="m0">
+                            {{ csrf_field() }}
+                            {{ method_field('DELETE') }}
+                            <button>Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+
+        </table>
+
+    @endif
 
 @endsection
