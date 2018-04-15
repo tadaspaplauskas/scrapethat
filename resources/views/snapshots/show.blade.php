@@ -4,24 +4,17 @@
 
 @section('content')
 
-<h5>New filter</h5>
 <p>
-    Select data out of snapshots using CSS selectors.
+    <a href="{{ route('variables.index', $snapshot) }}">Manage variables</a>.
 </p>
 
-<form method="POST" action="{{ route('filters.store') }}">
-    {{ csrf_field() }}
-    <input type="hidden" name="snapshot_id" value="{{ $snapshot->id }}">
-    
-    <label for="name">Name</label>
-    <input type="text" name="name" id="name" placeholder="Name" value="{{ old('name') }}" required>
+@if ($variables->isEmpty())
 
-    <label for="selector">CSS selector</label>
-    <input type="text" name="selector" id="selector" placeholder=".selector" value="{{ old('selector') }}" required>
-    <button type="submit" class="block">Fetch</button>
-</form>
+<p>
+    You have not yet defined any variables.
+</p>
 
-@if (!$variables->isEmpty())
+@else
 
 <h5>Chart</h5>
 <canvas id="chart"></canvas>

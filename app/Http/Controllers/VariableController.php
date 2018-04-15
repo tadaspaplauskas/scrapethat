@@ -6,10 +6,10 @@ use Illuminate\Http\Request;
 use Symfony\Component\DomCrawler\Crawler;
 
 use App\Snapshot;
-use App\Filter;
-use App\Jobs\ProcessFilter;
+use App\Variable;
+use App\Jobs\ProcessVariable;
 
-class FilterController extends Controller
+class VariableController extends Controller
 {
     public function __construct()
     {
@@ -21,9 +21,11 @@ class FilterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Snapshot $snapshot)
     {
-        //
+        $variables = $snapshot->variables;
+
+        return view('variables.index', compact('snapshot', 'variables'));
     }
 
     /**
@@ -42,15 +44,29 @@ class FilterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Snapshot $snapshot)
     {
         // TODO validate, selector should be unique
-        //snapshot->isCompleted() a must
-        // TODO camel_case() name
+        $request->validate([
+            'name' => 'required|alpha_num',
+            'selector' => 'required',
+        ]);
 
-        $filter = Filter::create($request->all());
+        if ($snapshot->isCompleted()) {
+            return redirect()->back()->withInput()->withErrors();
+        }
 
-        ProcessFilter::dispatch($filter);
+        if ($snapshot->isCompleted()) {
+            return redirect()->back()->withInput()->withErrors();
+        }        
+
+        $data = $request->all();
+
+        $data['name'] = snake_case($data['name']);
+
+        $variable = Variable::create($data);
+
+        ProcessVariable::dispatch($variable);
 
         return redirect()->back()->withInput();
     }
@@ -61,9 +77,9 @@ class FilterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Filter $filter, Request $request)
+    public function show(Variable $variable, Request $request)
     {
-        $numbers = $filter->values->map(function ($item) {
+        $numbers = $variable->values->map(function ($item) {
             return floatval(preg_replace('/\s*/m', '', $item));
         });
 
@@ -88,9 +104,9 @@ class FilterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Filter $filter)
+    public function update(Request $request, Variable $variable)
     {
-        $filter->update($request->all());
+        $variable->update($request->all());
 
         return redirect()->back();
     }
@@ -101,11 +117,11 @@ class FilterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Filter $filter)
+    public function destroy(Variable $variable)
     {
-       $filter->delete();
+       $variable->delete();
 
-        return redirect()->action('SnapshotController@show', $filter->snapshot)
-            ->with('message', $filter->name . ' was deleted.');
+        return redirect()->action('SnapshotController@show', $variable->snapshot)
+            ->with('message', $variable->name . ' was deleted.');
     }
 }

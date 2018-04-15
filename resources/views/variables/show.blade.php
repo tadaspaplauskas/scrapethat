@@ -42,7 +42,7 @@
 </ul>
 
 <h5>Conditions</h5>
-<form method="POST" action="{{ route('filters.update', $filter) }}">
+<form method="POST" action="{{ route('variables.update', $filter) }}">
     {{ method_field('PUT') }}
     {{ csrf_field() }}
     <label>
@@ -57,7 +57,7 @@
     <a href="#delete">Delete filter</a>
 </p>
 <div id="delete" class="hidden">
-    <form action="{{ route('filters.destroy', $filter) }}" method="POST">
+    <form action="{{ route('variables.destroy', $filter) }}" method="POST">
         
         {{ method_field('DELETE') }}
         {{ csrf_field() }}

@@ -17,8 +17,7 @@
     <header class="container mt1">
         <nav>
             <ul>
-                <li class="inline mr1"><a href="{{ route('home') }}">Scrape That</a></li>
-                <li class="inline mr1"><a href="{{ route('about') }}">About</a></li>
+                <li class="inline mr1"><a href="{{ route('home') }}">Home</a></li>
             @guest
                 <li class="inline mr1"><a href="{{ route('login') }}">Log in</a></li>
                 <li class="inline mr1"><a href="{{ route('register') }}">Sign up</a></li>
@@ -27,6 +26,7 @@
                 <li class="inline mr1"><a href="{{ route('snapshots.index') }}">Snapshots</a></li>
                 <li class="inline mr1"><a href="{{ route('logout') }}">Log out</a></li>
             @endauth
+                <li class="inline mr1"><a href="{{ route('about') }}">About</a></li>
             </ul>
         </nav>
     </header>

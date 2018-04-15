@@ -25,7 +25,7 @@ Route::any('snapshots/{snapshot}/query', 'SnapshotController@query')->name('snap
 
 Route::resource('snapshots', 'SnapshotController');
 
-Route::resource('filters', 'FilterController');
+Route::resource('snapshots/{snapshot}/variables', 'VariableController');
 
 Route::get('about', 'PagesController@about')->name('about');
 
