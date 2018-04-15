@@ -196,4 +196,13 @@ class SnapshotController extends Controller
         return redirect()->action('SnapshotController@index')
             ->with('message', $snapshot->name . ' was stopped.');
     }
+
+    public function query(Request $request, Snapshot $snapshot)
+    {
+        // TODO
+        // create temporary table for snapshot
+        // insert each variable into the table with separate queries
+        // finally run passed query on that temp table
+        // return results as json dump
+    }
 }
