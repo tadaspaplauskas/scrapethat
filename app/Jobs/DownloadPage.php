@@ -85,7 +85,7 @@ class DownloadPage implements ShouldQueue
         $success = mb_substr($statusCode, 0, 1) === '2';
 
         // get HTML separately through chrome driver if we got successful status code
-        $html = $success;
+        $html = null;
 
         if ($success) {
             $driver = ChromeDriver::start();

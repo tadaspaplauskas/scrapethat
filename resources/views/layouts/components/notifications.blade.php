@@ -3,10 +3,10 @@
         @switch ($notification->type)
             @case (App\Notifications\DownloadPageProblem::class)
                 <?php
-                    $snapshot = App\Snapshot::find($notification->data['snapshot_id'])->first();
+                    $snapshot = App\Snapshot::find($notification->data['snapshot_id']);
                 ?>
 
-                <div class="p1 italic bg-mintcream round-corners dimgrey">
+                <div class="p1 italic shade round-corners dimgrey">
                     We got a
                     <strong>
                         {{ $notification->data['status_code'] }} {{ $notification->data['reason_phrase'] }}
@@ -21,19 +21,27 @@
                     </strong>
 
                     <div>
-                        <form class="inline" method="GET" action="{{ route('snapshots.edit', $snapshot->id) }}">
-                            <button>Continue anyway</button>
-                        </form>
-                        
-                        <form class="inline" method="GET" action="{{ route('snapshots.edit', $snapshot->id) }}">
-                            <button>Edit and continue</button>
+                        <form class="inline" method="POST" action="{{ route('snapshots.retry', $snapshot->id) }}">
+                            {{ csrf_field() }}
+                            <input type="hidden" name="notification_id" value="{{ $notification->id }}">
+
+                            <button>Retry</button>
                         </form>
 
-                        <form class="inline" method="DELETE" action="{{ route('snapshots.destroy', $snapshot->id) }}">
+                        <form class="inline" method="GET" action="{{ route('snapshots.edit', $snapshot->id) }}">
                             {{ csrf_field() }}
-                            
-                            <button>Cancel</button>
+                            <input type="hidden" name="notification_id" value="{{ $notification->id }}">
+
+                            <button>Edit and retry</button>
                         </form>
+
+                        <form class="inline" method="POST" action="{{ route('snapshots.stop', $snapshot->id) }}">
+                            {{ csrf_field() }}
+                            <input type="hidden" name="notification_id" value="{{ $notification->id }}">
+
+                            <button>Stop</button>
+                        </form>
+
                     </div>
                 </div>
             @break

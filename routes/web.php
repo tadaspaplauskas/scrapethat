@@ -16,6 +16,8 @@ Auth::routes();
 
 Route::get('snapshots/{id}/restore', 'SnapshotController@restore')->name('snapshots.restore');
 Route::get('snapshots/{snapshot}/delete', 'SnapshotController@delete')->name('snapshots.delete');
+Route::post('snapshots/{snapshot}/stop', 'SnapshotController@stop')->name('snapshots.stop');
+Route::post('snapshots/{snapshot}/retry', 'SnapshotController@retry')->name('snapshots.retry');
 Route::resource('snapshots', 'SnapshotController');
 
 Route::resource('filters', 'FilterController');

@@ -44,16 +44,13 @@ class SnapshotController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-
-        $data['total'] = abs($data['to'] - $data['from'] + 1);
-
-        $snapshot = auth()->user()->snapshots()->create($data);
+        // TODO validate
+        $snapshot = auth()->user()->snapshots()->create($request->all());
 
         DownloadPage::dispatch($snapshot);
 
         return redirect()->action('SnapshotController@index')
-            ->with('message', $request->name . ' created successfully. Please wait while we crawl the pages.');
+            ->with('message', $request->name . ' was created successfully. Please wait while we crawl the pages.');
     }
 
     /**
@@ -87,9 +84,11 @@ class SnapshotController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, Snapshot $snapshot)
     {
-        //
+        $notificationId = $request->input('notification_id');
+
+        return view('snapshots.edit', compact('snapshot', 'notificationId'));
     }
 
     /**
@@ -101,7 +100,31 @@ class SnapshotController extends Controller
      */
     public function update(Request $request, Snapshot $snapshot)
     {
-        //
+        // todo validate
+
+        $notificationId = $request->input('notification_id');
+
+        if ($notificationId) {
+            $notification = auth()->user()->unreadNotifications()->find($notificationId);
+
+            if ($notification) {
+                $notification->markAsRead();
+            }
+        }
+
+        // reset last page
+        $snapshot->pages()->latest()->first()->delete();
+
+        $snapshot->downloaded--;
+
+        $snapshot->save();
+
+        $snapshot->update($request->all());
+
+        DownloadPage::dispatch($snapshot);
+
+        return redirect()->action('SnapshotController@index')
+            ->with('message', $request->name . ' was updated successfully. Please wait while we crawl the pages.');
     }
 
     /**
@@ -132,5 +155,45 @@ class SnapshotController extends Controller
 
         return redirect()->action('SnapshotController@index')
             ->with('message', $snapshot->name . ' was restored.');
+    }
+
+    public function retry(Request $request, Snapshot $snapshot)
+    {
+        $notificationId = $request->input('notification_id');
+
+        if ($notificationId) {
+            $notification = auth()->user()->unreadNotifications()->find($notificationId);
+
+            if ($notification) {
+                $notification->markAsRead();
+            }
+        }
+
+        $snapshot->pages()->latest()->first()->delete();
+
+        $snapshot->downloaded--;
+
+        $snapshot->save();
+
+        DownloadPage::dispatch($snapshot);
+        
+        return redirect()->action('SnapshotController@index')
+            ->with('message', $snapshot->name . ' is queued again.');
+    }
+
+    public function stop(Request $request, Snapshot $snapshot)
+    {
+        $notificationId = $request->input('notification_id');
+
+        if ($notificationId) {
+            $notification = auth()->user()->unreadNotifications()->find($notificationId);
+
+            if ($notification) {
+                $notification->markAsRead();
+            }
+        }
+
+        return redirect()->action('SnapshotController@index')
+            ->with('message', $snapshot->name . ' was stopped.');
     }
 }
