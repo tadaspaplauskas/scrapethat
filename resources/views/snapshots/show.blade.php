@@ -5,7 +5,7 @@
 @section('content')
 
 <p>
-    <a href="{{ route('variables.index', $snapshot) }}">Manage variables</a>.
+    <a href="{{ route('variables.index', $snapshot) }}">Manage variables</a>
 </p>
 
 @if ($variables->isEmpty())
@@ -24,12 +24,6 @@
 @include('snapshots/query_editor_component')
 
 @endif
-
-<h5>Danger zone</h5>
-<p>
-    <a href="{{ route('snapshots.delete', $snapshot) }}">Delete snapshot</a>.
-    We will ask you to confirm the action.
-</p>
 
 <script>
     var dataset = {!! $dataset->toJson() !!};
