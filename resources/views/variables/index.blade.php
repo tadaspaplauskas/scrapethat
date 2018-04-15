@@ -9,7 +9,7 @@
     </p>
 
     <p>
-        <a href="{{ route('snapshots.create') }}">Make a new one</a>
+        <a href="{{ route('variables.create', $snapshot) }}">Make a new one</a>.
     </p>
 
     @forelse ($variables as $variable)

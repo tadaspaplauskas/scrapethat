@@ -33,9 +33,9 @@ class VariableController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Snapshot $snapshot)
     {
-        //
+        return view('variables.create', compact('snapshot'));
     }
 
     /**
