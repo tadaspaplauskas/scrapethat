@@ -20,7 +20,5 @@ $factory->define(App\Snapshot::class, function (Faker $faker) {
         'url' => 'http://scrapethat.loc/tests/*.html',
         'from' => 1,
         'to' => 2,
-        'downloaded' => 0,
-        'total' => 2,
     ];
 });

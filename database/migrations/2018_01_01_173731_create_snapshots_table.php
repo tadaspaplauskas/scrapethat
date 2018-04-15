@@ -20,8 +20,7 @@ class CreateSnapshotsTable extends Migration
             $table->string('url');
             $table->smallinteger('from')->unsigned()->nullable();
             $table->smallinteger('to')->unsigned()->nullable();
-            $table->smallinteger('downloaded')->unsigned()->default(0);
-            $table->smallinteger('total')->unsigned()->nullable();
+            $table->smallinteger('current')->unsigned()->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

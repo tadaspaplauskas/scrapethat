@@ -104,8 +104,6 @@ class DownloadPage implements ShouldQueue
             'html' => $html,
         ]);
 
-        $snapshot->downloaded++;
-
         $snapshot->save();
 
         // notify user, stop

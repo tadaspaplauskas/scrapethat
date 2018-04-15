@@ -115,7 +115,7 @@ class SnapshotController extends Controller
         // reset last page
         $snapshot->pages()->latest()->first()->delete();
 
-        $snapshot->downloaded--;
+        $snapshot->current--;
 
         $snapshot->save();
 
@@ -171,7 +171,7 @@ class SnapshotController extends Controller
 
         $snapshot->pages()->latest()->first()->delete();
 
-        $snapshot->downloaded--;
+        $snapshot->current--;
 
         $snapshot->save();
 

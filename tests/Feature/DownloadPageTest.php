@@ -37,8 +37,7 @@ class DownloadPageTest extends TestCase
         $user = factory(User::class)->create();
         $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
 
-        // go to an non-existant number
-        $snapshot->total = 3;
+        $snapshot->to = 3;
 
         $job = new DownloadPage($snapshot);
 

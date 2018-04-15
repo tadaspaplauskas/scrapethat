@@ -14,8 +14,7 @@ class Snapshot extends Model
         'url',
         'from',
         'to',
-        'downloaded',
-        'total',
+        'current',
     ];
 
     public function user()
@@ -40,15 +39,17 @@ class Snapshot extends Model
             return null;
         }
 
-        $nextPage = $this->from + $this->downloaded;
-
-        $nextPageUrl = str_replace('*', $nextPage, $this->url);
+        $this->current = $this->current < $this->from ? $this->from : $this->current + 1;
         
+        $nextPageUrl = str_replace('*', $this->current, $this->url);
+
+        $this->save();
+
         return $nextPageUrl;
     }
 
     public function isCompleted()
     {
-        return $this->downloaded > 0 && $this->downloaded === $this->total;
+        return $this->current === $this->to;
     }
 }
