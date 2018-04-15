@@ -40,6 +40,8 @@ class ProcessVariable implements ShouldQueue
 
         $crawler = new Crawler($page->html);
 
+        $values = [];
+        
         foreach ($crawler->filter($variable->selector) as $domElement) {
             $values[] = [
                 'value' => $domElement->nodeValue,

@@ -15,12 +15,17 @@
     @forelse ($variables as $variable)
         <article class="m0 center column one-half">
             <h5>
-                {{ $variable->name }} ({{ $variable->selector }})
+                {{ $variable->name }}
             </h5>
             <p>
                 <small>
-                    {{ $snapshot->created_at->diffForHumans() }},
-                    <a href="{{ route('snapshots.show', $snapshot) }}">{{ $snapshot->name }}</a>
+                    {{ $variable->selector }}
+
+                    <form method="POST" action="{{ route('variables.destroy', [$snapshot, $variable]) }}">
+                        {{ csrf_field() }}
+                        {{ method_field('DELETE') }}
+                        <button>Delete</button>
+                    </form>
                 </small>
             </p>
         </article>

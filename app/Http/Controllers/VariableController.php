@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Symfony\Component\DomCrawler\Crawler;
+use Illuminate\Validation\Rule;
 
 use App\Snapshot;
 use App\Variable;
 use App\Jobs\ProcessVariable;
+use App\Rules\ValidCssSelector;
 
 class VariableController extends Controller
 {
@@ -46,29 +48,34 @@ class VariableController extends Controller
      */
     public function store(Request $request, Snapshot $snapshot)
     {
-        // TODO validate, selector should be unique
-        $request->validate([
-            'name' => 'required|alpha_num',
-            'selector' => 'required',
-        ]);
-
-        if ($snapshot->isCompleted()) {
-            return redirect()->back()->withInput()->withErrors();
+        if (!$snapshot->isCompleted()) {
+            return redirect()->back()->withInput()->with('message', 'Snapshot is still in progress, please wait until it is completed');
         }
 
-        if ($snapshot->isCompleted()) {
-            return redirect()->back()->withInput()->withErrors();
-        }        
+        $uniqueRule = Rule::unique('variables')->where(function ($q) use ($snapshot) {
+            return $q->where('snapshot_id', $snapshot->id);
+        });
 
-        $data = $request->all();
+        $data = $request->validate([
+            'name' => [
+                'required',
+                'alpha_num',
+                $uniqueRule,
+            ],
+            'selector' => [
+                'required',
+                new ValidCssSelector,
+                $uniqueRule,
+            ],
+        ]);
 
         $data['name'] = snake_case($data['name']);
 
-        $variable = Variable::create($data);
+        $variable = $snapshot->variables()->create($data);
 
         ProcessVariable::dispatch($variable);
 
-        return redirect()->back()->withInput();
+        return redirect()->route('variables.index', $snapshot);
     }
 
     /**
@@ -121,7 +128,6 @@ class VariableController extends Controller
     {
        $variable->delete();
 
-        return redirect()->action('SnapshotController@show', $variable->snapshot)
-            ->with('message', $variable->name . ' was deleted.');
+        return redirect()->back()->with('message', $variable->name . ' was deleted.');
     }
 }

@@ -1,6 +1,12 @@
 <label for="name" class="">Name</label>
 <input type="text" id="name" name="name" value="{{ old('name', $snapshot->name ?? '') }}">
 
+@if ($errors->has('name'))
+    <p class="red">
+        <strong>{{ $errors->first('name') }}</strong>
+    </p>
+@endif
+
 <label for="url" class="">Page URL template</label>
 <input type="url" id="url" name="url" class="full-width" value="{{ old('url', $snapshot->url ?? '') }}" required placeholder="https://news.ycombinator.com/news?p=*">
 
