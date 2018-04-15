@@ -15,6 +15,7 @@ class CreateVariableValuesTable extends Migration
     {
         Schema::create('variable_values', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('page_id')->unsigned()->index();
             $table->integer('variable_id')->unsigned()->index();
             $table->string('value')->nullable();
         });

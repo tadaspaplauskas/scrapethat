@@ -62,8 +62,7 @@ class SnapshotTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($user, $snapshot) {
             $browser->loginAs($user)
-                ->visit('/snapshots/' . $snapshot->id)
-                ->clickLink('Delete snapshot')
+                ->visit('/snapshots')
                 ->press('DELETE')
                 ->assertSee('was deleted')
                 ->assertDontSeeLink('Most recent HN submisisons')

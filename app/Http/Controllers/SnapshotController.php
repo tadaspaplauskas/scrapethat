@@ -210,6 +210,7 @@ class SnapshotController extends Controller
 
     public function query(Request $request, Snapshot $snapshot)
     {
+        dd($request->input('q'));
         // TODO
         // create temporary table for snapshot
         // insert each variable into the table with separate queries

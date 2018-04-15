@@ -44,6 +44,7 @@ class ProcessVariable implements ShouldQueue
         
         foreach ($crawler->filter($variable->selector) as $domElement) {
             $values[] = [
+                'page_id' => $page->id,
                 'value' => $domElement->nodeValue,
             ];
         }

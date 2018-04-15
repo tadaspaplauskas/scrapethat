@@ -39,7 +39,7 @@
             </p>
         @endif
 
-        <button type="submit" class="block">Fetch</button>
+        <button type="submit" class="block">Save</button>
     </form>
 
 @endif
