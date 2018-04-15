@@ -36,19 +36,20 @@ class ProcessVariable implements ShouldQueue
     {
         $variable = $this->variable;
 
-        $page = $variable->snapshot->pages()->offset($variable->scanned)->first();
+        $page = $variable->snapshot->pages()->offset($variable->current_page)->first();
 
         $crawler = new Crawler($page->html);
 
-        $values = $variable->values;
-
         foreach ($crawler->filter($variable->selector) as $domElement) {
-            $values[] = $domElement->nodeValue;
+            $values[] = [
+                'value' => $domElement->nodeValue,
+            ];
         }
 
-        $variable->values = $values;
+        // create multiple values at once
+        $response = $variable->values()->createMany($values);
 
-        $variable->scanned++;
+        $variable->current_page++;
 
         $variable->save();
 

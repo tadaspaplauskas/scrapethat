@@ -10,13 +10,11 @@ class Variable extends Model
         'snapshot_id',
         'name',
         'selector',
-        'scanned',
-        'values',
+        'current_page',
         'selected',
     ];
 
     protected $casts = [
-        'values' => 'collection',
         'selected' => 'boolean',
     ];
 
@@ -25,8 +23,13 @@ class Variable extends Model
         return $this->belongsTo(Snapshot::class);
     }
 
+    public function values()
+    {
+        return $this->hasMany(VariableValue::class, 'variable_id');
+    }
+
     public function isCompleted()
     {
-        return $this->scanned >= $this->snapshot->pages()->count();
+        return $this->current_page >= $this->snapshot->pages()->count();
     }
 }

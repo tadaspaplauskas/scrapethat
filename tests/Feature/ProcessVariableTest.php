@@ -8,6 +8,7 @@ use App\Jobs\ProcessVariable;
 use App\User;
 use App\Snapshot;
 use App\Variable;
+use App\VariableValue;
 use App\Page;
 
 class ProcessVariableTest extends TestCase
@@ -21,9 +22,7 @@ class ProcessVariableTest extends TestCase
         $page = $snapshot->pages()->save(factory(Page::class)->make());
         $variable = $snapshot->variables()->save(factory(Variable::class)->make());
 
-        $variable->values = null;
-
-        $this->assertTrue($variable->scanned == 0);
+        $this->assertTrue($variable->current_page == 0);
 
         $job = new ProcessVariable($variable);
 
@@ -31,9 +30,10 @@ class ProcessVariableTest extends TestCase
 
         $variable->refresh();
 
-        $this->assertTrue($variable->scanned > 0);
+        $this->assertTrue($variable->current_page > 0);
+
         $this->assertTrue($variable->isCompleted());
-        $this->assertFalse($variable->values->isEmpty());
-        $this->assertTrue($variable->values->contains('73 800 €'));
+
+        $this->assertDatabaseHas('variable_values', ['value' => '73 800 €']);
     }
 }

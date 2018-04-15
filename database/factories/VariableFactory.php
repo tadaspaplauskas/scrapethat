@@ -18,7 +18,6 @@ $factory->define(App\Variable::class, function (Faker $faker) {
     return [
         'name' => 'price',
         'selector' => '.price',
-        // 'values' => range(50000, 90000, 2500),
     ];
 
 });

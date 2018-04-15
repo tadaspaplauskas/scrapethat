@@ -18,8 +18,7 @@ class CreatevariablesTable extends Migration
             $table->integer('snapshot_id')->unsigned()->index();
             $table->string('name');
             $table->string('selector');
-            $table->smallinteger('scanned')->unsigned()->default(0);
-            $table->longtext('values')->nullable();
+            $table->smallinteger('current_page')->unsigned()->default(0);
             $table->boolean('selected')->default(0);
             $table->timestamps();
 
