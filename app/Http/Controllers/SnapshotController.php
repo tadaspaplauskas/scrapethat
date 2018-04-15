@@ -44,7 +44,13 @@ class SnapshotController extends Controller
      */
     public function store(Request $request)
     {
-        // TODO validate
+        $request->validate([
+            'name' => 'required',
+            'url' => 'required|url',
+            'from' => 'required|integer',
+            'to' => 'required|integer',
+        ]);
+
         $snapshot = auth()->user()->snapshots()->create($request->all());
 
         DownloadPage::dispatch($snapshot);
@@ -100,7 +106,12 @@ class SnapshotController extends Controller
      */
     public function update(Request $request, Snapshot $snapshot)
     {
-        // todo validate
+        $request->validate([
+            'name' => 'required',
+            'url' => 'required|url',
+            'from' => 'required|integer',
+            'to' => 'required|integer',
+        ]);
 
         $notificationId = $request->input('notification_id');
 
