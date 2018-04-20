@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Models\Snapshot;
 use App\Jobs\DownloadPage;
-use App\SQLProxy;
+use App\Services\QueryProxy;
+use DB;
 
 class SnapshotController extends Controller
 {
@@ -211,10 +212,53 @@ class SnapshotController extends Controller
 
     public function query(Request $request, Snapshot $snapshot)
     {
-        dd($request->input('q'));
-        // TODO
+        if (!$snapshot->isCompleted()) {
+            return response()->json(['error' => 'Snapshot is not available until it\'s completed.'], 423);
+        }
+
+        $fields = collect();
+        $tmpTables = collect();
+        foreach ($snapshot->variables as $key => $variable) {
+            $counter = 'lines' . $key;
+
+            $fields[] = $variable->name;
+
+            $tmpTables[] = '(SELECT
+                @' . $counter .':=@' . $counter .'+1 AS `row`,
+                `value` AS `' . $variable->name . '`
+                FROM variable_values, (SELECT @' . $counter .':=0) AS ' . $counter .'
+                WHERE variable_id = ' . (int) $variable->id . ' ORDER BY id) as `' . $variable->name . '`';
+
+        }
+        $where = $fields->crossJoin($fields)->map(function ($item) {
+            return $item[0] . '.row = ' . $item[1] . '.row';
+            });
+
+        $variables = DB::select('SELECT ' . $fields->implode(',') .
+            ' FROM ' . $tmpTables->implode(',') .
+            ' WHERE ' . $where->implode(' AND '));
+
+        dd($variables);
+
+        // $proxy = new QueryProxy();
+
+        // try {
+
+        //     $results = $proxy->query($request->input('q'));
+
+        // } catch (\Exception $e) {
+        //     return response()->json(['error' => 'Check query syntax.'], 422);
+        // }
+
+        // SELECT * FROM 
+        //     (SELECT author,score
+        //     FROM
+        //     (SELECT @line1:=@line1+1 AS `row`, `value` as `author` FROM variable_values, (SELECT @line1:=0) AS var1 WHERE variable_id = 2 ORDER BY id) as `author`,
+        //     (SELECT @line2:=@line2+1 AS `row`, `value` as `score` FROM variable_values, (SELECT @line2:=0) AS var2 WHERE variable_id = 1 ORDER BY id) as `score`
+        //     WHERE
+        //     author.row = score.row) compiled;
         // create temporary table for snapshot
-        // insert each variable into the table with separate queries
+        // validate the query with EXPLAIN
         // finally run passed query on that temp table
         // return results as json dump
     }
