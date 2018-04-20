@@ -17,7 +17,7 @@ $factory->define(App\Snapshot::class, function (Faker $faker) {
 
     return [
         'name' => $faker->company,
-        'url' => 'http://scrapethat.loc/tests/*.html',
+        'url' => url('/tests/*.html'),
         'from' => 1,
         'to' => 2,
     ];
