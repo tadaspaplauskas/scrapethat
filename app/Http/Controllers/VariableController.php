@@ -57,16 +57,8 @@ class VariableController extends Controller
         });
 
         $data = $request->validate([
-            'name' => [
-                'required',
-                'alpha_num',
-                $uniqueRule,
-            ],
-            'selector' => [
-                'required',
-                new ValidCssSelector,
-                $uniqueRule,
-            ],
+            'name' => ['required', 'alpha_num', $uniqueRule],
+            'selector' => ['required', new ValidCssSelector, $uniqueRule],
         ]);
 
         $data['name'] = snake_case($data['name']);
