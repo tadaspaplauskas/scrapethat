@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Seeder;
 
-use App\Variable;
-use App\Snapshot;
+use App\Models\Variable;
+use App\Models\Snapshot;
 
 use Faker\Factory;
 

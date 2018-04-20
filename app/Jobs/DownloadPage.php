@@ -13,7 +13,7 @@ use ChromeDriverStandalone\Environment;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 
-use App\Snapshot;
+use App\Models\Snapshot;
 
 use App\Notifications\DownloadPageProblem;
 

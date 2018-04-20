@@ -13,7 +13,7 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(App\Page::class, function (Faker $faker) {
+$factory->define(App\Models\Page::class, function (Faker $faker) {
     
     $html = <<<'HTML'
 <html><head><style>.pkt_added {text-decoration:none !important;}</style></head><body style=""><header>

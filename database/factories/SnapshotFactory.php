@@ -13,7 +13,7 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(App\Snapshot::class, function (Faker $faker) {
+$factory->define(App\Models\Snapshot::class, function (Faker $faker) {
 
     return [
         'name' => $faker->company,

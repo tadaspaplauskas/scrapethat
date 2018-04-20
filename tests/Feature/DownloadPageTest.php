@@ -6,8 +6,8 @@ use Tests\TestCase;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Jobs\DownloadPage;
-use App\User;
-use App\Snapshot;
+use App\Models\User;
+use App\Models\Snapshot;
 
 class DownloadPageTest extends TestCase
 {

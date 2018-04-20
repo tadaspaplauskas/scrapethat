@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use Symfony\Component\DomCrawler\Crawler;
 use Illuminate\Validation\Rule;
 
-use App\Snapshot;
-use App\Variable;
+use App\Models\Snapshot;
+use App\Models\Variable;
 use App\Jobs\ProcessVariable;
 use App\Rules\ValidCssSelector;
 

@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Symfony\Component\DomCrawler\Crawler;
 
-use App\Variable;
+use App\Models\Variable;
 
 class ProcessVariable implements ShouldQueue
 {

@@ -6,10 +6,10 @@ use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-use App\User;
-use App\Snapshot;
-use App\Variable;
-use App\Page;
+use App\Models\User;
+use App\Models\Snapshot;
+use App\Models\Variable;
+use App\Models\Page;
 
 class VariableTest extends DuskTestCase
 {

@@ -5,11 +5,11 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Jobs\ProcessVariable;
-use App\User;
-use App\Snapshot;
-use App\Variable;
-use App\VariableValue;
-use App\Page;
+use App\Models\User;
+use App\Models\Snapshot;
+use App\Models\Variable;
+use App\Models\VariableValue;
+use App\Models\Page;
 
 class ProcessVariableTest extends TestCase
 {

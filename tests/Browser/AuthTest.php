@@ -27,7 +27,7 @@ class AuthTest extends DuskTestCase
 
     public function testLogin()
     {
-        $user = factory(\App\User::class)->create([
+        $user = factory(\App\Models\User::class)->create([
             'email' => 'tadas+test@paplauskas.lt',
         ]);
 

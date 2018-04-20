@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Snapshot;
+use App\Models\Snapshot;
 use App\Jobs\DownloadPage;
+use App\SQLProxy;
 
 class SnapshotController extends Controller
 {

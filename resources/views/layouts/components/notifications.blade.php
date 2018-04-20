@@ -3,7 +3,7 @@
         @switch ($notification->type)
             @case (App\Notifications\DownloadPageProblem::class)
                 <?php
-                    $snapshot = App\Snapshot::find($notification->data['snapshot_id']);
+                    $snapshot = App\Models\Snapshot::find($notification->data['snapshot_id']);
                 ?>
 
                 <div class="p1 italic shade round-corners dimgrey">
