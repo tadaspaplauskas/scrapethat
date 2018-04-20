@@ -4,37 +4,42 @@ namespace App\Services;
 
 class QueryProxy {
 
-    protected $data;
+    protected $db;
 
     protected $cache; // should the database be cached?
 
-    public function __construct($data, $cache = true) {
+    public function __construct(Array $data) {
 
-        $this->data = $data;
-
-        $this->cache = $cache;
+        $this->buildDatabase($data);
 
     }
 
     public function query($query) {
 
-        $this->buildDatabase();
+        return $this->db->query($query)->fetchAll(\PDO::FETCH_CLASS);
 
-        // run query against DB
-
-        // return results
-
-        return;
     }
 
-    protected function buildDatabase()
+    protected function buildDatabase($data)
     {
-        if ($this->cache) {
+        $fieldNames = array_keys((array) $data[0]);
 
+        $fields = array_map(function ($item) {
+            return $item . ' text default null';
+        }, $fieldNames);
+
+        $db = new \PDO('sqlite::memory:');
+
+        $db->exec('DROP TABLE IF EXISTS dataset');
+
+        $db->exec('CREATE TABLE dataset (' . implode(',', $fields) . ')');
+        
+        foreach ($data as $line) {
+            $db->query('INSERT INTO dataset (' . implode(',', $fieldNames) . ') '
+                . 'VALUES ("' . implode('", "', (array) $line) . '")');
         }
-        else {
-            $db = new PDO('sqlite::memory:');
-        }
+
+        $this->db = $db;
     }
 
 }
