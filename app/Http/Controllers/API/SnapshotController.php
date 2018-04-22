@@ -35,19 +35,31 @@ class SnapshotController extends Controller
                 `value` AS `' . $variable->name . '`
                 FROM variable_values, (SELECT @' . $counter .':=0) AS ' . $counter .'
                 WHERE variable_id = ' . (int) $variable->id . ' ORDER BY id) as `' . $variable->name . '`';
-
         }
 
         $where = $fields->crossJoin($fields)->map(function ($item) {
             return $item[0] . '.row = ' . $item[1] . '.row';
         });
 
-        $source = DB::select('SELECT ' . $fields->implode(',') .
-            ' FROM ' . $tmpTables->implode(',') .
-            ' WHERE ' . $where->implode(' AND ') .
-            ' LIMIT 10000');
+        $limit = 5000;
+        $offset = 0;
 
-        $proxy = new QueryProxy($source);
+        $proxy = new QueryProxy($snapshot->variables->pluck('name'));
+
+        do {
+            $dump = DB::select('SELECT ' . $fields->implode(',') .
+                ' FROM ' . $tmpTables->implode(',') .
+                ' WHERE ' . $where->implode(' AND ') .
+                ' LIMIT ' . $limit . ' OFFSET ' . $offset);
+
+            foreach ($dump as $line) {
+                $proxy->insert($line);
+            }
+
+            $offset += $limit;
+
+        } while (count($dump) === $limit);
+
 
         try {
             $results = $proxy->query($request->input('q'));

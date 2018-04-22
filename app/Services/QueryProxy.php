@@ -7,26 +7,19 @@ class QueryProxy {
     protected $db;
     protected $cacheKey;
 
-    public function __construct(Array $data = [], $cacheKey = null) {
+    public function __construct($fields, $cacheKey = null) {
         $this->cacheKey;
 
-        if (!empty($data)) {
-            $this->createTable($this->fieldNames($data));
-
-            $this->insert($data);
-        }
+        $this->createTable($fields);
     }
 
-    public function insert(Array $data)
+    public function insert($data)
     {
-        $fieldNames = $this->fieldNames($data);
-
         $db = $this->connection();
 
-        foreach ($data as $line) {
-            $db->query('INSERT INTO dataset (' . implode(',', $fieldNames) . ') '
-                . 'VALUES ("' . implode('", "', (array) $line) . '")');
-        }
+        $query = 'INSERT INTO dataset VALUES ("' . implode('", "', (array) $data) . '")';
+
+        return $db->query($query);
     }
 
     public function query($query)
@@ -39,18 +32,19 @@ class QueryProxy {
         return $response->fetchAll(\PDO::FETCH_CLASS);
     }
 
-    protected function createTable($fieldNames)
+    protected function createTable($fields)
     {
-        $fields = array_map(function ($f) { return $f . ' text default null'; }, $fieldNames);
+        $fieldDefinitions = [];
+
+        foreach ($fields as $field) {
+            $fieldDefinitions[] = $field . ' text default null';
+        }
 
         $db = $this->connection();
 
-        $db->query('CREATE TABLE dataset (' . implode(',', $fields) . ')');
-    }
+        $query = 'CREATE TABLE dataset (' . implode(',', $fieldDefinitions) . ')';
 
-    protected function fieldNames($data)
-    {
-        return empty($data) ? null : array_keys((array) $data[0]);
+        $db->query($query);
     }
 
     protected function connection()
