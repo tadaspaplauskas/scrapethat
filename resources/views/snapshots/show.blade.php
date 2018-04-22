@@ -25,8 +25,4 @@
 
 @endif
 
-<script>
-    var dataset = {!! $dataset->toJson() !!};
-</script>
-
 @endsection

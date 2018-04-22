@@ -1,4 +1,9 @@
 {{-- builder template cannot work until scripts are fully loaded --}}
+<script>
+    snapshot_id = {{ $snapshot->id }};
+    api_token = "{{ $user->api_token }}";
+</script>
+
 <script src="{{ mix('js/data_explorer.js') }}"></script>
 
 <p>
@@ -98,8 +103,8 @@
 <h5>Results</h5>
 <p id="sql-output"></p>
 
-<h5>Export results</h5>
+{{-- <h5>Export results</h5>
 <p>
     <button onclick="exportToCSV(makeQuery())">CSV file</button>
     <button onclick="exportToXLSX(makeQuery())">XLSX file</button>
-</p>
+</p> --}}

@@ -4,6 +4,10 @@ Chart = require('chart.js');
 // global data
 chart = null;
 
+window.output = function () {
+    return document.querySelector('#sql-output');
+};
+
 window.addElementTo = function (sourceSelector, targetSelector) {
     // clone with all children
     var elem = document.querySelector(sourceSelector).cloneNode(true);
@@ -79,7 +83,7 @@ window.makeQuery = function () {
 
     var sql = 'SELECT ' +
         (select.length ? select.join(', ') : '*') +
-        ' FROM ?';
+        ' FROM dataset';
 
     // conditions
     if (conditions.length) {
@@ -91,7 +95,7 @@ window.makeQuery = function () {
     }
 
     if (order.length) {
-        sql += ' ORDER BY ' + order.join(', ');;
+        sql += ' ORDER BY ' + order.join(', ');
     }
 
     console.log(sql);
@@ -99,25 +103,40 @@ window.makeQuery = function () {
     return sql;
 };
 
-window.runQuery = function (query, verboseErrors) {
-    var outputElement = document.querySelector('#sql-output');
-    if (!query) {
-        return false;
+window.renderChart = function (results) {
+    if (!results.length) {
+        return;
     }
 
-    try {
-        var results = alasql(query, [dataset]);
-    }
-    catch (exception) {
-        outputElement.innerText = verboseErrors ? exception : 'Something went wrong with the query. Please refresh and try again or contact administrator if it keeps repeating.';
-        outputElement.className = 'red';
+    var chartDatasets = Object.keys(results[0]).map(function (key) {
+        return {
+            label: key,
+            data: results.map(function (row) {
+                return row[key];
+            })
+        };
+    });
 
-        return false;
+    // chart scope is global
+    if (!chart) {
+        chart = new Chart(document.querySelector('#chart'), {
+            type: 'line',
+            data: { datasets: [] },
+            options: {}
+        });
     }
+
+    chart.data.labels = new Array(chartDatasets[0].data.length);
+    chart.data.datasets = chartDatasets;
+    chart.update();
+};
+
+window.renderTable = function (results) {
+    var html;
 
     if (results.length) {
         // format table
-        var html = '<table>';
+        html = '<table>';
 
         // add header row
         html += '<tr><th>#</th><th>' +
@@ -134,46 +153,48 @@ window.runQuery = function (query, verboseErrors) {
         html += '<table>';
     }
     else {
-        var html = '<p>Nothing found.</p>';
+        html = '<p>Nothing found.</p>';
     }
 
     // set output
-    outputElement.className = '';
-    outputElement.innerHTML = html;
-
-    drawChart(results);
+    output().className = '';
+    output().innerHTML = html;
 };
 
-window.drawChart = function (results) {
-    if (!results.length) {
-        return false;
+window.renderError = function (error, verbose) {
+    output().innerText = verbose ? exception : 'Something went wrong with the query. Please refresh and try again or contact administrator if it keeps repeating.';
+
+    output().className = 'red';
+};
+
+window.runQuery = function (query, verbose) {
+    if (!query) {
+        return;
     }
 
-    var chartDatasets = Object.keys(results[0]).map(function (key) {
-        return {
-            label: key,
-            data: results.map(function (row) {
-                return row[key];
-            })
-        };
-    });
+    var r = new XMLHttpRequest();
 
-    // chart scope is global
-    if (!chart) {
-        chart = new Chart(document.querySelector('#chart'), {
-            type: 'line',
-            data: {
-                datasets: []
-            },
-            options: {}
-        });
-    }
+    r.open('POST', '/api/snapshots/' + window.snapshot_id + '/query');
+    r.setRequestHeader('Content-Type', 'application/json');
+    r.setRequestHeader('Authorization', 'Bearer ' + window.api_token);
 
-    chart.data.labels = new Array(chartDatasets[0].data.length);
-    chart.data.datasets = chartDatasets;
-    chart.update();
+    r.onload = function() {
+        if (r.status === 200) {
+            var results = JSON.parse(r.responseText);
 
-    return true;
+            renderChart(results.data);
+
+            renderTable(results.data);
+        }
+
+        // error
+        else if (r.status !== 200) {
+            renderError(r.responseText, verbose);
+        }
+    };
+
+    r.send(JSON.stringify({ query: query }));
+
 };
 
 window.submitQuery = function () {
@@ -181,14 +202,14 @@ window.submitQuery = function () {
 };
 
 // TODO FIXME
-window.exportToCSV = function (query) {
-    // alasql.promise('SELECT * INTO CSV("query_results.csv", { separator: ","}) FROM (' + query + ')', [dataset])
-    //     .then(function(){
-    //          console.log('File was saved');
-    //     }).catch(function(error){
-    //          console.log('Error:', error);
-    //     });
-};
+// window.exportToCSV = function (query) {
+//     alasql.promise('SELECT * INTO CSV("query_results.csv", { separator: ","}) FROM (' + query + ')', [dataset])
+//         .then(function(){
+//              console.log('File was saved');
+//         }).catch(function(error){
+//              console.log('Error:', error);
+//         });
+// };
 
 window.onload = function () {
     // since default is simple mode

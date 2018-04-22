@@ -69,9 +69,11 @@ class SnapshotController extends Controller
      */
     public function show(Snapshot $snapshot, Request $request)
     {
+        $user = auth()->user();
+
         $variables = $snapshot->variables;
         
-        return view('snapshots.show', compact('snapshot', 'variables'));
+        return view('snapshots.show', compact('snapshot', 'variables', 'user'));
     }
 
     /**

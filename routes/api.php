@@ -13,5 +13,5 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('snapshots/{snapshot}/query', 'API\SnapshotController@query')->middleware('auth:api');
+Route::any('snapshots/{snapshot}/query', 'API\SnapshotController@query')->middleware('auth:api');
 

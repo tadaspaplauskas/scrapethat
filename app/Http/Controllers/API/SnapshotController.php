@@ -62,7 +62,7 @@ class SnapshotController extends Controller
 
 
         try {
-            $results = $proxy->query($request->input('q'));
+            $results = $proxy->query($request->input('query'));
         } catch (\InvalidArgumentException $e) {
             return response()->json(['errors' => [$e->getMessage()]], 422);
         }
