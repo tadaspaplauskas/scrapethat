@@ -1,6 +1,4 @@
 // global dependencies
-alasql = require('alasql');
-XLSX = require('xlsx');
 Chart = require('chart.js');
 
 // global data
@@ -15,7 +13,7 @@ window.addElementTo = function (sourceSelector, targetSelector) {
 
 window.removeElement = function (element) {
     return element.parentNode.removeChild(element);
-}
+};
 
 window.showOneOfMany = function (needleSelector, haystackSelector, context) {
     context = context || document;
@@ -47,7 +45,6 @@ window.makeQuery = function () {
         
         var valueElement = rule.querySelector('.' + type + ' .value');
         var value = valueElement ? valueElement.value : '';
-
         switch (type) {
             case 'select':
                 select.push(variable);
@@ -56,12 +53,14 @@ window.makeQuery = function () {
                 select.push(value +'(' + variable + ')');
                 break;
             case 'condition':
+                var conditionValue;
+
                 // put in quotes
                 if (value === '') {
-                    var conditionValue = '""';
+                    conditionValue = '""';
                 }
                 else {
-                    var conditionValue = isNaN(value) ? '"' + value + '"' : value;
+                    conditionValue = isNaN(value) ? '"' + value + '"' : value;
                 }
                 
                 conditions.push(variable + rule.querySelector('.condition .operator').value +
@@ -181,32 +180,14 @@ window.submitQuery = function () {
     return runQuery(makeQuery());
 };
 
+// TODO FIXME
 window.exportToCSV = function (query) {
-    alasql.promise('SELECT * INTO CSV("query_results.csv", { separator: ","}) FROM (' + query + ')', [dataset])
-        .then(function(){
-             console.log('File was saved');
-        }).catch(function(error){
-             console.log('Error:', error);
-        });
-};
-
-// using XLSX manually
-window.exportToXLSX = function (query) {
-    var results = alasql(query, [dataset]);
-
-    var data = [];
-    data.push(Object.keys(results[0]));
-
-    for (var i = 0; i < results.length; i++) {
-        data.push(Object.values(results[i]));
-    }
-
-    var wb = XLSX.utils.book_new(),
-        ws = XLSX.utils.aoa_to_sheet(data);
-     
-    XLSX.utils.book_append_sheet(wb, ws, 'results');
-
-    XLSX.writeFile(wb, 'query_results.xlsx');
+    // alasql.promise('SELECT * INTO CSV("query_results.csv", { separator: ","}) FROM (' + query + ')', [dataset])
+    //     .then(function(){
+    //          console.log('File was saved');
+    //     }).catch(function(error){
+    //          console.log('Error:', error);
+    //     });
 };
 
 window.onload = function () {

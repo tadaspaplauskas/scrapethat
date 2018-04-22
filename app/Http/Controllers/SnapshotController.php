@@ -71,19 +71,7 @@ class SnapshotController extends Controller
     {
         $variables = $snapshot->variables;
         
-        $dataset = collect();
-
-        foreach ($variables as $variable) {
-            foreach ($variable->values as $i => $value) {
-                if (!isset($dataset[$i])) {
-                    $dataset[$i] = collect();
-                }
-
-                $dataset[$i][$variable->name] = floatval(preg_replace('/\s*/m', '', $value));
-            }
-        }
-
-        return view('snapshots.show', compact('snapshot', 'variables', 'dataset'));
+        return view('snapshots.show', compact('snapshot', 'variables'));
     }
 
     /**
