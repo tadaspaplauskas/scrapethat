@@ -5,41 +5,57 @@ namespace App\Services;
 class QueryProxy {
 
     protected $db;
+    protected $cacheKey;
 
-    protected $cache; // should the database be cached?
+    public function __construct(Array $data = [], $cacheKey = null) {
+        $this->cacheKey;
 
-    public function __construct(Array $data) {
+        if (!empty($data)) {
+            $this->createTable($this->fieldNames($data));
 
-        $this->buildDatabase($data);
-
+            $this->insert($data);
+        }
     }
 
-    public function query($query) {
-
-        return $this->db->query($query)->fetchAll(\PDO::FETCH_CLASS);
-
-    }
-
-    protected function buildDatabase($data)
+    public function insert(Array $data)
     {
-        $fieldNames = array_keys((array) $data[0]);
+        $fieldNames = $this->fieldNames($data);
 
-        $fields = array_map(function ($item) {
-            return $item . ' text default null';
-        }, $fieldNames);
+        $db = $this->connection();
 
-        $db = new \PDO('sqlite::memory:');
-
-        $db->exec('DROP TABLE IF EXISTS dataset');
-
-        $db->exec('CREATE TABLE dataset (' . implode(',', $fields) . ')');
-        
         foreach ($data as $line) {
             $db->query('INSERT INTO dataset (' . implode(',', $fieldNames) . ') '
                 . 'VALUES ("' . implode('", "', (array) $line) . '")');
         }
+    }
 
-        $this->db = $db;
+    public function query($query)
+    {
+        $response = $this->db->query($query);
+
+        if (!$response) {
+            throw new \InvalidArgumentException(array_last($this->db->errorInfo()));
+        }
+        return $response->fetchAll(\PDO::FETCH_CLASS);
+    }
+
+    protected function createTable($fieldNames)
+    {
+        $fields = array_map(function ($f) { return $f . ' text default null'; }, $fieldNames);
+
+        $db = $this->connection();
+
+        $db->query('CREATE TABLE dataset (' . implode(',', $fields) . ')');
+    }
+
+    protected function fieldNames($data)
+    {
+        return empty($data) ? null : array_keys((array) $data[0]);
+    }
+
+    protected function connection()
+    {
+        return $this->db ?: $this->db = new \PDO('sqlite::memory:');
     }
 
 }
