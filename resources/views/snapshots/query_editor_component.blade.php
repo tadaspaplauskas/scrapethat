@@ -19,7 +19,7 @@
     <button onclick="addElementTo('#rule-template', '#query-editor').style.display = 'table-row'" accesskey="n" title="Keyboard shortcut: [Alt]+n or [Control]+[Alt]+n">+ Add a rule</button>
 
     {{-- this enables to refresh query on enter --}}
-    <form onsubmit="event.preventDefault();submitQuery();">
+    <form onsubmit="event.preventDefault(); submitQuery();">
         <table class="full-width" id="query-editor">
             <tr>
                 <th>Type</th>
@@ -80,7 +80,7 @@
 
                 </td>
                 <td>
-                    <button type="button" onclick="removeElement(this.parentNode.parentNode);submitQuery();">
+                    <button type="button" onclick="removeElement(this.parentNode.parentNode)">
                         - Remove
                     </button>
                 </td>
@@ -95,12 +95,11 @@
 
 {{-- ADVANDED QUERY --}}
 <div id="advanced" class="mode" style="display: none">
-    <textarea id="query" class="full-width">SELECT * FROM ?</textarea>
+    <textarea id="query" class="full-width">SELECT * FROM dataset</textarea>
 
     <button onclick="runQuery(document.querySelector('#query').value, true)">Run query</button>
 </div>
 
-<h5>Results</h5>
 <p id="sql-output"></p>
 
 {{-- <h5>Export results</h5>

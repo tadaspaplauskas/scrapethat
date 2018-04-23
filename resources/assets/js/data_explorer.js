@@ -1,11 +1,78 @@
 // global dependencies
 Chart = require('chart.js');
 
-// global data
-chart = null;
+window.output = function (callback) {
+    return callback(document.querySelector('#sql-output'));
+};
 
-window.output = function () {
-    return document.querySelector('#sql-output');
+window.chart = function (labels, data) {
+    return new Chart(document.querySelector('#chart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: data
+        },
+        options: {}
+    });
+};
+
+window.renderError = function (error, verbose) {
+    output(function (element) {
+        element.innerText = verbose ? exception : 'Something went wrong with the query. Please refresh and try again or contact administrator if it keeps repeating.';
+        element.className = 'red';
+    });
+};
+
+window.renderChart = function (results) {
+    if (!results.length) {
+        return;
+    }
+
+    var chartDatasets = Object.keys(results[0]).map(function (key) {
+        return {
+            label: key,
+            data: results.map(function (row) {
+                return row[key];
+            })
+        };
+    });
+
+    var labels = new Array(chartDatasets[0].data.length);
+    chart(labels, chartDatasets);
+};
+
+window.renderTable = function (results) {
+    var html;
+
+    if (results.length) {
+        html = '<h5>Results <em>(' + results.length + ')</em></h5>';
+
+        // format table
+        html += '<table>';
+
+        // add header row
+        html += '<tr><th>#</th><th>' +
+            Object.keys(results[0]).join('</th><th>') +
+            '</th></tr>';
+
+        // add data
+        for (var i = 0; i < results.length; i++) {
+            html += '<tr><td>' + (i+1) + '</td><td>' +
+                Object.values(results[i]).join('</td><td>') +
+                '</td></tr>';
+        }
+
+        html += '<table>';
+    }
+    else {
+        html = '<p>Nothing found.</p>';
+    }
+
+    // set output
+    output(function (element) {
+        element.className = '';
+        element.innerHTML = html;
+    });
 };
 
 window.addElementTo = function (sourceSelector, targetSelector) {
@@ -99,72 +166,8 @@ window.makeQuery = function () {
     }
 
     console.log(sql);
-    
+
     return sql;
-};
-
-window.renderChart = function (results) {
-    if (!results.length) {
-        return;
-    }
-
-    var chartDatasets = Object.keys(results[0]).map(function (key) {
-        return {
-            label: key,
-            data: results.map(function (row) {
-                return row[key];
-            })
-        };
-    });
-
-    // chart scope is global
-    if (!chart) {
-        chart = new Chart(document.querySelector('#chart'), {
-            type: 'line',
-            data: { datasets: [] },
-            options: {}
-        });
-    }
-
-    chart.data.labels = new Array(chartDatasets[0].data.length);
-    chart.data.datasets = chartDatasets;
-    chart.update();
-};
-
-window.renderTable = function (results) {
-    var html;
-
-    if (results.length) {
-        // format table
-        html = '<table>';
-
-        // add header row
-        html += '<tr><th>#</th><th>' +
-            Object.keys(results[0]).join('</th><th>') +
-            '</th></tr>';
-
-        // add data
-        for (var i = 0; i < results.length; i++) {
-            html += '<tr><td>' + (i+1) + '</td><td>' +
-                Object.values(results[i]).join('</td><td>') +
-                '</td></tr>';
-        }
-
-        html += '<table>';
-    }
-    else {
-        html = '<p>Nothing found.</p>';
-    }
-
-    // set output
-    output().className = '';
-    output().innerHTML = html;
-};
-
-window.renderError = function (error, verbose) {
-    output().innerText = verbose ? exception : 'Something went wrong with the query. Please refresh and try again or contact administrator if it keeps repeating.';
-
-    output().className = 'red';
 };
 
 window.runQuery = function (query, verbose) {
@@ -183,7 +186,6 @@ window.runQuery = function (query, verbose) {
             var results = JSON.parse(r.responseText);
 
             renderChart(results.data);
-
             renderTable(results.data);
         }
 
@@ -194,7 +196,6 @@ window.runQuery = function (query, verbose) {
     };
 
     r.send(JSON.stringify({ query: query }));
-
 };
 
 window.submitQuery = function () {
@@ -213,5 +214,5 @@ window.submitQuery = function () {
 
 window.onload = function () {
     // since default is simple mode
-    runQuery(makeQuery());
+    submitQuery();
 };
