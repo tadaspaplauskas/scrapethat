@@ -6,14 +6,22 @@ window.output = function (callback) {
 };
 
 window.chart = function (labels, data) {
-    return new Chart(document.querySelector('#chart'), {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: data
-        },
-        options: {}
-    });
+    if (typeof window.chart.instance === 'undefined') {
+        window.chart.instance = new Chart(document.querySelector('#chart'), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: []
+            },
+            options: {}
+        });
+    }
+
+    window.chart.instance.data.labels = labels;
+    window.chart.instance.data.datasets = data;
+    window.chart.instance.update();
+
+    return window.chart.instance;
 };
 
 window.renderError = function (error, verbose) {
