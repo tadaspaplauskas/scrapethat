@@ -4,15 +4,6 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
-    "repositories": [
-    {
-        "type": "path",
-        "url": "/Users/tadas/Dropbox/Projects/chromedriver-standalone",
-        "options": {
-            "symlink": true
-        }
-    }
-    ],
     "require": {
         "php": ">=7.0.0",
         "facebook/webdriver": "^1.5",
