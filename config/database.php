@@ -1,5 +1,15 @@
 <?php
 
+// heroku-specific stuff
+if ($databaseUrl = getenv('DATABASE_URL')) {
+    $pgDb = parse_url($databaseUrl);
+
+    putenv('DB_HOST=' . $pgDb['host']);
+    putenv('DB_USERNAME=' . $pgDb['user']);
+    putenv('DB_PASSWORD=' . $pgDb['pass']);
+    putenv('DB_DATABASE=' . substr($pgDb['path'], 1));
+}
+
 return [
 
     /*
@@ -57,7 +67,6 @@ return [
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),
             'password' => env('DB_PASSWORD', ''),
