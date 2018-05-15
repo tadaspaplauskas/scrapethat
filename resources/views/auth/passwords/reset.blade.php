@@ -7,6 +7,8 @@
     
     {{ csrf_field() }}
 
+    <input type="hidden" name="token" value="{{ $token }}">
+
     @if ($errors->has('email'))
         <p class="red">
             <strong>{{ $errors->first('email') }}</strong>
