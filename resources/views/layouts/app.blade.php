@@ -42,6 +42,12 @@
             </h5>
         @endif
 
+        @if (session('status'))
+            <h5 class="center">
+                {!! session('status') !!}
+            </h5>
+        @endif
+
         @yield('content')
     </main>
 
