@@ -9,12 +9,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Facebook\WebDriver\Chrome\ChromeDriver;
 use Facebook\WebDriver\Remote\DriverCommand;
-use ChromeDriverStandalone\Environment;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-
+use Facebook\WebDriver\Chrome\ChromeOptions;
+use Facebook\WebDriver\Remote\DesiredCapabilities;
 use App\Models\Snapshot;
-
 use App\Notifications\DownloadPageProblem;
 
 class DownloadPage implements ShouldQueue
@@ -43,14 +42,6 @@ class DownloadPage implements ShouldQueue
     public function __construct(Snapshot $snapshot)
     {
         $this->snapshot = $snapshot;
-
-        // heroku has chromedriver already setup with buildpack
-        if (config('env') === 'production') {
-            Environment::setup('chromedriver');
-        }
-        else {
-            Environment::setup();
-        }
     }
 
     /**
@@ -93,8 +84,17 @@ class DownloadPage implements ShouldQueue
         // get HTML separately through chrome driver if we got successful status code
         $html = null;
 
+        $caps = DesiredCapabilities::chrome();
+
+        if (env('GOOGLE_CHROME_SHIM')) {
+            $options = new ChromeOptions();
+            $options->setBinary(env('GOOGLE_CHROME_SHIM'));
+
+            $caps->setCapability(ChromeOptions::CAPABILITY, $options);
+        }
+
         if ($success) {
-            $driver = ChromeDriver::start();
+            $driver = ChromeDriver::start($caps);
 
             $driver->get($url);
 

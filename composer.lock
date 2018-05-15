@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "00afe51fef9eff34acd7bee0689a2614",
+    "content-hash": "14b091aea9ccb4f73d0dc9aefed9d9f8",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -2524,45 +2524,6 @@
                 "dump"
             ],
             "time": "2018-04-26T16:12:06+00:00"
-        },
-        {
-            "name": "tadaspaplauskas/chromedriver-standalone",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/tadaspaplauskas/chromedriver-standalone.git",
-                "reference": "8389509be674b88e43d2b2873934c1d8b4c3c208"
-            },
-            "dist": {
-                "type": "path",
-                "url": "https://api.github.com/repos/tadaspaplauskas/chromedriver-standalone/zipball/8389509be674b88e43d2b2873934c1d8b4c3c208",
-                "reference": "8389509be674b88e43d2b2873934c1d8b4c3c208",
-                "shasum": null
-            },
-            "bin": [
-                "bin/chromedriver-mac",
-                "bin/chromedriver-linux",
-                "bin/chromedriver-win.exe"
-            ],
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "ChromeDriverStandalone\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Tadas Paplauskas",
-                    "email": "tadas@paplauskas.lt"
-                }
-            ],
-            "description": "Makes it easy to use standalone chromedriver with facebook/webdriver",
-            "transport-options": {
-                "symlink": true
-            }
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
