@@ -1,13 +1,10 @@
 <?php
 
 // heroku-specific stuff
-if ($databaseUrl = getenv('DATABASE_URL')) {
-    $pgDb = parse_url($databaseUrl);
+$heroku = [];
 
-    putenv('DB_HOST=' . $pgDb['host']);
-    putenv('DB_USERNAME=' . $pgDb['user']);
-    putenv('DB_PASSWORD=' . $pgDb['pass']);
-    putenv('DB_DATABASE=' . substr($pgDb['path'], 1));
+if ($databaseUrl = getenv('DATABASE_URL')) {
+    $heroku = parse_url($databaseUrl);
 }
 
 return [
@@ -66,10 +63,10 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'host' => env('DB_HOST', $heroku['host'] ?? '127.0.0.1'),
+            'database' => env('DB_DATABASE', $heroku ? substr($heroku['path'], 1) : 'forge'),
+            'username' => env('DB_USERNAME', $heroku['user'] ?? 'forge'),
+            'password' => env('DB_PASSWORD', $heroku['pass'] ?? ''),
             'charset' => 'utf8',
             'prefix' => '',
             'schema' => 'public',
