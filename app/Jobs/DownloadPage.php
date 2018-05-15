@@ -44,7 +44,13 @@ class DownloadPage implements ShouldQueue
     {
         $this->snapshot = $snapshot;
 
-        Environment::setup();
+        // heroku has chromedriver already setup with buildpack
+        if (config('env') === 'production') {
+            Environment::setup('chromedriver');
+        }
+        else {
+            Environment::setup();
+        }
     }
 
     /**
