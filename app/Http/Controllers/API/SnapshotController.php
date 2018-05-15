@@ -41,16 +41,18 @@ class SnapshotController extends Controller
             return $item[0] . '.row = ' . $item[1] . '.row';
         });
 
-        $limit = 5000;
+        $limit = 1000;
         $offset = 0;
 
         $proxy = new QueryProxy($snapshot->variables->pluck('name'));
 
         do {
-            $dump = DB::select('SELECT ' . $fields->implode(',') .
+            $query = 'SELECT ' . $fields->implode(',') .
                 ' FROM ' . $tmpTables->implode(',') .
                 ' WHERE ' . $where->implode(' AND ') .
-                ' LIMIT ' . $limit . ' OFFSET ' . $offset);
+                ' LIMIT ' . $limit . ' OFFSET ' . $offset;
+
+            $dump = DB::select($query);
 
             foreach ($dump as $line) {
                 $proxy->insert($line);
