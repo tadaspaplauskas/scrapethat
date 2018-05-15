@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Mail Driver
+    | Email Driver
     |--------------------------------------------------------------------------
     |
     | Laravel supports both SMTP and PHP's "mail" function as drivers for the
@@ -29,7 +29,7 @@ return [
     |
     */
 
-    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+    'host' => env('MAILGUN_SMTP_SERVER', 'smtp.mailgun.org'),
 
     /*
     |--------------------------------------------------------------------------
@@ -42,7 +42,7 @@ return [
     |
     */
 
-    'port' => env('MAIL_PORT', 587),
+    'port' => env('MAILGUN_SMTP_PORT', 587),
 
     /*
     |--------------------------------------------------------------------------
@@ -56,13 +56,13 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => 'info@scrapethat.com',
+        'name' => 'ScrapeThat',
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | E-Mail Encryption Protocol
+    | E-Email Encryption Protocol
     |--------------------------------------------------------------------------
     |
     | Here you may specify the encryption protocol that should be used when
@@ -84,9 +84,9 @@ return [
     |
     */
 
-    'username' => env('MAIL_USERNAME'),
+    'username' => env('MAILGUN_SMTP_LOGIN'),
 
-    'password' => env('MAIL_PASSWORD'),
+    'password' => env('MAILGUN_SMTP_PASSWORD'),
 
     /*
     |--------------------------------------------------------------------------
@@ -103,7 +103,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Markdown Mail Settings
+    | Markdown Email Settings
     |--------------------------------------------------------------------------
     |
     | If you are using Markdown based email rendering, you may configure your
