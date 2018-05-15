@@ -22,46 +22,24 @@ class SnapshotController extends Controller
             return response()->json(['error' => 'Snapshot is not available until it\'s completed.'], 423);
         }
 
-        $fields = collect();
-        $tmpTables = collect();
+        $dump = [];
         
-        foreach ($snapshot->variables as $key => $variable) {
-            $counter = 'lines' . $key;
+        foreach ($snapshot->variables as $variable) {
+            $counter = 0;
 
-            $fields[] = $variable->name;
-
-            $tmpTables[] = '(SELECT
-                @' . $counter .':=@' . $counter .'+1 AS `row`,
-                `value` AS `' . $variable->name . '`
-                FROM variable_values, (SELECT @' . $counter .':=0) AS ' . $counter .'
-                WHERE variable_id = ' . (int) $variable->id . ' ORDER BY id) as `' . $variable->name . '`';
+            $variable->values()->chunk(1000, function ($values) use (&$variable, &$dump, &$counter) {
+                foreach ($values as $value) {
+                    $dump[$counter][$variable->name] = $value->value;
+                    $counter++;
+                }
+            });
         }
-
-        $where = $fields->crossJoin($fields)->map(function ($item) {
-            return $item[0] . '.row = ' . $item[1] . '.row';
-        });
-
-        $limit = 1000;
-        $offset = 0;
 
         $proxy = new QueryProxy($snapshot->variables->pluck('name'));
 
-        do {
-            $query = 'SELECT ' . $fields->implode(',') .
-                ' FROM ' . $tmpTables->implode(',') .
-                ' WHERE ' . $where->implode(' AND ') .
-                ' LIMIT ' . $limit . ' OFFSET ' . $offset;
-
-            $dump = DB::select($query);
-
-            foreach ($dump as $line) {
-                $proxy->insert($line);
-            }
-
-            $offset += $limit;
-
-        } while (count($dump) === $limit);
-
+        foreach ($dump as $line) {
+            $proxy->insert($line);
+        }
 
         try {
             $results = $proxy->query($request->input('query'));
