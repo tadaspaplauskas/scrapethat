@@ -23,9 +23,9 @@ class SnapshotController extends Controller
      */
     public function index()
     {
-        return view('snapshots.index', [
-            'snapshots' => auth()->user()->snapshots()->orderBy('id', 'desc')->get(),
-        ]);
+        $snapshots = auth()->user()->snapshots()->orderBy('created_at', 'desc')->get();
+
+        return view('snapshots.index', compact('snapshots'));
     }
 
     /**

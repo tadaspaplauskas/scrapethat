@@ -5,7 +5,7 @@
 @section('content')
 
 <p>
-    Before runing any analysis, we have to crawl website for data. Let's do it right now.
+    Let's crawl some websites, so you can play with numbers 🤓
 </p>
 
 <form method="POST" action="{{ route('snapshots.store') }}">

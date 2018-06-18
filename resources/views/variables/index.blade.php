@@ -5,20 +5,14 @@
 @section('content')
 
     <p>
-        Select data out of snapshots using CSS selectors.
+        Use CSS selectors to get data out of the pages.
     </p>
 
     <p>
-        <a href="{{ route('variables.create', $snapshot) }}">Make a new one</a>
+        <a href="{{ route('variables.create', $snapshot) }}">Make a new one.</a>
     </p>
 
-    @if ($variables->isEmpty())
-
-        <p>
-            No variables yet.
-        </p>
-
-    @else
+    @if (!$variables->isEmpty())
 
         <table class="full-width">
             <tr>

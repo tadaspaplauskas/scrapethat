@@ -8,6 +8,7 @@
 @endif
 
 <label for="url" class="">Page URL template</label>
+<small>Please mark page number with an asterisk (*)</small>
 <input type="url" id="url" name="url" class="full-width" value="{{ old('url', $snapshot->url ?? '') }}" required placeholder="https://news.ycombinator.com/news?p=*">
 
 @if ($errors->has('url'))

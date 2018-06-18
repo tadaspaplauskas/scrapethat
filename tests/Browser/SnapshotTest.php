@@ -32,7 +32,7 @@ class SnapshotTest extends DuskTestCase
             $browser->loginAs($user)
                 ->visit('/snapshots/create')
                 ->type('name', 'Sample snapshot')
-                ->type('url', 'http://crawler.loc/tests/*.html')
+                ->type('url', 'http://scrapethat.test/tests/*.html')
                 ->type('from', '1')
                 ->type('to', '5')
                 ->press('SAVE')

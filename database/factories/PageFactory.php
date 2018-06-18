@@ -99,7 +99,7 @@ $factory->define(App\Models\Page::class, function (Faker $faker) {
 HTML;
 
     return [
-        'url' => 'http://crawler.loc/tests/1.html',
+        'url' => 'http://scrapethat.test/tests/1.html',
         'html' => $html,
     ];
 

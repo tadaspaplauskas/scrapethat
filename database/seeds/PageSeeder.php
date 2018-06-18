@@ -104,7 +104,7 @@ HTML;
         foreach (Snapshot::all() as $snapshot) {
             for ($i = 1; $i <= ($snapshot->to - $snapshot->from); $i++) {
                 $snapshot->pages()->create([
-                    'url' => 'http://crawler.loc/tests/1.html',
+                    'url' => 'http://scrapethat.test/tests/1.html',
                     'html' => $html,
                 ]);
             }

@@ -6,7 +6,7 @@
 
 <h5>New variable</h5>
 <p>
-    Select data out of snapshots using CSS selectors.
+    Use CSS selectors to get data out of the pages.
 </p>
 
 @if (!$snapshot->isCompleted())

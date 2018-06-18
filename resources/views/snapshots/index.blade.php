@@ -18,8 +18,8 @@
         <table class="full-width">
             <tr>
                 <th>Name</th>
-                <th>Downloaded pages</th>
-                <th>Created at</th>
+                <th>Pages</th>
+                <th>Created</th>
                 <th>Delete</th>
             </tr>
 
