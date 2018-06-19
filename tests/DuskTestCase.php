@@ -41,14 +41,4 @@ abstract class DuskTestCase extends BaseTestCase
             )
         );
     }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        // reset session before the test
-        $this->browse(function (Browser $browser) {
-            $browser->driver->manage()->deleteAllCookies();
-        });
-    }
 }
