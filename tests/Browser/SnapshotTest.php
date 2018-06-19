@@ -34,7 +34,7 @@ class SnapshotTest extends DuskTestCase
                 ->type('name', 'Sample snapshot')
                 ->type('url', 'http://scrapethat.test/tests/*.html')
                 ->type('from', '1')
-                ->type('to', '5')
+                ->type('to', '2')
                 ->press('SAVE')
                 ->assertPathIs('/snapshots')
                 ->assertSeeLink('Sample snapshot');
