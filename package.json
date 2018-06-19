@@ -9,7 +9,7 @@
     "prod": "npm run production",
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
     "deploy": "git push heroku master",
-    "test": "phpunit && php artisan dusk",
+    "test": "vendor/bin/phpunit",
     "database": "heroku pg:psql postgresql-animated-27869 --app scrapethat"
   },
   "devDependencies": {

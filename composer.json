@@ -10,7 +10,6 @@
         "facebook/webdriver": "^1.5",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^6.3",
-        "laravel/browser-kit-testing": "^4.0",
         "laravel/framework": "5.6.*",
         "laravel/tinker": "~1.0",
         "symfony/browser-kit": "^4.0",
@@ -21,7 +20,8 @@
         "filp/whoops": "~2.0",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "~1.0",
-        "phpunit/phpunit": "^7.0"
+        "phpunit/phpunit": "^7.0",
+        "laravel/browser-kit-testing": "^4.0"
     },
     "autoload": {
         "classmap": [
