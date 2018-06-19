@@ -1,9 +1,8 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
 use Tests\TestCase;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Jobs\DownloadPage;
 use App\Models\User;

@@ -1,19 +1,17 @@
 <?php
 
-namespace Tests\Browser;
+namespace Tests\Feature;
 
-use Tests\DuskTestCase;
-use Laravel\Dusk\Browser;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
 use App\Models\Snapshot;
 use App\Models\Variable;
 use App\Models\Page;
 
-class VariableTest extends DuskTestCase
+class VariableTest extends TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabase;
 
     public function testVariableIndex()
     {
@@ -23,11 +21,9 @@ class VariableTest extends DuskTestCase
         
         $variable = $snapshot->variables()->save(factory(Variable::class)->make());
 
-        $this->browse(function (Browser $browser) use ($user, $snapshot, $variable) {
-            $browser->loginAs($user)
-                ->visit('/snapshots/' . $snapshot->id . '/variables')
-                ->assertSee($variable->name);
-        });
+        $this->actingAs($user)
+            ->visitRoute('variables.index', $snapshot->id)
+            ->see($variable->name);
     }
 
     public function testVariableCreate()
@@ -35,20 +31,19 @@ class VariableTest extends DuskTestCase
         $user = factory(User::class)->create();
 
         $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
+        $page = $snapshot->pages()->save(factory(Page::class)->make());
 
         // mark as completed
         $snapshot->current = $snapshot->to;
         $snapshot->save();
         
-        $this->browse(function (Browser $browser) use ($user, $snapshot) {
-            $browser->loginAs($user)
-                ->visit('/snapshots/' . $snapshot->id . '/variables/create')
-                ->type('name', 'score')
-                ->type('selector', '.score')
-                ->press('SAVE')
-                ->assertPathIs('/snapshots/' . $snapshot->id . '/variables')
-                ->assertSee('.score');
-        });
+        $this->actingAs($user)
+            ->visitRoute('variables.create', $snapshot->id)
+            ->type('score', 'name')
+            ->type('.score', 'selector')
+            ->press('Save')
+            ->seeRouteIs('variables.index', $snapshot->id)
+            ->see('.score');
     }
 
     public function testVariableDestroy()
@@ -59,13 +54,10 @@ class VariableTest extends DuskTestCase
 
         $variable = $snapshot->variables()->save(factory(Variable::class)->make());
 
-        $this->browse(function (Browser $browser) use ($user, $snapshot, $variable) {
-            $browser->loginAs($user)
-                ->visit('/snapshots/' . $snapshot->id . '/variables')
-                ->assertSee($variable->name)
-                ->press('DELETE')
-                ->assertSee('was deleted')
-                ->assertDontSee($variable->name);
-        });
+        $this->actingAs($user)
+            ->visitRoute('variables.index', $snapshot->id)
+            ->see($variable->name)
+            ->press('Delete')
+            ->see('was deleted');
     }
 }

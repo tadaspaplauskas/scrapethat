@@ -10,3 +10,9 @@
 ## Setup
 
 You must have headless chrome and chromedriver setup. Set path to chromedriver in the env variables.
+
+## Writing tests
+
+Using browser kit tests instead of dusk. Tests are faster and as reliable, since we're using almost no JS.
+
+https://github.com/laravel/browser-kit-testing#interacting-with-your-application

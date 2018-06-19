@@ -1,14 +1,13 @@
 <?php
 
-namespace Tests\Browser;
+namespace Tests\Feature;
 
 use Tests\TestCase;
-use Laravel\Dusk\Browser;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthTest extends TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabase;
 
     public function testRegistration()
     {

@@ -27,7 +27,11 @@ Route::any('snapshots/{snapshot}/query', 'SnapshotController@query')->name('snap
 
 Route::resource('snapshots', 'SnapshotController');
 
-Route::resource('snapshots/{snapshot}/variables', 'VariableController');
+Route::resource('snapshots/{snapshot}/variables', 'VariableController')
+    ->only(['index', 'create', 'store']);
+
+Route::resource('variables', 'VariableController')
+    ->only(['show', 'edit', 'update', 'destroy']);
 
 Route::get('about', 'PagesController@about')->name('about');
 

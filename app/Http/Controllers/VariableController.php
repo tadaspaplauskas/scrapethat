@@ -116,7 +116,7 @@ class VariableController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Variable $variable)
+    public function destroy(Snapshot $snapshot, Variable $variable)
     {
        $variable->delete();
 

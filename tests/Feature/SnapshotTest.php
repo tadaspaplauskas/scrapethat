@@ -1,44 +1,38 @@
 <?php
 
-namespace Tests\Browser;
+namespace Tests\Feature;
 
-use Tests\DuskTestCase;
-use Laravel\Dusk\Browser;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
 use App\Models\Snapshot;
 
-class SnapshotTest extends DuskTestCase
+class SnapshotTest extends TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabase;
 
     public function testIndex()
     {
         $user = factory(User::class)->create();
 
-        $this->browse(function (Browser $browser) use ($user) {
-            $browser->loginAs($user)
-                ->visit('/snapshots')
-                ->assertSee('Snapshots');
-        });
+        $this->actingAs($user)
+            ->visit('/snapshots')
+            ->see('Snapshots');
     }
 
     public function testCreate()
     {
         $user = factory(User::class)->create();
         
-        $this->browse(function (Browser $browser) use ($user) {
-            $browser->loginAs($user)
-                ->visit('/snapshots/create')
-                ->type('name', 'Sample snapshot')
-                ->type('url', config('app.url') . '/tests/*.html')
-                ->type('from', '1')
-                ->type('to', '2')
-                ->press('SAVE')
-                ->assertPathIs('/snapshots')
-                ->assertSeeLink('Sample snapshot');
-        });
+        $this->actingAs($user)
+            ->visitRoute('snapshots.create')
+            ->type('Sample snapshot', 'name')
+            ->type(config('app.url') . '/tests/*.html', 'url')
+            ->type('1', 'from')
+            ->type('2', 'to')
+            ->press('Save')
+            ->seeRouteIs('snapshots.index')
+            ->see('Sample snapshot');
     }
 
     public function testShow()
@@ -47,11 +41,9 @@ class SnapshotTest extends DuskTestCase
 
         $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
 
-        $this->browse(function (Browser $browser) use ($user, $snapshot) {
-            $browser->loginAs($user)
-                ->visit('/snapshots/' . $snapshot->id)
-                ->assertSee($snapshot->name);
-        });
+        $this->actingAs($user)
+            ->visitRoute('snapshots.show', $snapshot->id)
+            ->see($snapshot->name);
     }
 
     public function testDeleteAndRestore()
@@ -60,15 +52,13 @@ class SnapshotTest extends DuskTestCase
 
         $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
 
-        $this->browse(function (Browser $browser) use ($user, $snapshot) {
-            $browser->loginAs($user)
-                ->visit('/snapshots')
-                ->press('DELETE')
-                ->assertSee('was deleted')
-                ->assertDontSeeLink('Most recent HN submisisons')
-                ->clickLink('Undo')
-                ->waitForText('restored')
-                ->assertSeeLink($snapshot->name);
-        });
+        $this->actingAs($user)
+            ->visitRoute('snapshots.index')
+            ->press('Delete')
+            ->see('was deleted')
+            ->dontSee('Most recent HN submisisons')
+            ->click('Undo')
+            ->see('restored')
+            ->see($snapshot->name);
     }
 }
