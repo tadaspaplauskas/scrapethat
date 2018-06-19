@@ -17,7 +17,7 @@ $factory->define(App\Models\Snapshot::class, function (Faker $faker) {
 
     return [
         'name' => $faker->company,
-        'url' => url('/tests/*.html'),
+        'url' => url(config('app.url') . '/tests/*.html'),
         'from' => 1,
         'to' => 2,
     ];

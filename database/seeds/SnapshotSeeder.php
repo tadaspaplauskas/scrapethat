@@ -23,7 +23,7 @@ class SnapshotSeeder extends Seeder
         Snapshot::create([
             'user_id' => User::first()->id,
             'name' => 'Most recent HN submisisons',
-            'url' => url('/tests/*.html'),
+            'url' => url(config('app.url') . '/tests/*.html'),
             'from' => 1,
             'to' => 2,
             'downloaded' => 0,
@@ -34,7 +34,7 @@ class SnapshotSeeder extends Seeder
             Snapshot::create([
                 'user_id' => User::first()->id,
                 'name' => $faker->company,
-                'url' => url('/tests/*.html'),
+                'url' => url(config('app.url') . '/tests/*.html'),
                 'from' => 1,
                 'to' => 2,
                 'downloaded' => 0,
