@@ -15,7 +15,18 @@
     {{ csrf_field() }}
 
     <div class="row">
-        <div class="six columns">
+        <div class="five columns">
+            <label for="name">Name</label>
+            <input type="text" class="u-full-width" name="name" id="name" placeholder="Name" value="{{ old('name') }}" required>
+
+            @if ($errors->has('name'))
+                <p class="red">
+                    <strong>{{ $errors->first('name') }}</strong>
+                </p>
+            @endif
+        </div>
+
+        <div class="five columns">
             <label for="selector">CSS selector</label>
             <input type="text" class="u-full-width" name="selector" id="selector" placeholder=".selector" value="{{ old('selector') }}" required>
 
@@ -26,20 +37,12 @@
             @endif
         </div>
 
-        <div class="six columns">
-            <label for="name">Name</label>
-            <input type="text" class="u-full-width" name="name" id="name" placeholder="Optional" value="{{ old('name') }}" required>
-
-            @if ($errors->has('name'))
-                <p class="red">
-                    <strong>{{ $errors->first('name') }}</strong>
-                </p>
-            @endif
+        <div class="two columns">
+            <label>&nbsp;</label>{{-- this element here is just for spacing --}}
+            <button type="submit" class="block button-primary">Add</button>
         </div>
     </div>
 
-
-    <button type="submit" class="block button-primary">Add</button>
 </form>
 
 @if ($variables->isEmpty())
@@ -54,7 +57,7 @@
             <th>Name</th>
             <th>Selector</th>
             <th>Created at</th>
-            <th>Delete</th>
+            <th></th>
         </tr>
 
         @foreach ($variables as $variable)
@@ -81,10 +84,10 @@
     </table>
 
 
-<h5>Chart</h5>
+<h5 class="mt5">Chart</h5>
 <canvas id="chart"></canvas>
 
-<h5>Query</h5>
+<h5 class="mt5">Query</h5>
 
 @include('snapshots/query_editor_component')
 

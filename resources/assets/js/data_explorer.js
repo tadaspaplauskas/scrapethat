@@ -53,7 +53,7 @@ window.renderTable = function (results) {
     var html;
 
     if (results.length) {
-        html = '<h5>Results <em>(' + results.length + ')</em></h5>';
+        html = '<h5 class="mt5">Results <em>(' + results.length + ')</em></h5>';
 
         // format table
         html += '<table>';
