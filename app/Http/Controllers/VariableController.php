@@ -17,28 +17,6 @@ class VariableController extends Controller
     {
         $this->middleware('auth');
     }
-    
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Snapshot $snapshot)
-    {
-        $variables = $snapshot->variables;
-
-        return view('variables.index', compact('snapshot', 'variables'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Snapshot $snapshot)
-    {
-        return view('variables.create', compact('snapshot'));
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -90,31 +68,6 @@ class VariableController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Variable $variable)
-    {
-        $variable->update($request->all());
-
-        return redirect()->back();
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -122,7 +75,7 @@ class VariableController extends Controller
      */
     public function destroy(Snapshot $snapshot, Variable $variable)
     {
-       $variable->delete();
+        $variable->delete();
 
         return redirect()->back()->with('message', $variable->name . ' was deleted.');
     }
