@@ -22,7 +22,7 @@ class VariableTest extends TestCase
         $variable = $snapshot->variables()->save(factory(Variable::class)->make());
 
         $this->actingAs($user)
-            ->visitRoute('variables.index', $snapshot->id)
+            ->visitRoute('snapshots.show', $snapshot->id)
             ->see($variable->name);
     }
 
@@ -38,11 +38,11 @@ class VariableTest extends TestCase
         $snapshot->save();
         
         $this->actingAs($user)
-            ->visitRoute('variables.create', $snapshot->id)
+            ->visitRoute('snapshots.show', $snapshot->id)
             ->type('score', 'name')
             ->type('.score', 'selector')
-            ->press('Save')
-            ->seeRouteIs('variables.index', $snapshot->id)
+            ->press('Add')
+            ->see('added')
             ->see('.score');
     }
 
@@ -55,7 +55,7 @@ class VariableTest extends TestCase
         $variable = $snapshot->variables()->save(factory(Variable::class)->make());
 
         $this->actingAs($user)
-            ->visitRoute('variables.index', $snapshot->id)
+            ->visitRoute('snapshots.show', $snapshot->id)
             ->see($variable->name)
             ->press('Delete')
             ->see('was deleted');

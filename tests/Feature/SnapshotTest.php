@@ -11,7 +11,7 @@ class SnapshotTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testIndex()
+    public function testSnapshotIndex()
     {
         $user = factory(User::class)->create();
 
@@ -20,7 +20,7 @@ class SnapshotTest extends TestCase
             ->see('Snapshots');
     }
 
-    public function testCreate()
+    public function testSnapshotCreate()
     {
         $user = factory(User::class)->create();
         
@@ -35,7 +35,7 @@ class SnapshotTest extends TestCase
             ->see('Sample snapshot');
     }
 
-    public function testShow()
+    public function testSnapshotShow()
     {
         $user = factory(User::class)->create();
 
@@ -46,7 +46,7 @@ class SnapshotTest extends TestCase
             ->see($snapshot->name);
     }
 
-    public function testDeleteAndRestore()
+    public function testSnapshotDeleteAndRestore()
     {
         $user = factory(User::class)->create();
 

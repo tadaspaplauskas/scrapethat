@@ -28,7 +28,7 @@ Route::any('snapshots/{snapshot}/query', 'SnapshotController@query')->name('snap
 Route::resource('snapshots', 'SnapshotController');
 
 Route::resource('snapshots/{snapshot}/variables', 'VariableController')
-    ->only(['index', 'create', 'store']);
+    ->only(['store']);
 
 Route::resource('variables', 'VariableController')
     ->only(['show', 'edit', 'update', 'destroy']);
