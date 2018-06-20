@@ -39,11 +39,11 @@ class VariableTest extends TestCase
         
         $this->actingAs($user)
             ->visitRoute('snapshots.show', $snapshot->id)
-            ->type('score', 'name')
-            ->type('.score', 'selector')
+            ->type('Price', 'name')
+            ->type('.price', 'selector')
             ->press('Add')
             ->see('added')
-            ->see('.score');
+            ->see('.price');
     }
 
     public function testVariableDestroy()

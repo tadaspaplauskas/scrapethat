@@ -9,7 +9,8 @@ use Illuminate\Validation\Rule;
 use App\Models\Snapshot;
 use App\Models\Variable;
 use App\Jobs\ProcessVariable;
-use App\Rules\ValidCssSelector;
+use Symfony\Component\CssSelector\CssSelectorConverter;
+use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
 
 class VariableController extends Controller
 {
@@ -35,8 +36,36 @@ class VariableController extends Controller
         });
 
         $data = $request->validate([
-            'name' => ['alpha_num', $uniqueRule],
-            'selector' => ['required', new ValidCssSelector, $uniqueRule],
+            'name' => [
+                'alpha_num',
+                $uniqueRule,
+            ],
+            'selector' => [
+                'required',
+                $uniqueRule,
+                // verify that the selector is valid
+                function($attribute, $value, $fail) {
+                    $converter = new CssSelectorConverter();
+
+                    try {
+                        $converter->toXPath($value);
+                    }
+                    catch (SyntaxErrorException $e) {
+                        return $fail('The ' . $attribute . ' must be a valid CSS selector.');
+                    }
+                },
+                // verify that there's data for that selector
+                // using closure to pass data to it; class would not work like that
+                function($attribute, $value, $fail) use ($snapshot) {
+                    $page = $snapshot->pages()->first();
+
+                    $crawler = new Crawler($page->html);
+
+                    if (!$crawler->filter($value)->count()) {
+                        return $fail('Provided ' . $attribute . ' does not match anything on the page');
+                    }
+                }
+            ],
         ]);
 
         if (!$data['name']) {
