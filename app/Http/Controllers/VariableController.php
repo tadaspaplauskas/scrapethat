@@ -57,9 +57,13 @@ class VariableController extends Controller
         });
 
         $data = $request->validate([
-            'name' => ['required', 'alpha_num', $uniqueRule],
+            'name' => ['alpha_num', $uniqueRule],
             'selector' => ['required', new ValidCssSelector, $uniqueRule],
         ]);
+
+        if (!$data['name']) {
+            $data['name'] = $data['selector'];
+        }
 
         $data['name'] = snake_case($data['name']);
 
@@ -67,7 +71,7 @@ class VariableController extends Controller
 
         ProcessVariable::dispatch($variable);
 
-        return redirect()->route('variables.index', $snapshot);
+        return redirect()->back()->with('message', $variable->name . ' was added.');
     }
 
     /**
