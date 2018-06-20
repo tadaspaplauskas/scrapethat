@@ -20,7 +20,7 @@
 
     {{-- this enables to refresh query on enter --}}
     <form onsubmit="event.preventDefault(); submitQuery();">
-        <table class="full-width" id="query-editor">
+        <table class="u-full-width" id="query-editor">
             <tr>
                 <th>Type</th>
                 <th>Column</th>
@@ -95,7 +95,7 @@
 
 {{-- ADVANDED QUERY --}}
 <div id="advanced" class="mode" style="display: none">
-    <textarea id="query" class="full-width">SELECT * FROM dataset</textarea>
+    <textarea id="query" class="u-full-width">SELECT * FROM dataset</textarea>
 
     <button onclick="runQuery(document.querySelector('#query').value, true)">Run query</button>
 </div>

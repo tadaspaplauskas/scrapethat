@@ -15,7 +15,7 @@
         </p>
 
     @else
-        <table class="full-width">
+        <table class="u-full-width">
             <tr>
                 <th>Name</th>
                 <th>Pages</th>
