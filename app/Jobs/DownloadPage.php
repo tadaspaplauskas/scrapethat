@@ -7,12 +7,8 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Facebook\WebDriver\Chrome\ChromeDriver;
-use Facebook\WebDriver\Remote\DriverCommand;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use Facebook\WebDriver\Chrome\ChromeOptions;
-use Facebook\WebDriver\Remote\DesiredCapabilities;
 use App\Models\Snapshot;
 use App\Notifications\DownloadPageProblem;
 
@@ -60,11 +56,10 @@ class DownloadPage implements ShouldQueue
             return;
         }
 
-        // using guzzle for status code checks
         $guzzle = new Client();
 
         try {
-            $response = $guzzle->request('HEAD', $url, [
+            $response = $guzzle->request('GET', $url, [
                 'timeout' => self::CONNECT_TIMEOUT,
                 'connect_timeout' => self::CONNECT_TIMEOUT,
                 'headers' => [
@@ -76,32 +71,9 @@ class DownloadPage implements ShouldQueue
             $response = $e->getResponse();
         }
 
+        $html = $response->getBody()->getContents();
         $statusCode = $response->getStatusCode();
         $reasonPhrase = $response->getReasonPhrase();
-
-        $success = mb_substr($statusCode, 0, 1) === '2';
-
-        // get HTML separately through chrome driver if we got successful status code
-        $html = null;
-
-        $caps = DesiredCapabilities::chrome();
-
-        if (env('GOOGLE_CHROME_SHIM')) {
-            $options = new ChromeOptions();
-            $options->setBinary(env('GOOGLE_CHROME_SHIM'));
-
-            $caps->setCapability(ChromeOptions::CAPABILITY, $options);
-        }
-
-        if ($success) {
-            $driver = ChromeDriver::start($caps);
-
-            $driver->get($url);
-
-            $html = $driver->getPageSource();
-
-            $driver->quit();
-        }
 
         $page = $snapshot->pages()->create([
             'url' => $url,
@@ -110,9 +82,8 @@ class DownloadPage implements ShouldQueue
             'html' => $html,
         ]);
 
-        $snapshot->save();
-
         // notify user, stop
+        $success = mb_substr($statusCode, 0, 1) === '2';
         if (!$success) {
             return $snapshot->user->notify(new DownloadPageProblem($page));
         }
