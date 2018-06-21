@@ -43,6 +43,7 @@ class VariableController extends Controller
             'selector' => [
                 'required',
                 $uniqueRule,
+
                 // verify that the selector is valid
                 function($attribute, $value, $fail) {
                     $converter = new CssSelectorConverter();
@@ -54,6 +55,7 @@ class VariableController extends Controller
                         return $fail('The ' . $attribute . ' must be a valid CSS selector.');
                     }
                 },
+
                 // verify that there's data for that selector
                 // using closure to pass data to it; class would not work like that
                 function($attribute, $value, $fail) use ($snapshot) {
@@ -68,9 +70,8 @@ class VariableController extends Controller
             ],
         ]);
 
-        if (!$data['name']) {
-            $data['name'] = $data['selector'];
-        }
+        // if name is not provided, make it the same as selector
+        $data['name'] = $data['name'] ?? $data['selector'];
 
         $data['name'] = snake_case($data['name']);
 
