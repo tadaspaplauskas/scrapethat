@@ -164,6 +164,7 @@ return [
          * Package Service Providers...
          */
         // Laravel\Dusk\DuskServiceProvider::class,
+        Laravel\Cashier\CashierServiceProvider::class,
 
         /*
          * Application Service Providers...
