@@ -12,7 +12,7 @@
 
     @include('snapshots.form')
 
-    <button type="submit" class="block">Save</button>
+    <button type="submit" class="block button-primary">Save</button>
 
 </form>
 @endsection
