@@ -24,9 +24,9 @@
             @endguest
             @auth
                 <li class="inline mr1"><a href="{{ route('snapshots.index') }}">Snapshots</a></li>
+                <li class="inline mr1"><a href="{{ route('billing') }}">Billing</a></li>
                 <li class="inline mr1"><a href="{{ route('logout') }}">Log out</a></li>
             @endauth
-                <li class="inline mr1"><a href="{{ route('about') }}">About</a></li>
             </ul>
         </nav>
     </header>
