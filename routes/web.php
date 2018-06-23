@@ -33,6 +33,6 @@ Route::resource('snapshots/{snapshot}/variables', 'VariableController')
 Route::resource('variables', 'VariableController')
     ->only(['show', 'edit', 'update', 'destroy']);
 
-Route::get('about', 'PagesController@about')->name('about');
+Route::get('about', 'PageController@about')->name('about');
 
-Route::get('/', 'PagesController@index')->name('home');
+Route::get('/', 'PageController@index')->name('home');
