@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('title', 'Snapshots')
+@extends('layouts.app', ['title' => 'Snapshots'])
 
 @section('content')
 
@@ -24,7 +22,7 @@
             </tr>
 
             @foreach ($snapshots as $snapshot)
-                
+
                 <tr>
                     <td>
                         <a href="{{ route('snapshots.show', $snapshot) }}">{{ $snapshot->name }}</a>
@@ -37,7 +35,7 @@
                     </td>
                     <td>
                         <form action="{{ route('snapshots.destroy', $snapshot) }}" method="POST" class="m0">
-    
+
                             {{ csrf_field() }}
                             {{ method_field('DELETE') }}
 

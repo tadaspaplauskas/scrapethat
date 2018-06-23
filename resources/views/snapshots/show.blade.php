@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('title', $snapshot->name)
+@extends('layouts.app', ['title' => $snapshot->name])
 
 @section('content')
 
