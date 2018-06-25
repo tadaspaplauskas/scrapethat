@@ -33,7 +33,8 @@ Route::resource('snapshots/{snapshot}/variables', 'VariableController')
 Route::resource('variables', 'VariableController')
     ->only(['show', 'edit', 'update', 'destroy']);
 
-Route::get('billing', 'BillingController@plan')->name('billing');
+Route::get('subscription', 'SubscriptionController@subscription')->name('subscription');
+Route::post('subscription', 'SubscriptionController@subscribe')->name('subscribe');
 
 Route::get('about', 'PageController@about')->name('about');
 

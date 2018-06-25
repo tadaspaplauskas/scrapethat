@@ -3,8 +3,24 @@
 @section('content')
 
 <script src="https://js.braintreegateway.com/web/dropin/1.11.0/js/dropin.min.js"></script>
-<div id="dropin-container"></div>
-<button id="submit-button">Request payment method</button>
+
+<form method="POST" action="{{ route('subscribe') }}">
+
+    {{ csrf_field() }}
+
+    <select name="plan">
+        @foreach ($plans as $key => $plan)
+            <option value="{{ $key }}">{{ $plan }}</option>
+        @endforeach
+    </select>
+
+    <div class="row">
+        <div id="dropin-container" class="columns six"></div>
+    </div>
+
+    <button id="submit-button" class="button-primary">Submit</button>
+</form>
+
 <script>
 var button = document.querySelector('#submit-button');
 
