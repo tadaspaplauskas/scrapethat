@@ -15,7 +15,7 @@ class SnapshotController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -46,19 +46,19 @@ class SnapshotController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'name' => 'required',
             'url' => 'required|url',
             'from' => 'required|integer',
             'to' => 'required|integer',
         ]);
 
-        $snapshot = auth()->user()->snapshots()->create($request->all());
+        $snapshot = auth()->user()->snapshots()->create($data);
 
         DownloadPage::dispatch($snapshot);
 
         return redirect()->action('SnapshotController@index')
-            ->with('message', $request->name . ' was created successfully. Please wait while we crawl the pages.');
+            ->with('message', $data['name'] . ' was created successfully. Please wait while we crawl the pages.');
     }
 
     /**
@@ -72,7 +72,7 @@ class SnapshotController extends Controller
         $user = auth()->user();
 
         $variables = $snapshot->variables;
-        
+
         return view('snapshots.show', compact('snapshot', 'variables', 'user'));
     }
 
@@ -98,7 +98,7 @@ class SnapshotController extends Controller
      */
     public function update(Request $request, Snapshot $snapshot)
     {
-        $request->validate([
+        $data = $request->validate([
             'name' => 'required',
             'url' => 'required|url',
             'from' => 'required|integer',
@@ -122,12 +122,12 @@ class SnapshotController extends Controller
 
         $snapshot->save();
 
-        $snapshot->update($request->all());
+        $snapshot->update($data);
 
         DownloadPage::dispatch($snapshot);
 
         return redirect()->action('SnapshotController@index')
-            ->with('message', $request->name . ' was updated successfully. Please wait while we crawl the pages.');
+            ->with('message', $data['name'] . ' was updated successfully. Please wait while we crawl the pages.');
     }
 
     /**
@@ -179,7 +179,7 @@ class SnapshotController extends Controller
         $snapshot->save();
 
         DownloadPage::dispatch($snapshot);
-        
+
         return redirect()->action('SnapshotController@index')
             ->with('message', $snapshot->name . ' is queued again.');
     }
