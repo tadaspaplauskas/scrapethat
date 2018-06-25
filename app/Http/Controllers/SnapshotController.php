@@ -8,6 +8,7 @@ use App\Models\Snapshot;
 use App\Jobs\DownloadPage;
 use App\Services\QueryProxy;
 use DB;
+use Auth;
 
 class SnapshotController extends Controller
 {
@@ -23,7 +24,7 @@ class SnapshotController extends Controller
      */
     public function index()
     {
-        $snapshots = auth()->user()->snapshots()->orderBy('created_at', 'desc')->get();
+        $snapshots = Auth::user()->snapshots()->orderBy('created_at', 'desc')->get();
 
         return view('snapshots.index', compact('snapshots'));
     }
@@ -53,7 +54,7 @@ class SnapshotController extends Controller
             'to' => 'required|integer',
         ]);
 
-        $snapshot = auth()->user()->snapshots()->create($data);
+        $snapshot = Auth::user()->snapshots()->create($data);
 
         DownloadPage::dispatch($snapshot);
 
@@ -69,7 +70,7 @@ class SnapshotController extends Controller
      */
     public function show(Snapshot $snapshot, Request $request)
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         $variables = $snapshot->variables;
 
@@ -108,7 +109,7 @@ class SnapshotController extends Controller
         $notificationId = $request->input('notification_id');
 
         if ($notificationId) {
-            $notification = auth()->user()->unreadNotifications()->find($notificationId);
+            $notification = Auth::user()->unreadNotifications()->find($notificationId);
 
             if ($notification) {
                 $notification->markAsRead();
@@ -165,7 +166,7 @@ class SnapshotController extends Controller
         $notificationId = $request->input('notification_id');
 
         if ($notificationId) {
-            $notification = auth()->user()->unreadNotifications()->find($notificationId);
+            $notification = Auth::user()->unreadNotifications()->find($notificationId);
 
             if ($notification) {
                 $notification->markAsRead();
@@ -189,7 +190,7 @@ class SnapshotController extends Controller
         $notificationId = $request->input('notification_id');
 
         if ($notificationId) {
-            $notification = auth()->user()->unreadNotifications()->find($notificationId);
+            $notification = Auth::user()->unreadNotifications()->find($notificationId);
 
             if ($notification) {
                 $notification->markAsRead();
