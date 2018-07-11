@@ -28,7 +28,7 @@ class SubscriptionController extends Controller
     public function subscribe(Request $request)
     {
         $data = $request->validate([
-            '_token' => 'required',
+            'nonce' => 'required',
             'plan' => 'in:uno,dos,tres',
         ]);
 
@@ -39,7 +39,7 @@ class SubscriptionController extends Controller
             $user->subscription('main')->swap($data['plan']);
         }
         else {
-            $user->newSubscription('main', $data['plan'])->create($data['_token']);
+            $user->newSubscription('main', $data['plan'])->create($data['nonce']);
         }
 
         return redirect()->back()
