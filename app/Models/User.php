@@ -10,6 +10,14 @@ class User extends Authenticatable
 {
     use Notifiable, Billable;
 
+    // possible subscription plans
+    // braintree_plan => 'title'
+    const PLANS = [
+        'uno' => '10 000 pages / $10 monthly',
+        'dos' => '100 000 pages / $20 monthly',
+        'tres' => '100 000 pages / $200 yearly',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -34,5 +42,10 @@ class User extends Authenticatable
     public function snapshots()
     {
         return $this->hasMany(Snapshot::class);
+    }
+
+    public function withinLimits()
+    {
+
     }
 }

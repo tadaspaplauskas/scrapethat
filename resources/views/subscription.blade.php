@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Billing'])
+@extends('layouts.app', ['title' => 'Subscription'])
 
 @section('content')
 
