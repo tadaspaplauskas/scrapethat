@@ -12,6 +12,7 @@ class SubscriptionController extends Controller
         $this->middleware('auth');
     }
 
+    // braintree_plan => 'title'
     const PLANS = [
         'uno' => '10 000 pages / $10 monthly',
         'dos' => '100 000 pages / $20 monthly',
@@ -22,7 +23,10 @@ class SubscriptionController extends Controller
     {
         $plans = static::PLANS;
 
-        return view('subscription', compact('plans'));
+        $braintreePlan = Auth::user()->subscription('main')->braintree_plan ?? 'uno';
+        $current = static::PLANS[$braintreePlan];
+
+        return view('subscription', compact('plans', 'current'));
     }
 
     public function subscribe(Request $request)

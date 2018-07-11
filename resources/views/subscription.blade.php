@@ -4,6 +4,11 @@
 
 <h5>Upgrade</h5>
 
+<p>
+    Current plan: <strong>{{ $current }}</strong>
+</p>
+
+
 <script src="https://js.braintreegateway.com/web/dropin/1.11.0/js/dropin.min.js"></script>
 
 <form method="POST" action="{{ route('subscribe') }}" id="form">
