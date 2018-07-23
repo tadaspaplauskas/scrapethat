@@ -5,7 +5,7 @@
 <h5>Upgrade</h5>
 
 <p>
-    Current plan: <strong>{{ $current }}</strong>
+    Current plan: <strong>{{ $current }}</strong>.
 </p>
 
 

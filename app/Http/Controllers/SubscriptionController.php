@@ -15,10 +15,21 @@ class SubscriptionController extends Controller
 
     public function subscription()
     {
+        $user = Auth::user();
+
         $plans = User::PLANS;
 
-        $braintreePlan = Auth::user()->subscription('main')->braintree_plan ?? 'uno';
-        $current = User::PLANS[$braintreePlan];
+        $subscription = Auth::user()->subscription('main');
+
+        if ($user->onTrial()) {
+            $current = '7-Day trial';
+        }
+        else if ($subscription->cancelled()) {
+            $current = 'cancelled';
+        }
+        else {
+            $current = User::PLANS[$subscription->braintree_plan];
+        }
 
         return view('subscription', compact('plans', 'current'));
     }

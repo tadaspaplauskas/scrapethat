@@ -19,7 +19,7 @@ class SubscriptionTest extends TestCase
             ->visitRoute('subscription')
             ->see('Upgrade')
             ->see('Current plan')
-            ->see(current(User::PLANS)); // default plan is the first one
+            ->see('trial');
     }
 
     public function testCancelSubscription()
@@ -28,7 +28,7 @@ class SubscriptionTest extends TestCase
 
         $this->actingAs($user)
             ->visitRoute('subscription')
-            ->press('Cancel');
-            // ->assertSuccessful();
+            ->press('Cancel')
+            ->see('Subscription was cancelled');
     }
 }

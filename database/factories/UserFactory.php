@@ -22,5 +22,6 @@ $factory->define(App\Models\User::class, function (Faker $faker) {
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
         'api_token' => str_random(40),
+        'trial_ends_at' => now()->addDays(7),
     ];
 });
