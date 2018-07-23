@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
+use App\Models\User;
 
 class SubscriptionController extends Controller
 {
@@ -14,10 +15,10 @@ class SubscriptionController extends Controller
 
     public function subscription()
     {
-        $plans = static::PLANS;
+        $plans = User::PLANS;
 
         $braintreePlan = Auth::user()->subscription('main')->braintree_plan ?? 'uno';
-        $current = static::PLANS[$braintreePlan];
+        $current = User::PLANS[$braintreePlan];
 
         return view('subscription', compact('plans', 'current'));
     }
