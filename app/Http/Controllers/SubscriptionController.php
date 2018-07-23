@@ -43,4 +43,18 @@ class SubscriptionController extends Controller
         return redirect()->back()
             ->with('message', 'Thank you!');
     }
+
+    public function cancel(Request $request)
+    {
+        $user = Auth::user();
+
+        $subscription = $user->subscription('main');
+
+        if ($subscription) {
+            $subscription->cancel();
+        }
+
+        return redirect()->back()
+            ->with('message', 'Subscription was cancelled.');
+    }
 }

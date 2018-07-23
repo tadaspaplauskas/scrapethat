@@ -39,6 +39,13 @@ class User extends Authenticatable
         'password', 'remember_token', 'api_token',
     ];
 
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'trial_ends_at',
+    ];
+
     public function snapshots()
     {
         return $this->hasMany(Snapshot::class);

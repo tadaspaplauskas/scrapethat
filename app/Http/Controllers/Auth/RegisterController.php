@@ -67,6 +67,7 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
             'api_token' => str_random(40),
+            'trial_ends_at' => now()->addDays(7),
         ]);
     }
 }

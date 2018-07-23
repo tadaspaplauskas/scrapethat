@@ -35,6 +35,7 @@ Route::resource('variables', 'VariableController')
 
 Route::get('subscription', 'SubscriptionController@subscription')->name('subscription');
 Route::post('subscription', 'SubscriptionController@subscribe')->name('subscribe');
+Route::post('cancel', 'SubscriptionController@cancel')->name('cancel');
 
 Route::get('about', 'PageController@about')->name('about');
 

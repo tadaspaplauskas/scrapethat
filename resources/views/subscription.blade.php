@@ -31,21 +31,34 @@
 </form>
 
 <script>
-var button = document.querySelector('#submit-button');
-var nonceField = document.querySelector('#nonce');
-var form = document.querySelector('#form');
+    var button = document.querySelector('#submit-button');
+    var nonceField = document.querySelector('#nonce');
+    var form = document.querySelector('#form');
 
-braintree.dropin.create({
-  authorization: 'sandbox_p8rgvxjr_ck9p76mgm87s3pgz',
-  container: '#dropin-container'
-}, function (createErr, instance) {
-  button.addEventListener('click', function () {
-    instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
-      nonceField.value = payload.nonce;
-      form.submit();
+    braintree.dropin.create({
+      authorization: 'sandbox_p8rgvxjr_ck9p76mgm87s3pgz',
+      container: '#dropin-container'
+    }, function (createErr, instance) {
+      button.addEventListener('click', function () {
+        instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
+          nonceField.value = payload.nonce;
+          form.submit();
+        });
+      });
     });
-  });
-});
 </script>
+
+<h5>Cancel</h5>
+
+<form method="POST" action="{{ route('cancel') }}">
+
+    {{ csrf_field() }}
+
+    <p>
+        Sorry to see you go :(
+    </p>
+
+    <button>Cancel</button>
+</form>
 
 @endsection
