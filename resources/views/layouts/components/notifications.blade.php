@@ -15,7 +15,7 @@
                     response from
 
                     <a href="{{ $notification->data['url'] }}" target="blank">{{ $notification->data['url'] }}</a>
-                    
+
                     in <strong>
                         <a href="{{ route('snapshots.show', $snapshot->id) }}">{{ $snapshot->name }}</a>
                     </strong>
@@ -32,7 +32,7 @@
                             {{ csrf_field() }}
                             <input type="hidden" name="notification_id" value="{{ $notification->id }}">
 
-                            <button>Edit and retry</button>
+                            <button>Update and retry</button>
                         </form>
 
                         <form class="inline" method="POST" action="{{ route('snapshots.stop', $snapshot->id) }}">

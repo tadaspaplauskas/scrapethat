@@ -49,9 +49,9 @@ class SnapshotController extends Controller
     {
         $data = $request->validate([
             'name' => 'required',
-            'url' => 'required|url',
-            'from' => 'required|integer',
-            'to' => 'required|integer',
+            'url' => 'required|url|regex:/\*/',
+            'from' => 'required|integer|lte:to|min:1',
+            'to' => 'required|integer|gte:from|min:1',
         ]);
 
         $snapshot = Auth::user()->snapshots()->create($data);
@@ -101,9 +101,9 @@ class SnapshotController extends Controller
     {
         $data = $request->validate([
             'name' => 'required',
-            'url' => 'required|url',
-            'from' => 'required|integer',
-            'to' => 'required|integer',
+            'url' => 'required|url|regex:/\*/',
+            'from' => 'required|integer|lte:to|min:1',
+            'to' => 'required|integer|gte:from|min:1',
         ]);
 
         $notificationId = $request->input('notification_id');
