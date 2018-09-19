@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Jobs\DownloadPage;
 
 class Snapshot extends Model
 {
@@ -15,6 +16,7 @@ class Snapshot extends Model
         'from',
         'to',
         'current',
+        'stopped',
     ];
 
     protected $hidden = [
@@ -28,7 +30,18 @@ class Snapshot extends Model
         'from' => 'integer',
         'to' => 'integer',
         'current' => 'integer',
+        'stopped' => 'boolean',
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        // re-download snapshot after each update
+        static::saved(function (Snapshot $snapshot) {
+            DownloadPage::dispatch($snapshot);
+        });
+    }
 
     public static function validator()
     {
@@ -74,5 +87,23 @@ class Snapshot extends Model
     public function isCompleted()
     {
         return $this->current === $this->to;
+    }
+
+    public function retry()
+    {
+        if ($lastPage = $this->pages()->latest()->first()) {
+            $this->pages()->latest()->first()->delete();
+
+            $this->current--;
+
+            $this->save();
+        }
+
+        // event is dispatched automatically on `saved` event
+    }
+
+    public function stop()
+    {
+
     }
 }

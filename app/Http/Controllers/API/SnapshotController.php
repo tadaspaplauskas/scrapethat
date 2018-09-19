@@ -36,8 +36,6 @@ class SnapshotController extends Controller
 
         $snapshot = Auth::user()->snapshots()->create($data);
 
-        DownloadPage::dispatch($snapshot);
-
         return Response::json($snapshot, 201);
     }
 
@@ -45,28 +43,9 @@ class SnapshotController extends Controller
     {
         $data = $request->validate(Snapshot::validator());
 
-        $notificationId = $request->input('notification_id');
+        $snapshot->update($data);
 
-        if ($notificationId) {
-            $notification = Auth::user()->unreadNotifications()->find($notificationId);
-
-            if ($notification) {
-                $notification->markAsRead();
-            }
-        }
-
-        // reset last page, if it exists
-        if ($lastPage = $snapshot->pages()->latest()->first()) {
-            $lastPage->delete();
-
-            $snapshot->current--;
-        }
-
-        $snapshot->fill($data);
-
-        $snapshot->save();
-
-        DownloadPage::dispatch($snapshot);
+        $snapshot->retry();
 
         return Response::json($snapshot, 200);
     }
@@ -80,38 +59,14 @@ class SnapshotController extends Controller
 
     public function retry(Request $request, Snapshot $snapshot)
     {
-        $notificationId = $request->input('notification_id');
-
-        if ($notificationId) {
-            $notification = Auth::user()->unreadNotifications()->find($notificationId);
-
-            if ($notification) {
-                $notification->markAsRead();
-            }
-        }
-
-        $snapshot->pages()->latest()->first()->delete();
-
-        $snapshot->current--;
-
-        $snapshot->save();
-
-        DownloadPage::dispatch($snapshot);
+        $snapshot->retry();
 
         return Response::json([], 202);
     }
 
     public function stop(Request $request, Snapshot $snapshot)
     {
-        $notificationId = $request->input('notification_id');
-
-        if ($notificationId) {
-            $notification = Auth::user()->unreadNotifications()->find($notificationId);
-
-            if ($notification) {
-                $notification->markAsRead();
-            }
-        }
+        $snapshot->stop();
 
         return Response::json([], 200);
     }

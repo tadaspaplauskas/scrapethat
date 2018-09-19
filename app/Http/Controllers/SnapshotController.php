@@ -35,8 +35,6 @@ class SnapshotController extends Controller
 
         $snapshot = Auth::user()->snapshots()->create($data);
 
-        DownloadPage::dispatch($snapshot);
-
         return redirect()->action('SnapshotController@index')
             ->with('message', $data['name'] . ' was created successfully. Please wait while we crawl the pages.');
     }
@@ -71,16 +69,9 @@ class SnapshotController extends Controller
             }
         }
 
-        // reset last page
-        $snapshot->pages()->latest()->first()->delete();
-
-        $snapshot->current--;
-
-        $snapshot->save();
-
         $snapshot->update($data);
 
-        DownloadPage::dispatch($snapshot);
+        $snapshot->retry();
 
         return redirect()->action('SnapshotController@index')
             ->with('message', $data['name'] . ' was updated successfully. Please wait while we crawl the pages.');
@@ -122,13 +113,7 @@ class SnapshotController extends Controller
             }
         }
 
-        $snapshot->pages()->latest()->first()->delete();
-
-        $snapshot->current--;
-
-        $snapshot->save();
-
-        DownloadPage::dispatch($snapshot);
+        $snapshot->retry();
 
         return redirect()->action('SnapshotController@index')
             ->with('message', $snapshot->name . ' is queued again.');
