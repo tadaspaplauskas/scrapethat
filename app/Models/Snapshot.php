@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Snapshot extends Model
 {
     use SoftDeletes;
-    
+
     protected $fillable = [
         'name',
         'url',
@@ -16,6 +16,16 @@ class Snapshot extends Model
         'to',
         'current',
     ];
+
+    public static function validator()
+    {
+        return [
+            'name' => 'required',
+            'url' => 'required|url|regex:/\*/',
+            'from' => 'required|integer|lte:to|min:1',
+            'to' => 'required|integer|gte:from|min:1',
+        ];
+    }
 
     public function user()
     {
@@ -40,7 +50,7 @@ class Snapshot extends Model
         }
 
         $this->current = $this->current < $this->from ? $this->from : $this->current + 1;
-        
+
         $nextPageUrl = str_replace('*', $this->current, $this->url);
 
         $this->save();

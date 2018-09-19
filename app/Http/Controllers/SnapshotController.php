@@ -31,12 +31,7 @@ class SnapshotController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name' => 'required',
-            'url' => 'required|url|regex:/\*/',
-            'from' => 'required|integer|lte:to|min:1',
-            'to' => 'required|integer|gte:from|min:1',
-        ]);
+        $data = $request->validate(Snapshot::validator());
 
         $snapshot = Auth::user()->snapshots()->create($data);
 
@@ -64,12 +59,7 @@ class SnapshotController extends Controller
 
     public function update(Request $request, Snapshot $snapshot)
     {
-        $data = $request->validate([
-            'name' => 'required',
-            'url' => 'required|url|regex:/\*/',
-            'from' => 'required|integer|lte:to|min:1',
-            'to' => 'required|integer|gte:from|min:1',
-        ]);
+        $data = $request->validate(Snapshot::validator());
 
         $notificationId = $request->input('notification_id');
 
