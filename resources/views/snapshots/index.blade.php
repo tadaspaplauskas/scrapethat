@@ -18,6 +18,7 @@
                 <th>Name</th>
                 <th>Pages</th>
                 <th>Created</th>
+                <th>Last refresh</th>
                 <th>Delete</th>
             </tr>
 
@@ -32,6 +33,9 @@
                     </td>
                     <td>
                         {{ $snapshot->created_at->diffForHumans() }}
+                    </td>
+                    <td>
+                        {{ $snapshot->updated_at->diffForHumans() }}
                     </td>
                     <td>
                         <form action="{{ route('snapshots.destroy', $snapshot) }}" method="POST" class="m0">

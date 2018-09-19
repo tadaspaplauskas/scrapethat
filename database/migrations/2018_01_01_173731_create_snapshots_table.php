@@ -17,11 +17,12 @@ class CreateSnapshotsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned()->index();
             $table->string('status')->default('in_progress');
+            $table->tinyInteger('refresh_daily')->default(0);
             $table->string('name');
             $table->string('url');
-            $table->smallinteger('from')->unsigned()->nullable();
-            $table->smallinteger('to')->unsigned()->nullable();
-            $table->smallinteger('current')->unsigned()->default(0);
+            $table->smallInteger('from')->unsigned()->nullable();
+            $table->smallInteger('to')->unsigned()->nullable();
+            $table->smallInteger('current')->unsigned()->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -3,7 +3,7 @@
 @section('content')
 
 <p>
-    Let's crawl some websites, so you can play with numbers 🤓
+    Turn a website into a database.
 </p>
 
 <form method="POST" action="{{ route('snapshots.store') }}">
