@@ -27,11 +27,11 @@
 
 <div class="row">
     <div class="three columns">
-        <input type="number" id="from" name="from" required value="{{ old('from', $snapshot->from ?? '') }}" class="u-full-width" placeholder="Start page">
+        <input type="number" id="from" name="from" required value="{{ old('from', $snapshot->from ?? '') }}" class="u-full-width" placeholder="Start page number">
     </div>
 
     <div class="three columns">
-        <input type="number" id="to" name="to" required value="{{ old('to', $snapshot->to ?? '') }}" class="u-full-width" placeholder="Finish page">
+        <input type="number" id="to" name="to" required value="{{ old('to', $snapshot->to ?? '') }}" class="u-full-width" placeholder="Finish page number">
     </div>
 
         @if ($errors->has('from'))
