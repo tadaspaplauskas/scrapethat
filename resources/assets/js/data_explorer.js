@@ -46,6 +46,7 @@ window.renderChart = function (results) {
     });
 
     var labels = new Array(chartDatasets[0].data.length);
+
     chart(labels, chartDatasets);
 };
 
