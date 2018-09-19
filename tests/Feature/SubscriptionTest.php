@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
+use Tests\BrowserTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
 
-class SubscriptionTest extends TestCase
+class SubscriptionTest extends BrowserTestCase
 {
     use RefreshDatabase;
 

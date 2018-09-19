@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
+use Tests\BrowserTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class AuthTest extends TestCase
+class AuthTest extends BrowserTestCase
 {
     use RefreshDatabase;
 

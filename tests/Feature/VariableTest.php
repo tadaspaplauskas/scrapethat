@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
+use Tests\BrowserTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
 use App\Models\Snapshot;
 use App\Models\Variable;
 use App\Models\Page;
 
-class VariableTest extends TestCase
+class VariableTest extends BrowserTestCase
 {
     use RefreshDatabase;
 
@@ -18,7 +18,7 @@ class VariableTest extends TestCase
         $user = factory(User::class)->create();
 
         $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
-        
+
         $variable = $snapshot->variables()->save(factory(Variable::class)->make());
 
         $this->actingAs($user)
@@ -36,7 +36,7 @@ class VariableTest extends TestCase
         // mark as completed
         $snapshot->current = $snapshot->to;
         $snapshot->save();
-        
+
         $this->actingAs($user)
             ->visitRoute('snapshots.show', $snapshot->id)
             ->type('Price', 'name')

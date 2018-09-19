@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
+use Tests\BrowserTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
 use App\Models\Snapshot;
 
-class SnapshotTest extends TestCase
+class SnapshotTest extends BrowserTestCase
 {
     use RefreshDatabase;
 
@@ -23,7 +23,7 @@ class SnapshotTest extends TestCase
     public function testSnapshotCreate()
     {
         $user = factory(User::class)->create();
-        
+
         $this->actingAs($user)
             ->visitRoute('snapshots.create')
             ->type('Sample snapshot', 'name')

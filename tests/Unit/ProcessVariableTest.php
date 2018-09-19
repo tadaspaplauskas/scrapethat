@@ -34,6 +34,6 @@ class ProcessVariableTest extends TestCase
 
         $this->assertTrue($variable->isCompleted());
 
-        $this->seeInDatabase('variable_values', ['value' => '73 800 €']);
+        $this->assertDatabaseHas('variable_values', ['value' => '73 800 €']);
     }
 }
