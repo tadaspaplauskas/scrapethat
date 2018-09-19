@@ -8,6 +8,8 @@ use App\Models\Snapshot;
 use App\Jobs\DownloadPage;
 use App\Services\QueryProxy;
 use DB;
+use Auth;
+use Response;
 
 class SnapshotController extends Controller
 {
@@ -16,14 +18,120 @@ class SnapshotController extends Controller
         $this->middleware('auth:api');
     }
 
+    public function index()
+    {
+        $snapshots = Auth::user()->snapshots()->orderBy('created_at', 'desc')->get();
+
+        return Response::json($snapshots);
+    }
+
+    public function show(Snapshot $snapshot)
+    {
+        return Response::json($snapshot);
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required',
+            'url' => 'required|url|regex:/\*/',
+            'from' => 'required|integer|lte:to|min:1',
+            'to' => 'required|integer|gte:from|min:1',
+        ]);
+
+        $snapshot = Auth::user()->snapshots()->create($data);
+
+        DownloadPage::dispatch($snapshot);
+
+        return Response::json($snapshot, 201);
+    }
+
+    public function update(Request $request, Snapshot $snapshot)
+    {
+        $data = $request->validate([
+            'name' => 'required',
+            'url' => 'required|url|regex:/\*/',
+            'from' => 'required|integer|lte:to|min:1',
+            'to' => 'required|integer|gte:from|min:1',
+        ]);
+
+        $notificationId = $request->input('notification_id');
+
+        if ($notificationId) {
+            $notification = Auth::user()->unreadNotifications()->find($notificationId);
+
+            if ($notification) {
+                $notification->markAsRead();
+            }
+        }
+
+        // reset last page
+        $snapshot->pages()->latest()->first()->delete();
+
+        $snapshot->current--;
+
+        $snapshot->save();
+
+        $snapshot->update($data);
+
+        DownloadPage::dispatch($snapshot);
+
+        return Response::json([], 202);
+    }
+
+    public function destroy(Snapshot $snapshot)
+    {
+        $snapshot->delete();
+
+        return Response::json([], 204);
+    }
+
+    public function retry(Request $request, Snapshot $snapshot)
+    {
+        $notificationId = $request->input('notification_id');
+
+        if ($notificationId) {
+            $notification = Auth::user()->unreadNotifications()->find($notificationId);
+
+            if ($notification) {
+                $notification->markAsRead();
+            }
+        }
+
+        $snapshot->pages()->latest()->first()->delete();
+
+        $snapshot->current--;
+
+        $snapshot->save();
+
+        DownloadPage::dispatch($snapshot);
+
+        return Response::json([], 202);
+    }
+
+    public function stop(Request $request, Snapshot $snapshot)
+    {
+        $notificationId = $request->input('notification_id');
+
+        if ($notificationId) {
+            $notification = Auth::user()->unreadNotifications()->find($notificationId);
+
+            if ($notification) {
+                $notification->markAsRead();
+            }
+        }
+
+        return Response::json([], 200);
+    }
+
     public function query(Request $request, Snapshot $snapshot)
     {
         if (!$snapshot->isCompleted()) {
-            return response()->json(['error' => 'Snapshot is not available until it\'s completed.'], 423);
+            return Response::json(['error' => 'Snapshot is not available until it\'s completed.'], 423);
         }
 
         $dump = [];
-        
+
         foreach ($snapshot->variables as $variable) {
             $counter = 0;
 
@@ -44,10 +152,10 @@ class SnapshotController extends Controller
         try {
             $results = $proxy->query($request->input('query'));
         } catch (\InvalidArgumentException $e) {
-            return response()->json(['errors' => [$e->getMessage()]], 422);
+            return Response::json(['errors' => [$e->getMessage()]], 422);
         }
 
-        return response()->json([
+        return Response::json([
             'meta' => [
                 'count' => count($results),
             ],

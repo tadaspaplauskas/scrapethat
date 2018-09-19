@@ -13,5 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::any('snapshots/{snapshot}/query', 'API\SnapshotController@query')->middleware('auth:api');
+Route::any('snapshots/{snapshot}/query', 'API\SnapshotController@query');
 
+Route::resource('snapshots', 'API\SnapshotController');
+
+Route::resource('variables', 'API\VariableController')
+    ->only(['show', 'edit', 'update', 'destroy']);
