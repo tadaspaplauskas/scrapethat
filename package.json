@@ -13,11 +13,11 @@
     "database": "heroku pg:psql postgresql-animated-27869 --app scrapethat"
   },
   "devDependencies": {
-    "cross-env": "^5.1",
+    "cross-env": "^5.2.0",
     "laravel-mix": "^1.0"
   },
   "dependencies": {
     "chart.js": "^2.7.1",
-    "npm": "^6.1.0"
+    "npm": "^6.4.1"
   }
 }
