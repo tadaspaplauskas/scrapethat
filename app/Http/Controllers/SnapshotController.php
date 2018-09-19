@@ -17,11 +17,6 @@ class SnapshotController extends Controller
         $this->middleware('auth');
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $snapshots = Auth::user()->snapshots()->orderBy('created_at', 'desc')->get();
@@ -29,22 +24,11 @@ class SnapshotController extends Controller
         return view('snapshots.index', compact('snapshots'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('snapshots.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -62,12 +46,6 @@ class SnapshotController extends Controller
             ->with('message', $data['name'] . ' was created successfully. Please wait while we crawl the pages.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show(Snapshot $snapshot, Request $request)
     {
         $user = Auth::user();
@@ -77,12 +55,6 @@ class SnapshotController extends Controller
         return view('snapshots.show', compact('snapshot', 'variables', 'user'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Request $request, Snapshot $snapshot)
     {
         $notificationId = $request->input('notification_id');
@@ -90,13 +62,6 @@ class SnapshotController extends Controller
         return view('snapshots.edit', compact('snapshot', 'notificationId'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Snapshot $snapshot)
     {
         $data = $request->validate([
@@ -131,12 +96,6 @@ class SnapshotController extends Controller
             ->with('message', $data['name'] . ' was updated successfully. Please wait while we crawl the pages.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Snapshot $snapshot)
     {
         $snapshot->delete();
