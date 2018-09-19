@@ -13,7 +13,7 @@
     {{ csrf_field() }}
 
     <div class="row">
-        <div class="five columns">
+        <div class="six columns">
             <label for="name">Name</label>
             <input type="text" class="u-full-width" name="name" id="name" placeholder="Name" value="{{ old('name') }}" required>
 
@@ -23,8 +23,10 @@
                 </p>
             @endif
         </div>
+    </div>
 
-        <div class="five columns">
+    <div class="row">
+        <div class="six columns">
             <label for="selector">CSS selector</label>
             <input type="text" class="u-full-width" name="selector" id="selector" placeholder=".selector" value="{{ old('selector') }}" required>
 
@@ -34,7 +36,9 @@
                 </p>
             @endif
         </div>
+    </div>
 
+    <div class="row">
         <div class="two columns">
             <label>&nbsp;</label>{{-- this element here is just for spacing --}}
             <button type="submit" class="block button-primary">Add</button>
