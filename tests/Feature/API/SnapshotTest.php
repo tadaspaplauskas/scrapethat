@@ -16,7 +16,7 @@ class SnapshotTest extends TestCase
         $user = factory(User::class)->create();
 
         $this->actingAs($user, 'api')
-            ->json('GET', '/api/snapshots')
+            ->json('GET', '/api/v1/snapshots')
             ->assertStatus(200);
     }
 
@@ -25,7 +25,7 @@ class SnapshotTest extends TestCase
         $user = factory(User::class)->create();
 
         $this->actingAs($user, 'api')
-            ->json('POST', '/api/snapshots', [
+            ->json('POST', '/api/v1/snapshots', [
                 'name' => 'Sample snapshot',
                 'url' => config('app.url') . '/tests/*.html',
                 'from' => 1,
@@ -42,7 +42,7 @@ class SnapshotTest extends TestCase
         $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
 
         $this->actingAs($user, 'api')
-            ->json('PUT', '/api/snapshots/' . $snapshot->id, [
+            ->json('PUT', '/api/v1/snapshots/' . $snapshot->id, [
                 'name' => 'Updated snapshot',
                 'url' => config('app.url') . '/tests/*.html',
                 'from' => 1,
@@ -59,7 +59,7 @@ class SnapshotTest extends TestCase
         $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
 
         $this->actingAs($user, 'api')
-            ->json('GET', '/api/snapshots/' . $snapshot->id)
+            ->json('GET', '/api/v1/snapshots/' . $snapshot->id)
             ->assertStatus(200)
             ->assertJson(['name' => $snapshot->name]);
     }
@@ -71,7 +71,7 @@ class SnapshotTest extends TestCase
         $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
 
         $this->actingAs($user, 'api')
-            ->json('DELETE', '/api/snapshots/' . $snapshot->id)
+            ->json('DELETE', '/api/v1/snapshots/' . $snapshot->id)
             ->assertStatus(204);
     }
 }
