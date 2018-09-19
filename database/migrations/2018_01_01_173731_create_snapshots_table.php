@@ -16,6 +16,7 @@ class CreateSnapshotsTable extends Migration
         Schema::create('snapshots', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned()->index();
+            $table->string('status')->default('in_progress');
             $table->string('name');
             $table->string('url');
             $table->smallinteger('from')->unsigned()->nullable();

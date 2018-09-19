@@ -49,12 +49,12 @@ class DownloadPage implements ShouldQueue
     {
         $snapshot = $this->snapshot;
 
-        $url = $snapshot->nextPageUrl();
-
-        // we're done here
-        if (!$url) {
+        // forced stop or done
+        if ($snapshot->isStopped() || $snapshot->isCompleted()) {
             return;
         }
+
+        $url = $snapshot->nextPageUrl();
 
         $guzzle = new Client();
 

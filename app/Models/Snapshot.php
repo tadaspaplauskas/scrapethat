@@ -16,7 +16,7 @@ class Snapshot extends Model
         'from',
         'to',
         'current',
-        'stopped',
+        'status',
     ];
 
     protected $hidden = [
@@ -30,7 +30,6 @@ class Snapshot extends Model
         'from' => 'integer',
         'to' => 'integer',
         'current' => 'integer',
-        'stopped' => 'boolean',
     ];
 
     public static function boot()
@@ -86,7 +85,14 @@ class Snapshot extends Model
 
     public function isCompleted()
     {
-        return $this->current === $this->to;
+        if ($this->current === $this->to) {
+                $this->status = 'completed';
+            }
+            else if ($this->status !== 'stopped') {
+                $this->status = 'in_progress';
+            }
+
+        return $this->status === 'completed';
     }
 
     public function retry()
@@ -104,6 +110,13 @@ class Snapshot extends Model
 
     public function stop()
     {
+        $this->status = 'stopped';
 
+        $this->save();
+    }
+
+    public function isStopped()
+    {
+        return $this->status === 'stopped';
     }
 }
