@@ -17,6 +17,7 @@ class Snapshot extends Model
         'to',
         'current',
         'status',
+        'refresh_daily',
     ];
 
     protected $hidden = [
@@ -30,6 +31,7 @@ class Snapshot extends Model
         'from' => 'integer',
         'to' => 'integer',
         'current' => 'integer',
+        'refresh_daily' => 'boolean',
     ];
 
     public static function boot()
@@ -49,6 +51,7 @@ class Snapshot extends Model
             'url' => 'required|url|regex:/\*/',
             'from' => 'required|integer|lte:to|min:1',
             'to' => 'required|integer|gte:from|min:1',
+            'refresh_daily' => 'boolean',
         ];
     }
 

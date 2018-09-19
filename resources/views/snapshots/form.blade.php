@@ -1,6 +1,6 @@
 <div class="row">
     <div class="six columns">
-        <label for="name" class="">Name</label>
+        <label for="name">Name</label>
         <input type="text" id="name" name="name" class="u-full-width" value="{{ old('name', $snapshot->name ?? '') }}" required>
     </div>
 </div>
@@ -17,7 +17,7 @@
 
 <div class="row">
     <div class="six columns">
-        <label for="url" class="">Page URL template</label>
+        <label for="url">Page URL template</label>
         <small>Please mark page number with an asterisk (*)</small>
         <input type="url" id="url" name="url" class="u-full-width" value="{{ old('url', $snapshot->url ?? '') }}" required placeholder="https://news.ycombinator.com/news?p=*">
     </div>
@@ -56,5 +56,17 @@
                 <strong>{{ $errors->first('to') }}</strong>
             </p>
         @endif
+    </div>
+</div>
+
+<div class="row">
+    <div class="twelve columns">
+        <input type="hidden" name="refresh_daily" value="0">
+        <label>
+            <input type="checkbox" id="refresh_daily" name="refresh_daily" value="1"
+                {{ isset($snapshot->refresh_daily) && $snapshot->refresh_daily ? 'checked' : '' }}>
+            Refresh snapshot daily
+        </label>
+
     </div>
 </div>
