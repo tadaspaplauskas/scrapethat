@@ -31,7 +31,6 @@ class VariableTest extends BrowserTestCase
         $user = factory(User::class)->create();
 
         $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
-        $page = $snapshot->pages()->save(factory(Page::class)->make());
 
         // mark as completed
         $snapshot->current = $snapshot->to;

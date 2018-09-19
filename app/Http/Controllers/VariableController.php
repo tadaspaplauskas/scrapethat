@@ -60,7 +60,6 @@ class VariableController extends Controller
                 // using closure to pass data to it; class would not work like that
                 function($attribute, $value, $fail) use ($snapshot) {
                     $page = $snapshot->pages()->first();
-
                     $crawler = new Crawler($page->html);
 
                     if (!$crawler->filter($value)->count()) {

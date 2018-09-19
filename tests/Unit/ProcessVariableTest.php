@@ -19,7 +19,6 @@ class ProcessVariableTest extends TestCase
     {
         $user = factory(User::class)->create();
         $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
-        $page = $snapshot->pages()->save(factory(Page::class)->make());
         $variable = $snapshot->variables()->save(factory(Variable::class)->make());
 
         $this->assertTrue($variable->current_page == 0);
