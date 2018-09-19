@@ -57,7 +57,7 @@ window.renderTable = function (results) {
         html = '<h5 class="mt5">Results <em>(' + results.length + ')</em></h5>';
 
         // format table
-        html += '<table>';
+        html += '<table id="results">';
 
         // add header row
         html += '<tr><th>#</th><th>' +
@@ -71,7 +71,7 @@ window.renderTable = function (results) {
                 '</td></tr>';
         }
 
-        html += '<table>';
+        html += '</table>';
     }
     else {
         html = '<p>Nothing found.</p>';
@@ -84,7 +84,7 @@ window.renderTable = function (results) {
     });
 };
 
-window.runQuery = function (query, verbose) {
+window.runQuery = function (query) {
     if (!query) {
         return;
     }
@@ -117,16 +117,28 @@ window.runQuery = function (query, verbose) {
     r.send(JSON.stringify({ query: query }));
 };
 
-// TODO FIXME
-// window.exportToCSV = function (query) {
-//     alasql.promise('SELECT * INTO CSV("query_results.csv", { separator: ","}) FROM (' + query + ')', [dataset])
-//         .then(function(){
-//              console.log('File was saved');
-//         }).catch(function(error){
-//              console.log('Error:', error);
-//         });
-// };
+window.exportTableToCSV = function (table, filename) {
+    var csv = [].slice.call(table.querySelectorAll('tr'))
+        .map(function (row) {
+            return [].slice.call(row.querySelectorAll('th,td'))
+                        .map(function (field) { return field.innerText; }).join(',');
+        })
+        .join("\n");
+
+    var csvFile = new Blob([csv], {type: 'text/csv'});
+
+    var link = document.createElement('a');
+    link.style.display = 'none';
+    link.innerHTML = 'Download';
+    link.setAttribute('href', window.URL.createObjectURL(csvFile));
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+};
 
 window.onload = function () {
-    runQuery(document.querySelector('#query').value)
+    runQuery(document.querySelector('#query').value);
 };
