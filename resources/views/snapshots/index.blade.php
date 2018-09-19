@@ -38,6 +38,8 @@
                         {{ $snapshot->updated_at->diffForHumans() }}
                     </td>
                     <td>
+                        <a href="{{ route('snapshots.edit', $snapshot) }}">Edit</a>
+
                         <form action="{{ route('snapshots.destroy', $snapshot) }}" method="POST" class="m0">
 
                             {{ csrf_field() }}
