@@ -18676,7 +18676,7 @@ window.runQuery = function (query, verbose) {
         }
 
         // error
-        else if (r.status !== 200 && results.errors) {
+        else if (results.errors) {
                 renderError(results.errors[0]);
             }
             // unknown error
