@@ -24,9 +24,9 @@ window.chart = function (labels, data) {
     return window.chart.instance;
 };
 
-window.renderError = function (error, verbose) {
+window.renderError = function (error) {
     output(function (element) {
-        element.innerText = verbose ? exception : 'Something went wrong with the query. Please refresh and try again or contact administrator if it keeps repeating.';
+        element.innerText = error;
         element.className = 'red';
     });
 };
@@ -83,101 +83,6 @@ window.renderTable = function (results) {
     });
 };
 
-window.addElementTo = function (sourceSelector, targetSelector) {
-    // clone with all children
-    var elem = document.querySelector(sourceSelector).cloneNode(true);
-
-    return document.querySelector(targetSelector).appendChild(elem);
-};
-
-window.removeElement = function (element) {
-    return element.parentNode.removeChild(element);
-};
-
-window.showOneOfMany = function (needleSelector, haystackSelector, context) {
-    context = context || document;
-
-    var element = context.querySelector(needleSelector);
-    var haystack = context.querySelectorAll(haystackSelector);
-
-    // hide all
-    for (var i = 0; i < haystack.length; i++) {
-        haystack[i].style.display = 'none';
-    }
-
-    // show one
-    element.style.display = 'block';
-};
-
-// meat and potatoes
-window.makeQuery = function () {
-    // fields to select
-    var rules = document.querySelectorAll('.rule');
-
-    var select = [], conditions = [], order = [], group = [];
-
-    // start from the first one
-    for (var i = 1; i < rules.length; i++) {
-        var rule = rules[i];
-        var type = rule.querySelector('.type').value;
-        var variable = rule.querySelector('.variable').value;
-        
-        var valueElement = rule.querySelector('.' + type + ' .value');
-        var value = valueElement ? valueElement.value : '';
-        switch (type) {
-            case 'select':
-                select.push(variable);
-                break;
-            case 'aggregation':
-                select.push(value +'(' + variable + ')');
-                break;
-            case 'condition':
-                var conditionValue;
-
-                // put in quotes
-                if (value === '') {
-                    conditionValue = '""';
-                }
-                else {
-                    conditionValue = isNaN(value) ? '"' + value + '"' : value;
-                }
-                
-                conditions.push(variable + rule.querySelector('.condition .operator').value +
-                    conditionValue);
-                break;
-            case 'order':
-                order.push(variable + ' ' + value);
-                break;
-            case 'group':
-                group.push(variable);
-                break;
-            default:
-                break;
-        }
-    }
-
-    var sql = 'SELECT ' +
-        (select.length ? select.join(', ') : '*') +
-        ' FROM dataset';
-
-    // conditions
-    if (conditions.length) {
-        sql += ' WHERE ' + conditions.join(', ');
-    }
-
-    if (group.length) {
-        sql += ' GROUP BY ' + group.join(', ');
-    }
-
-    if (order.length) {
-        sql += ' ORDER BY ' + order.join(', ');
-    }
-
-    console.log(sql);
-
-    return sql;
-};
-
 window.runQuery = function (query, verbose) {
     if (!query) {
         return;
@@ -190,24 +95,25 @@ window.runQuery = function (query, verbose) {
     r.setRequestHeader('Authorization', 'Bearer ' + window.api_token);
 
     r.onload = function() {
+        var results = JSON.parse(r.responseText);
+
         if (r.status === 200) {
-            var results = JSON.parse(r.responseText);
 
             renderChart(results.data);
             renderTable(results.data);
         }
 
         // error
-        else if (r.status !== 200) {
-            renderError(r.responseText, verbose);
+        else if (r.status !== 200 && results.errors) {
+            renderError(results.errors[0]);
+        }
+        // unknown error
+        else {
+            renderError('Something went wrong, please try again shortly');
         }
     };
 
     r.send(JSON.stringify({ query: query }));
-};
-
-window.submitQuery = function () {
-    return runQuery(makeQuery());
 };
 
 // TODO FIXME
@@ -221,6 +127,5 @@ window.submitQuery = function () {
 // };
 
 window.onload = function () {
-    // since default is simple mode
-    submitQuery();
+    runQuery(document.querySelector('#query').value)
 };
