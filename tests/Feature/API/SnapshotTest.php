@@ -20,7 +20,7 @@ class SnapshotTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testSnapshotCreate()
+    public function testSnapshotStore()
     {
         $user = factory(User::class)->create();
 
@@ -33,6 +33,23 @@ class SnapshotTest extends TestCase
             ])
             ->assertStatus(201)
             ->assertJson(['name' => 'Sample snapshot']);
+    }
+
+    public function testSnapshotUpdate()
+    {
+        $user = factory(User::class)->create();
+
+        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
+
+        $this->actingAs($user, 'api')
+            ->json('PUT', '/api/snapshots/' . $snapshot->id, [
+                'name' => 'Updated snapshot',
+                'url' => config('app.url') . '/tests/*.html',
+                'from' => 1,
+                'to' => 2,
+            ])
+            ->assertStatus(200)
+            ->assertJson(['name' => 'Updated snapshot']);
     }
 
     public function testSnapshotShow()

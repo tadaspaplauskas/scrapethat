@@ -55,18 +55,20 @@ class SnapshotController extends Controller
             }
         }
 
-        // reset last page
-        $snapshot->pages()->latest()->first()->delete();
+        // reset last page, if it exists
+        if ($lastPage = $snapshot->pages()->latest()->first()) {
+            $lastPage->delete();
 
-        $snapshot->current--;
+            $snapshot->current--;
+        }
+
+        $snapshot->fill($data);
 
         $snapshot->save();
 
-        $snapshot->update($data);
-
         DownloadPage::dispatch($snapshot);
 
-        return Response::json([], 202);
+        return Response::json($snapshot, 200);
     }
 
     public function destroy(Snapshot $snapshot)
