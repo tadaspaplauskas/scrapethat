@@ -17,6 +17,19 @@ class Snapshot extends Model
         'current',
     ];
 
+    protected $hidden = [
+        'user_id',
+        'deleted_at',
+    ];
+
+    protected $casts = [
+        'name',
+        'url',
+        'from' => 'integer',
+        'to' => 'integer',
+        'current' => 'integer',
+    ];
+
     public static function validator()
     {
         return [
