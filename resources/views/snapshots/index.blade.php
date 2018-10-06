@@ -19,7 +19,7 @@
                 <th>Pages</th>
                 <th>Created</th>
                 <th>Last refresh</th>
-                <th>Delete</th>
+                <th>Actions</th>
             </tr>
 
             @foreach ($snapshots as $snapshot)
@@ -38,15 +38,12 @@
                         {{ $snapshot->updated_at->diffForHumans() }}
                     </td>
                     <td>
-                        <a href="{{ route('snapshots.edit', $snapshot) }}">Edit</a>
+                        <a href="{{ route('snapshots.refresh.confirm', $snapshot) }}" title="Scans all the pages again" class="mr1">Refresh</a>
 
-                        <form action="{{ route('snapshots.destroy', $snapshot) }}" method="POST" class="m0">
+                        <a href="{{ route('snapshots.edit', $snapshot) }}" class="mr1">Edit</a>
 
-                            {{ csrf_field() }}
-                            {{ method_field('DELETE') }}
+                        <a href="{{ route('snapshots.delete.confirm', $snapshot) }}" class="mr1">Delete</a>
 
-                            <button>Delete</button>
-                        </form>
                     </td>
                 </tr>
 

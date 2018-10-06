@@ -111,6 +111,16 @@ class Snapshot extends Model
         // event is dispatched automatically on `saved` event
     }
 
+    // do it again
+    public function refresh()
+    {
+        $this->pages()->delete();
+
+        $this->current = 0;
+
+        $this->save();
+    }
+
     public function stop()
     {
         $this->status = 'stopped';

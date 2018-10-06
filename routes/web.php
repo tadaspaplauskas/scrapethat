@@ -17,7 +17,11 @@ Route::any('logout', 'Auth\LoginController@logout');
 
 Route::get('snapshots/{id}/restore', 'SnapshotController@restore')->name('snapshots.restore');
 
-Route::get('snapshots/{snapshot}/delete', 'SnapshotController@delete')->name('snapshots.delete');
+Route::get('snapshots/{snapshot}/delete', 'SnapshotController@confirmDelete')->name('snapshots.delete.confirm');
+
+Route::get('snapshots/{snapshot}/refresh', 'SnapshotController@confirmRefresh')->name('snapshots.refresh.confirm');
+
+Route::post('snapshots/{snapshot}/refresh', 'SnapshotController@refresh')->name('snapshots.refresh');
 
 Route::post('snapshots/{snapshot}/stop', 'SnapshotController@stop')->name('snapshots.stop');
 

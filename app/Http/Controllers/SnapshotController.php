@@ -86,9 +86,22 @@ class SnapshotController extends Controller
                 <a href="' . route('snapshots.restore', $snapshot) . '" class="block">Undo</a>');
     }
 
-    public function delete(Snapshot $snapshot)
+    public function confirmDelete(Snapshot $snapshot)
     {
         return view('snapshots.delete', compact('snapshot'));
+    }
+
+    public function confirmRefresh(Snapshot $snapshot)
+    {
+        return view('snapshots.refresh', compact('snapshot'));
+    }
+
+    public function refresh(Snapshot $snapshot)
+    {
+        $snapshot->refresh();
+
+        return redirect()->action('SnapshotController@index')
+            ->with('message', $snapshot->name . ' is queued.');
     }
 
     public function restore($id)

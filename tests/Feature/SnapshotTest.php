@@ -54,6 +54,7 @@ class SnapshotTest extends BrowserTestCase
 
         $this->actingAs($user)
             ->visitRoute('snapshots.index')
+            ->click('Delete')
             ->press('Delete')
             ->see('was deleted')
             ->dontSee('Most recent HN submisisons')
