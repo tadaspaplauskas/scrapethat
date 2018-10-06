@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Auth;
 
 class PageController extends Controller
 {
@@ -29,5 +30,14 @@ class PageController extends Controller
     public function about()
     {
         return view('pages.about');
+    }
+
+    public function api()
+    {
+        $token = Auth::user()->api_token;
+
+        $url = url('/api/v1/');
+
+        return view('pages.api', compact('token', 'url'));
     }
 }
