@@ -17,8 +17,6 @@ class DownloadPageTest extends TestCase
         $user = factory(User::class)->create();
         $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
 
-        $this->assertTrue($snapshot->crawled == 0);
-
         $job = new DownloadPage($snapshot);
 
         $job->handle();

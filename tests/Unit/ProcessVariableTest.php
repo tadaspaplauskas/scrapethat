@@ -21,6 +21,8 @@ class ProcessVariableTest extends TestCase
         $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
         $variable = $snapshot->variables()->save(factory(Variable::class)->make());
 
+        $snapshot->download();
+
         $this->assertTrue($variable->current_page == 0);
 
         $job = new ProcessVariable($variable);

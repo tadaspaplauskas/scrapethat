@@ -34,16 +34,6 @@ class Snapshot extends Model
         'refresh_daily' => 'boolean',
     ];
 
-    public static function boot()
-    {
-        parent::boot();
-
-        // re-download snapshot after each update
-        static::saved(function (Snapshot $snapshot) {
-            DownloadPage::dispatch($snapshot);
-        });
-    }
-
     public static function validator()
     {
         return [
@@ -86,18 +76,6 @@ class Snapshot extends Model
         return $nextPageUrl;
     }
 
-    public function isCompleted()
-    {
-        if ($this->current === $this->to) {
-                $this->status = 'completed';
-            }
-            else if ($this->status !== 'stopped') {
-                $this->status = 'in_progress';
-            }
-
-        return $this->status === 'completed';
-    }
-
     public function retry()
     {
         if ($lastPage = $this->pages()->latest()->first()) {
@@ -111,14 +89,29 @@ class Snapshot extends Model
         // event is dispatched automatically on `saved` event
     }
 
-    // do it again
-    public function refresh()
+    // download all pages
+    public function download()
     {
         $this->pages()->delete();
 
         $this->current = 0;
 
+        $this->status = 'in_progress';
+
         $this->save();
+
+        return DownloadPage::dispatch($this);
+    }
+
+    public function isCompleted()
+    {
+        if ($this->current === $this->to) {
+            $this->status = 'completed';
+
+            $this->save();
+        }
+
+        return $this->status === 'completed';
     }
 
     public function stop()
