@@ -38,6 +38,8 @@ class PageController extends Controller
 
         $url = url('/api/v1/');
 
-        return view('pages.api', compact('token', 'url'));
+        $now = \Carbon\Carbon::now();
+
+        return view('pages.api', compact('token', 'url', 'now'));
     }
 }
