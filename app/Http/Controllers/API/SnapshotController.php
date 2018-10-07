@@ -36,6 +36,9 @@ class SnapshotController extends Controller
 
         $snapshot = Auth::user()->snapshots()->create($data);
 
+        // load all params
+        $snapshot->refresh();
+
         return Response::json($snapshot, 201);
     }
 
