@@ -136,7 +136,7 @@
 </code>
 </pre>
 
-<h5 id="delete-snapshot"><a href="#delete-snapshot">Delete a snapshot</a></h5>
+<h5 id="delete-snapshot"><a href="#delete-snapshot">Delete snapshot</a></h5>
 
 <h6>Request</h6>
 <pre><code>curl -X DELETE \
@@ -146,7 +146,80 @@
 </pre>
 
 <h6>Response</h6>
-<pre><code>HTTP status code 204 on success.
+<pre><code>HTTP status code 204 (no content) on success.
 </code>
 </pre>
+
+<h5 id="refresh-snapshot"><a href="#refresh-snapshot">Refresh snapshot</a></h5>
+<p>
+    Discards all pages and downloads them again.
+</p>
+
+<h6>Request</h6>
+<pre><code>curl -X POST \
+  '{{ $url }}/snapshots/1/refresh?api_token={{ $token }}' \
+  -H 'Accept: application/json'
+</code>
+</pre>
+
+<h6>Response</h6>
+<pre><code>HTTP status code 202 (accepted) on success.
+</code>
+</pre>
+
+<h5 id="stop-snapshot"><a href="#stop-snapshot">Stop snapshot</a></h5>
+<p>
+    Stop an ongoing snapshot.
+</p>
+
+<h6>Request</h6>
+<pre><code>curl -X POST \
+  '{{ $url }}/snapshots/1/stop?api_token={{ $token }}' \
+  -H 'Accept: application/json'
+</code>
+</pre>
+
+<h6>Response</h6>
+<pre><code>HTTP status code 202 (accepted) on success.
+</code>
+</pre>
+
+<h5 id="retry-snapshot"><a href="#retry-snapshot">Retry snapshot</a></h5>
+<p>
+    Discards the last page and retries to download it again.
+</p>
+
+<h6>Request</h6>
+<pre><code>curl -X POST \
+  '{{ $url }}/snapshots/1/retry?api_token={{ $token }}' \
+  -H 'Accept: application/json'
+</code>
+</pre>
+
+<h6>Response</h6>
+<pre><code>HTTP status code 202 (accepted) on success.
+</code>
+</pre>
+
+<h5 id="query-snapshot"><a href="#query-snapshot">Run a SQL query</a></h5>
+<p>
+    You can run a SQL query against your snapshot data. You must create variables before that though.
+</p>
+
+<h6>Request</h6>
+<pre><code>curl -X POST \
+'{{ $url }}/snapshots/1/query?api_token={{ $token }}' \
+-H 'Accept: application/json' \
+-H 'Content-Type: application/json' \
+-d '{
+"query": "SELECT * FROM dataset"
+}'
+</code>
+</pre>
+
+<h6>Response</h6>
+<pre><code>TODO
+</code>
+</pre>
+
 @endsection

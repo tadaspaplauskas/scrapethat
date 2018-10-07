@@ -71,7 +71,14 @@ class SnapshotController extends Controller
     {
         $snapshot->stop();
 
-        return Response::json([], 200);
+        return Response::json([], 202);
+    }
+
+    public function refresh(Snapshot $snapshot)
+    {
+        $snapshot->download();
+
+        return Response::json([], 202);
     }
 
     public function query(Request $request, Snapshot $snapshot)
