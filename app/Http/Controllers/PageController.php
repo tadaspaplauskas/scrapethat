@@ -34,7 +34,7 @@ class PageController extends Controller
 
     public function api()
     {
-        $token = Auth::user()->api_token;
+        $token = Auth::check() ? Auth::user()->api_token : '';
 
         $url = url('/api/v1/');
 

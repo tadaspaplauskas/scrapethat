@@ -4,13 +4,14 @@
 
 <h2>API authentication</h2>
 
+@if ($token)
 <p>
-    Your API token is:
-    <code>{{ $token }}</code>
+    Your API token is <code>{{ $token }}</code>
 </p>
+@endif
+
 <p>
-    API url is:
-    <code>{{ $url }}</code>
+    API url is <code>{{ $url }}</code>
 </p>
 
 <p>
