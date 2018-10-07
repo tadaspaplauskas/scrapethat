@@ -15,8 +15,6 @@ class Snapshot extends Model
         'url',
         'from',
         'to',
-        'current',
-        'status',
         'refresh_daily',
     ];
 
