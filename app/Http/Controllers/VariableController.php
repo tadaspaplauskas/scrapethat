@@ -82,21 +82,6 @@ class VariableController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Variable $variable, Request $request)
-    {
-        $numbers = $variable->values->map(function ($item) {
-            return floatval(preg_replace('/\s*/m', '', $item));
-        });
-
-        return view('filters.show', compact('filter', 'numbers'));
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
