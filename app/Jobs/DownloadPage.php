@@ -91,10 +91,7 @@ class DownloadPage implements ShouldQueue
         // refresh variables
         if ($snapshot->isCompleted()) {
             foreach ($snapshot->variables as $variable) {
-                $variable->current_page = 0;
-                $variable->save();
-
-                ProcessVariable::dispatch($variable);
+                $variable->process();
             }
         }
         // queue next page

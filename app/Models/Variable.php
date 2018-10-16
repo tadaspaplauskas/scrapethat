@@ -32,4 +32,14 @@ class Variable extends Model
     {
         return $this->current_page >= $this->snapshot->pages()->count();
     }
+
+    public function process()
+    {
+        $this->current_page = 0;
+        $this->save();
+
+        $this->values()->delete();
+
+        ProcessVariable::dispatch($this);
+    }
 }
