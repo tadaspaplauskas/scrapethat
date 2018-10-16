@@ -48,7 +48,12 @@ class SnapshotController extends Controller
 
         $snapshot->update($data);
 
-        $snapshot->retry();
+        if ($snapshot->isStopped()) {
+            $snapshot->retry();
+        }
+        else {
+            $snapshot->download();
+        }
 
         return Response::json($snapshot, 200);
     }

@@ -84,7 +84,7 @@ class Snapshot extends Model
             $this->save();
         }
 
-        // event is dispatched automatically on `saved` event
+        return DownloadPage::dispatch($this);
     }
 
     // download all pages
