@@ -5,7 +5,7 @@
 <h5>Variables</h5>
 
 <p>
-    Use CSS selectors to get data out of the pages.
+    Use CSS selectors to get data out of the pages. We will parse downloaded pages and fill the dataset.
 </p>
 
 <form method="POST" action="{{ route('variables.store', $snapshot) }}">
@@ -39,9 +39,8 @@
     </div>
 
     <div class="row">
-        <div class="two columns">
-            <label>&nbsp;</label>{{-- this element here is just for spacing --}}
-            <button type="submit" class="block button-primary">Add</button>
+        <div class="six columns">
+            <button type="submit">Add</button>
         </div>
     </div>
 
@@ -58,8 +57,9 @@
         <tr>
             <th>Name</th>
             <th>Selector</th>
-            <th>Created at</th>
-            <th></th>
+            <th>Created</th>
+            <th>Last refresh</th>
+            <th>Actions</th>
         </tr>
 
         @foreach ($variables as $variable)
@@ -74,7 +74,10 @@
                     {{ $variable->created_at->diffForHumans() }}
                 </td>
                 <td>
-                    <form method="POST" action="{{ route('variables.destroy', [$snapshot, $variable]) }}" class="m0">
+                    {{ $snapshot->updated_at->diffForHumans() }}
+                </td>
+                <td>
+                    <form method="POST" action="{{ route('variables.destroy', $variable) }}" class="m0">
                         {{ csrf_field() }}
                         {{ method_field('DELETE') }}
                         <button>Delete</button>
