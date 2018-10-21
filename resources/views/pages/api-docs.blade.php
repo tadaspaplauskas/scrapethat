@@ -11,7 +11,7 @@
 @endif
 
 <p>
-    API url is <code>{{ $url }}</code>
+    API url is <code>{{ route('api.index') }}</code>
 </p>
 
 <p>
@@ -20,11 +20,14 @@
 
 <h4>API endpoints</h4>
 
+<div id="index"></div>
+
+
 <h5 id="list-snapshots"><a href="#list-snapshots">List snapshots</a></h5>
 
 <h6>Request</h6>
 <pre><code>curl -X GET \
-'{{ $url }}/snapshots?api_token={{ $token }}' \
+'{{ route('api.snapshots.index', ['api_token' => $token]) }}' \
 -H 'Accept: application/json'
 </code></pre>
 
@@ -46,11 +49,11 @@
 </code>
 </pre>
 
-<h5 id="show-snapshot"><a href="#show-snapshot">Show snapshot</a></h5>
+<h5 class="endpoint" id="show-snapshot"><a href="#show-snapshot">Show snapshot</a></h5>
 
 <h6>Request</h6>
 <pre><code>curl -X GET \
-'{{ $url }}/snapshots/1?api_token={{ $token }}' \
+'{{ route('api.snapshots.show', [1, 'api_token' => $token]) }}' \
 -H 'Accept: application/json'
 </code>
 </pre>
@@ -71,11 +74,11 @@
 </code>
 </pre>
 
-<h5 id="create-snapshot"><a href="#create-snapshot">Create a snapshot</a></h5>
+<h5 class="endpoint" id="create-snapshot"><a href="#create-snapshot">Create a snapshot</a></h5>
 
 <h6>Request</h6>
 <pre><code>curl -X POST \
-'{{ $url }}/snapshots?api_token={{ $token }}' \
+'{{ route('api.snapshots.store', ['api_token' => $token]) }}' \
 -H 'Accept: application/json' \
 -H 'Content-Type: application/json' \
 -d '{
@@ -103,11 +106,11 @@
 </code>
 </pre>
 
-<h5 id="update-snapshot"><a href="#update-snapshot">Update a snapshot</a></h5>
+<h5 class="endpoint" id="update-snapshot"><a href="#update-snapshot">Update a snapshot</a></h5>
 
 <h6>Request</h6>
 <pre><code>curl -X PUT \
-'{{ $url }}/snapshots/1?api_token={{ $token }}' \
+'{{ route('api.snapshots.update', [1, 'api_token' => $token]) }}' \
 -H 'Accept: application/json' \
 -H 'Content-Type: application/json' \
 -d '{
@@ -136,11 +139,11 @@
 </code>
 </pre>
 
-<h5 id="delete-snapshot"><a href="#delete-snapshot">Delete snapshot</a></h5>
+<h5 class="endpoint" id="delete-snapshot"><a href="#delete-snapshot">Delete a snapshot</a></h5>
 
 <h6>Request</h6>
 <pre><code>curl -X DELETE \
-'{{ $url }}/snapshots/6?api_token={{ $token }}' \
+'{{ route('api.snapshots.destroy', [1, 'api_token' => $token]) }}' \
 -H 'Accept: application/json'
 </code>
 </pre>
@@ -150,14 +153,14 @@
 </code>
 </pre>
 
-<h5 id="refresh-snapshot"><a href="#refresh-snapshot">Refresh snapshot</a></h5>
+<h5 class="endpoint" id="refresh-snapshot"><a href="#refresh-snapshot">Refresh a snapshot</a></h5>
 <p>
     Discards all pages and downloads them again.
 </p>
 
 <h6>Request</h6>
 <pre><code>curl -X POST \
-  '{{ $url }}/snapshots/1/refresh?api_token={{ $token }}' \
+  '{{ route('api.snapshots.refresh', [1, 'api_token' => $token]) }}' \
   -H 'Accept: application/json'
 </code>
 </pre>
@@ -167,14 +170,14 @@
 </code>
 </pre>
 
-<h5 id="stop-snapshot"><a href="#stop-snapshot">Stop snapshot</a></h5>
+<h5 id="stop-snapshot"><a href="#stop-snapshot">Stop a snapshot</a></h5>
 <p>
     Stop an ongoing snapshot.
 </p>
 
 <h6>Request</h6>
 <pre><code>curl -X POST \
-  '{{ $url }}/snapshots/1/stop?api_token={{ $token }}' \
+  '{{ route('api.snapshots.stop', [1, 'api_token' => $token]) }}' \
   -H 'Accept: application/json'
 </code>
 </pre>
@@ -184,14 +187,31 @@
 </code>
 </pre>
 
-<h5 id="retry-snapshot"><a href="#retry-snapshot">Retry snapshot</a></h5>
+<h5 class="endpoint" id="retry-snapshot"><a href="#retry-snapshot">Retry a snapshot</a></h5>
 <p>
     Discards the last page and retries to download it again.
 </p>
 
 <h6>Request</h6>
 <pre><code>curl -X POST \
-  '{{ $url }}/snapshots/1/retry?api_token={{ $token }}' \
+  '{{ route('api.snapshots.retry', [1, 'api_token' => $token]) }}' \
+  -H 'Accept: application/json'
+</code>
+</pre>
+
+<h6>Response</h6>
+<pre><code>HTTP status code 202 (accepted) on success.
+</code>
+</pre>
+
+<h5 class="endpoint" id="create-variable"><a href="#create-variable">Create a variable</a></h5>
+<p>
+    Creates a new variable for a downloaded snapshot.
+</p>
+
+<h6>Request</h6>
+<pre><code>curl -X POST \
+  {{ route('api.variables.store', [1, 'api_token' => $token]) }}' \
   -H 'Accept: application/json'
 </code>
 </pre>
@@ -208,7 +228,7 @@
 
 <h6>Request</h6>
 <pre><code>curl -X POST \
-'{{ $url }}/snapshots/1/query?api_token={{ $token }}' \
+'{{ route('api.query', [1, 'api_token' => $token]) }}' \
 -H 'Accept: application/json' \
 -H 'Content-Type: application/json' \
 -d '{
@@ -221,5 +241,22 @@
 <pre><code>TODO
 </code>
 </pre>
+
+<script>
+
+    var html = '<ul>';
+
+    var endpoints = document.querySelectorAll('.endpoint');
+
+    var e;
+    for (var i = 0; i < endpoints.length; i++) {
+        e = endpoints[i];
+        html += '<li><a href="#' + e.id + '">' + e.innerText + '</a></li>';
+    }
+
+    html += '</ul>';
+
+    document.querySelector('#index').innerHTML = html;
+</script>
 
 @endsection
