@@ -24,12 +24,12 @@
 
 
 <h5 id="list-snapshots"><a href="#list-snapshots">List snapshots</a></h5>
-<h6>Request</h6>
+<h6>Request example</h6>
 <pre><code>curl -X GET \
 '{{ route('api.snapshots.index', ['api_token' => $token]) }}' \
 -H 'Accept: application/json'
 </code></pre>
-<h6>Response</h6>
+<h6>Response example</h6>
 <pre><code>[
     {
         "id": 1,
@@ -48,14 +48,14 @@
 </pre>
 
 <h5 class="endpoint" id="show-snapshot"><a href="#show-snapshot">Show snapshot</a></h5>
-<h6>Request</h6>
+<h6>Request example</h6>
 <pre><code>curl -X GET \
 '{{ route('api.snapshots.show', [1, 'api_token' => $token]) }}' \
 -H 'Accept: application/json'
 </code>
 </pre>
 
-<h6>Response</h6>
+<h6>Response example</h6>
 <pre><code>{
     "id": 1,
     "status": "completed",
@@ -72,7 +72,7 @@
 </pre>
 
 <h5 class="endpoint" id="create-snapshot"><a href="#create-snapshot">Create a snapshot</a></h5>
-<h6>Request</h6>
+<h6>Request example</h6>
 <pre><code>curl -X POST \
 '{{ route('api.snapshots.store', ['api_token' => $token]) }}' \
 -H 'Accept: application/json' \
@@ -85,7 +85,7 @@
 }'
 </code>
 </pre>
-<h6>Response</h6>
+<h6>Response example</h6>
 <pre><code>{
     "id": 2,
     "status": "in_progress",
@@ -102,7 +102,7 @@
 </pre>
 
 <h5 class="endpoint" id="update-snapshot"><a href="#update-snapshot">Update a snapshot</a></h5>
-<h6>Request</h6>
+<h6>Request example</h6>
 <pre><code>curl -X PUT \
 '{{ route('api.snapshots.update', [1, 'api_token' => $token]) }}' \
 -H 'Accept: application/json' \
@@ -116,7 +116,7 @@
 }'
 </code>
 </pre>
-<h6>Response</h6>
+<h6>Response example</h6>
 <pre><code>{
     "id": 1,
     "status": "in_progress",
@@ -134,13 +134,13 @@
 
 <h5 class="endpoint" id="delete-snapshot"><a href="#delete-snapshot">Delete a snapshot</a></h5>
 
-<h6>Request</h6>
+<h6>Request example</h6>
 <pre><code>curl -X DELETE \
 '{{ route('api.snapshots.destroy', [1, 'api_token' => $token]) }}' \
 -H 'Accept: application/json'
 </code>
 </pre>
-<h6>Response</h6>
+<h6>Response example</h6>
 <pre><code>HTTP status code 204 (no content) on success.
 </code>
 </pre>
@@ -150,13 +150,13 @@
     Discards all pages and downloads them again.
 </p>
 
-<h6>Request</h6>
+<h6>Request example</h6>
 <pre><code>curl -X POST \
   '{{ route('api.snapshots.refresh', [1, 'api_token' => $token]) }}' \
   -H 'Accept: application/json'
 </code>
 </pre>
-<h6>Response</h6>
+<h6>Response example</h6>
 <pre><code>HTTP status code 202 (accepted) on success.
 </code>
 </pre>
@@ -165,14 +165,14 @@
 <p>
     Stop an ongoing snapshot.
 </p>
-<h6>Request</h6>
+<h6>Request example</h6>
 <pre><code>curl -X POST \
 '{{ route('api.snapshots.stop', [1, 'api_token' => $token]) }}' \
 -H 'Accept: application/json'
 </code>
 </pre>
 
-<h6>Response</h6>
+<h6>Response example</h6>
 <pre><code>HTTP status code 202 (accepted) on success.
 </code>
 </pre>
@@ -182,14 +182,14 @@
     Discards the last page and retries to download it again.
 </p>
 
-<h6>Request</h6>
+<h6>Request example</h6>
 <pre><code>curl -X POST \
 '{{ route('api.snapshots.retry', [1, 'api_token' => $token]) }}' \
 -H 'Accept: application/json'
 </code>
 </pre>
 
-<h6>Response</h6>
+<h6>Response example</h6>
 <pre><code>HTTP status code 202 (accepted) on success.
 </code>
 </pre>
@@ -199,14 +199,14 @@
 <p>
     Show all snapshot variables.
 </p>
-<h6>Request</h6>
+<h6>Request example</h6>
 <pre><code>curl -X GET \
 '{{ route('api.variables.index', [1, 'api_token' => $token]) }}' \
 -H 'Accept: application/json'
 </code>
 </pre>
 
-<h6>Response</h6>
+<h6>Response example</h6>
 <pre><code>[
     {
         "id": 1
@@ -225,14 +225,14 @@
 <p>
     Show specific snapshot variable.
 </p>
-<h6>Request</h6>
+<h6>Request example</h6>
 <pre><code>curl -X GET \
 '{{ route('api.variables.show', [1, 'api_token' => $token]) }}' \
 -H 'Accept: application/json'
 </code>
 </pre>
 
-<h6>Response</h6>
+<h6>Response example</h6>
 <pre><code>{
     "id": 1
     "snapshot_id": "1"
@@ -249,7 +249,7 @@
 <p>
     Creates a new variable to be used in queries. It might take some time until the results are available in the query.
 </p>
-<h6>Request</h6>
+<h6>Request example</h6>
 <pre><code>curl -X POST \
 '{{ route('api.variables.store', [1, 'api_token' => $token]) }}' \
 -H 'Accept: application/json' \
@@ -261,7 +261,7 @@
 </code>
 </pre>
 
-<h6>Response</h6>
+<h6>Response example</h6>
 <pre><code>{
     "id": 1
     "snapshot_id": "1"
@@ -278,7 +278,7 @@
 <p>
     Updates a variable to be used in queries. It might take some time until the results are available in the query.
 </p>
-<h6>Request</h6>
+<h6>Request example</h6>
 <pre><code>curl -X PUT \
 '{{ route('api.variables.update', [1, 'api_token' => $token]) }}' \
 -H 'Accept: application/json' \
@@ -290,7 +290,7 @@
 </code>
 </pre>
 
-<h6>Response</h6>
+<h6>Response example</h6>
 <pre><code>{
     "id": 1
     "snapshot_id": "1"
@@ -307,14 +307,14 @@
 <p>
     Deletes a variable.
 </p>
-<h6>Request</h6>
+<h6>Request example</h6>
 <pre><code>curl -X DELETE \
   '{{ route('api.variables.destroy', [1, 'api_token' => $token]) }}' \
 -H 'Accept: application/json'
 </code>
 </pre>
 
-<h6>Response</h6>
+<h6>Response example</h6>
 <pre><code>HTTP status code 204 (no content) on success.
 </code>
 </pre>
@@ -323,7 +323,7 @@
 <p>
     You can run a SQL query against your snapshot data. You must create variables before that though.
 </p>
-<h6>Request</h6>
+<h6>Request example</h6>
 <pre><code>curl -X POST \
 '{{ route('api.query', [1, 'api_token' => $token]) }}' \
 -H 'Accept: application/json' \
@@ -333,11 +333,25 @@
 }'
 </code>
 </pre>
-<h6>Response</h6>
-<pre><code>TODO
+<h6>Response example</h6>
+<pre><code>{
+    "meta": {
+        "count": 2
+    },
+    "data": [
+        {
+            "score": "90 points"
+        },
+        {
+            "score": "81 points"
+        }
+    ]
+}
 </code>
 </pre>
 
+
+<!-- generate index list -->
 <script>
 
     var html = '<ul>';
