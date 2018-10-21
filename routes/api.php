@@ -13,15 +13,17 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::prefix('v1')->group(function () {
+Route::prefix('v1')->as('api.')->group(function () {
 
-    Route::any('snapshots/{snapshot}/query', 'API\SnapshotController@query');
+    Route::any('/', function () { return redirect()->route('api-docs'); })->name('index');
 
-    Route::post('snapshots/{snapshot}/refresh', 'API\SnapshotController@refresh');
+    Route::any('snapshots/{snapshot}/query', 'API\SnapshotController@query')->name('query');
 
-    Route::post('snapshots/{snapshot}/stop', 'API\SnapshotController@stop');
+    Route::post('snapshots/{snapshot}/refresh', 'API\SnapshotController@refresh')->name('snapshots.refresh');
 
-    Route::post('snapshots/{snapshot}/retry', 'API\SnapshotController@retry');
+    Route::post('snapshots/{snapshot}/stop', 'API\SnapshotController@stop')->name('snapshots.stop');
+
+    Route::post('snapshots/{snapshot}/retry', 'API\SnapshotController@retry')->name('snapshots.retry');
 
     Route::resource('snapshots', 'API\SnapshotController');
 

@@ -42,5 +42,5 @@ Route::post('subscription', 'SubscriptionController@subscribe')->name('subscribe
 Route::post('cancel', 'SubscriptionController@cancel')->name('cancel');
 
 Route::get('about', 'PageController@about')->name('about');
-Route::get('api_docs', 'PageController@api')->name('api');
+Route::get('api_docs', 'PageController@apiDocs')->name('api-docs');
 Route::get('/', 'PageController@index')->name('home');

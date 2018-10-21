@@ -32,14 +32,12 @@ class PageController extends Controller
         return view('pages.about');
     }
 
-    public function api()
+    public function apiDocs()
     {
         $token = Auth::check() ? Auth::user()->api_token : '';
 
-        $url = url('/api/v1/');
-
         $now = \Carbon\Carbon::now();
 
-        return view('pages.api', compact('token', 'url', 'now'));
+        return view('pages.api-docs', compact('token', 'now'));
     }
 }
