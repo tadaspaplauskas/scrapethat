@@ -28,4 +28,6 @@ Route::prefix('v1')->group(function () {
     Route::resource('variables', 'API\VariableController')
         ->only(['show', 'edit', 'update', 'destroy']);
 
+    Route::resource('snapshots/{snapshot}/variables', 'API\VariableController')
+        ->only(['index', 'store']);
 });

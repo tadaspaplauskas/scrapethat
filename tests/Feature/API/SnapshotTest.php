@@ -14,10 +14,12 @@ class SnapshotTest extends TestCase
     public function testSnapshotIndex()
     {
         $user = factory(User::class)->create();
+        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
 
         $this->actingAs($user, 'api')
             ->json('GET', '/api/v1/snapshots')
-            ->assertStatus(200);
+            ->assertStatus(200)
+            ->assertJsonFragment(['name' => $snapshot->name]);
     }
 
     public function testSnapshotStore()
@@ -38,7 +40,6 @@ class SnapshotTest extends TestCase
     public function testSnapshotUpdate()
     {
         $user = factory(User::class)->create();
-
         $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
 
         $this->actingAs($user, 'api')
@@ -55,7 +56,6 @@ class SnapshotTest extends TestCase
     public function testSnapshotShow()
     {
         $user = factory(User::class)->create();
-
         $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
 
         $this->actingAs($user, 'api')
@@ -67,7 +67,6 @@ class SnapshotTest extends TestCase
     public function testSnapshotDestroy()
     {
         $user = factory(User::class)->create();
-
         $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
 
         $this->actingAs($user, 'api')

@@ -3,6 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
+use Symfony\Component\CssSelector\CssSelectorConverter;
+use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
+use App\Jobs\ProcessVariable;
+use Symfony\Component\DomCrawler\Crawler;
 
 class Variable extends Model
 {
@@ -11,13 +16,53 @@ class Variable extends Model
         'name',
         'selector',
         'current_page',
-        'selected',
     ];
 
-    protected $casts = [
-        'selected' => 'boolean',
-    ];
+    public static function validator(Snapshot $snapshot)
+    {
+        $uniqueRule = Rule::unique('variables')->where(function ($q) use ($snapshot) {
+            return $q->where('snapshot_id', $snapshot->id);
+        });
 
+        return [
+            'name' => [
+                'alpha_num',
+                $uniqueRule,
+            ],
+            'selector' => [
+                'required',
+                $uniqueRule,
+
+                // verify that the selector is valid
+                function($attribute, $value, $fail) {
+                    $converter = new CssSelectorConverter();
+
+                    try {
+                        $converter->toXPath($value);
+                    }
+                    catch (SyntaxErrorException $e) {
+                        return $fail('The ' . $attribute . ' must be a valid CSS selector.');
+                    }
+                },
+
+                // verify that there's data for that selector
+                // using closure to pass data to it; class would not work like that
+                function($attribute, $value, $fail) use ($snapshot) {
+                    $page = $snapshot->pages()->first();
+
+                    if (!$page) {
+                        return $fail('There are no pages in the snapshot');
+                    }
+
+                    $crawler = new Crawler($page->html);
+
+                    if (!$crawler->filter($value)->count()) {
+                        return $fail('Provided ' . $attribute . ' does not match anything on the page');
+                    }
+                }
+            ],
+        ];
+    }
     public function snapshot()
     {
         return $this->belongsTo(Snapshot::class);
