@@ -17,10 +17,12 @@ class VariableTest extends TestCase
     {
         $user = factory(User::class)->create();
         $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
+        $variable = $snapshot->variables()->save(factory(Variable::class)->make());
 
         $this->actingAs($user, 'api')
             ->json('GET', '/api/v1/snapshots/' . $snapshot->id . '/variables')
-            ->assertStatus(200);
+            ->assertStatus(200)
+            ->assertJsonFragment(['name' => 'price']);
     }
 
     public function testVariableStore()
