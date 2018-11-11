@@ -40,7 +40,7 @@ window.renderChart = function (results) {
         return {
             label: key,
             data: results.map(function (row) {
-                return row[key];
+                return parseFloat(row[key]);
             })
         };
     });
@@ -99,7 +99,6 @@ window.runQuery = function (query) {
         var results = JSON.parse(r.responseText);
 
         if (r.status === 200) {
-
             renderChart(results.data);
             renderTable(results.data);
         }
