@@ -3,9 +3,9 @@
 @section('content')
 
 @if (!$snapshot->isCompleted())
-    <p class="center">
-        Snapshot is still in progress, please wait until it has completed.
-    </p>
+    <h5 class="center">
+        Snapshot is still in progress, please wait until it is completed.
+    </h5>
 
 @else
 
