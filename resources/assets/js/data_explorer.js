@@ -40,7 +40,7 @@ window.renderChart = function (results) {
         return {
             label: key,
             data: results.map(function (row) {
-                return parseFloat(row[key].replace(/[^\d.-]/g, ''));
+                return row[key];
             })
         };
     });
