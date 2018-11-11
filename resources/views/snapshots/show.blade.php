@@ -7,7 +7,7 @@
         Snapshot is still in progress, please wait until it has completed.
     </p>
 
-@endif
+@else
 
     <h5>Variables</h5>
 
