@@ -96,7 +96,8 @@ class DownloadPage implements ShouldQueue
         }
         // queue next page
         else {
-            return static::dispatch($snapshot);
+            return static::dispatch($snapshot)
+                ->delay(now()->addMinutes(2));
         }
     }
 
