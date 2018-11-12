@@ -23,15 +23,6 @@ class Snapshot extends Model
         'deleted_at',
     ];
 
-    protected $casts = [
-        'name',
-        'url',
-        'from' => 'integer',
-        'to' => 'integer',
-        'current' => 'integer',
-        'refresh_daily' => 'boolean',
-    ];
-
     public static function validator()
     {
         return [
