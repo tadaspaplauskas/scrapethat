@@ -16,7 +16,10 @@ class Variable extends Model
         'name',
         'selector',
         'current_page',
+        'type',
     ];
+
+    const TYPES = ['numeric', 'text'];
 
     public static function validator(Snapshot $snapshot)
     {
@@ -28,6 +31,9 @@ class Variable extends Model
             'name' => [
                 'alpha_num',
                 $uniqueRule,
+            ],
+            'type' => [
+                'in:' . implode(',', static::TYPES),
             ],
             'selector' => [
                 'required',

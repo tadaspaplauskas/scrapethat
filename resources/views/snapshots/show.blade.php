@@ -47,6 +47,23 @@
 
             <div class="row">
                 <div class="six columns">
+                    <label for="selector">Data type</label>
+
+                    <select name="type">
+                        <option value="numeric">Numeric</option>
+                        <option value="text">Text</option>
+                    </select>
+
+                    @if ($errors->has('type'))
+                        <p class="red">
+                            <strong>{{ $errors->first('type') }}</strong>
+                        </p>
+                    @endif
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="six columns">
                     <button type="submit">Add</button>
                 </div>
             </div>

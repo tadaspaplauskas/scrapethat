@@ -17,7 +17,10 @@ class VariableTest extends BrowserTestCase
     {
         $user = factory(User::class)->create();
 
-        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
+        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make([
+            'current' => 5,
+            'to' => 5,
+        ]));
 
         $variable = $snapshot->variables()->save(factory(Variable::class)->make());
 
@@ -30,7 +33,10 @@ class VariableTest extends BrowserTestCase
     {
         $user = factory(User::class)->create();
 
-        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
+        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make([
+            'current' => 5,
+            'to' => 5,
+        ]));
 
         $snapshot->download();
 
@@ -42,6 +48,7 @@ class VariableTest extends BrowserTestCase
             ->visitRoute('snapshots.show', $snapshot->id)
             ->type('Price', 'name')
             ->type('.price', 'selector')
+            ->select('numeric', 'type')
             ->press('Add')
             ->see('added')
             ->see('.price');
@@ -51,7 +58,10 @@ class VariableTest extends BrowserTestCase
     {
         $user = factory(User::class)->create();
 
-        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
+        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make([
+            'current' => 5,
+            'to' => 5,
+        ]));
 
         $variable = $snapshot->variables()->save(factory(Variable::class)->make());
 

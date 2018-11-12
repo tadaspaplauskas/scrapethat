@@ -14,10 +14,11 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(App\Models\Variable::class, function (Faker $faker) {
-    
+
     return [
         'name' => 'price',
         'selector' => '.price',
+        'type' => 'numeric',
     ];
 
 });
