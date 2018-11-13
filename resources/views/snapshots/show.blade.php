@@ -6,7 +6,10 @@
     <h5 class="center">
         Snapshot is still in progress, please wait until it is completed.
     </h5>
-
+@elseif (!$snapshot->variables->filter(function ($v) { return !$v->isCompleted(); } )->isEmpty())
+    <h5 class="center">
+        Variables are being processed, please wait until it is completed.
+    </h5>
 @else
 
     <h5>Variables</h5>
