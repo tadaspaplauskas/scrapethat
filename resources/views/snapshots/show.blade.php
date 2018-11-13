@@ -80,6 +80,7 @@
             <tr>
                 <th>Name</th>
                 <th>Selector</th>
+                <th>Type</th>
                 <th>Created</th>
                 <th>Last refresh</th>
                 <th>Actions</th>
@@ -92,6 +93,9 @@
                     </td>
                     <td>
                         {{ $variable->selector }}
+                    </td>
+                    <td>
+                        {{ $variable->type }}
                     </td>
                     <td>
                         {{ $variable->created_at->diffForHumans() }}
