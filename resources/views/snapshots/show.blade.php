@@ -104,7 +104,7 @@
                         {{ $variable->created_at->diffForHumans() }}
                     </td>
                     <td>
-                        {{ $snapshot->updated_at->diffForHumans() }}
+                        {{ $variable->updated_at->diffForHumans() }}
                     </td>
                     <td>
                         <form method="POST" action="{{ route('variables.destroy', $variable) }}" class="m0">
