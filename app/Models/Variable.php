@@ -84,6 +84,11 @@ class Variable extends Model
         return $this->current_page >= $this->snapshot->pages()->count();
     }
 
+    public function isNumeric()
+    {
+        return $this->type === 'numeric';
+    }
+
     public function process()
     {
         $this->current_page = 0;

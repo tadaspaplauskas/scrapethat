@@ -35,6 +35,7 @@ class VariableTest extends TestCase
             ->json('POST', '/api/v1/snapshots/' . $snapshot->id . '/variables', [
                 'name' => 'score',
                 'selector' => '.score',
+                'type' => 'numeric',
             ])
             ->assertStatus(201)
             ->assertJson(['name' => 'score']);
@@ -51,11 +52,13 @@ class VariableTest extends TestCase
             ->json('PUT', '/api/v1/variables/' . $variable->id, [
                 'name' => 'updated',
                 'selector' => '.title',
+                'type' => 'numeric',
             ])
             ->assertStatus(200)
             ->assertJson([
                 'name' => 'updated',
                 'selector' => '.title',
+                'type' => 'numeric',
             ]);
     }
 

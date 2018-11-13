@@ -41,11 +41,20 @@ class ProcessVariable implements ShouldQueue
         $crawler = new Crawler($page->html);
 
         $values = [];
-        
+
         foreach ($crawler->filter($variable->selector) as $domElement) {
+            // parse as number
+            if ($variable->isNumeric()) {
+                $value = floatval(preg_replace('/[^\d.-]/', '', $domElement->nodeValue));
+;
+            }
+            else {
+                $value = $domElement->nodeValue;
+            }
+
             $values[] = [
                 'page_id' => $page->id,
-                'value' => $domElement->nodeValue,
+                'value' => $value,
             ];
         }
 

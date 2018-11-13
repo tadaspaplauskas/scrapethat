@@ -209,12 +209,13 @@
 <h6>Response example</h6>
 <pre><code>[
     {
-        "id": 1
-        "snapshot_id": "1"
-        "name": "price"
-        "selector": ".price"
-        "current_page": "0"
-        "created_at": "{{ $now }}"
+        "id": 1,
+        "snapshot_id": 1,
+        "name": "price",
+        "selector": ".price",
+        "type": "numeric",
+        "current_page": 0,
+        "created_at": "{{ $now }}",
         "updated_at": "{{ $now }}"
     }
 ]
@@ -234,12 +235,13 @@
 
 <h6>Response example</h6>
 <pre><code>{
-    "id": 1
-    "snapshot_id": "1"
-    "name": "price"
-    "selector": ".price"
-    "current_page": "0"
-    "created_at": "{{ $now }}"
+    "id": 1,
+    "snapshot_id": 1,
+    "name": "price",
+    "selector": ".price",
+    "type": "numeric",
+    "current_page": 0,
+    "created_at": "{{ $now }}",
     "updated_at": "{{ $now }}"
 }
 </code>
@@ -263,12 +265,13 @@
 
 <h6>Response example</h6>
 <pre><code>{
-    "id": 1
-    "snapshot_id": "1"
-    "name": "score"
-    "selector": ".score"
-    "current_page": "0"
-    "created_at": "{{ $now }}"
+    "id": 1,
+    "snapshot_id": 1,
+    "name": "score",
+    "selector": ".score",
+    "type": "numeric",
+    "current_page": 0,
+    "created_at": "{{ $now }}",
     "updated_at": "{{ $now }}"
 }
 </code>
@@ -292,12 +295,13 @@
 
 <h6>Response example</h6>
 <pre><code>{
-    "id": 1
-    "snapshot_id": "1"
-    "name": "updated"
-    "selector": ".price"
-    "current_page": "0"
-    "created_at": "{{ $now }}"
+    "id": 1,
+    "snapshot_id": 1,
+    "name": "updated",
+    "selector": ".price",
+    "type": "numeric",
+    "current_page": 0,
+    "created_at": "{{ $now }}",
     "updated_at": "{{ $now }}"
 }
 </code>
