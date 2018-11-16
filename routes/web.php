@@ -15,8 +15,6 @@ Auth::routes();
 // override POST route to logout
 Route::any('logout', 'Auth\LoginController@logout');
 
-Route::get('snapshots/{id}/restore', 'SnapshotController@restore')->name('snapshots.restore');
-
 Route::get('snapshots/{snapshot}/delete', 'SnapshotController@confirmDelete')->name('snapshots.delete.confirm');
 
 Route::get('snapshots/{snapshot}/refresh', 'SnapshotController@confirmRefresh')->name('snapshots.refresh.confirm');

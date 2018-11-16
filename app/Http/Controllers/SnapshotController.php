@@ -89,8 +89,7 @@ class SnapshotController extends Controller
         $snapshot->delete();
 
         return redirect()->action('SnapshotController@index')
-            ->with('message', $snapshot->name . ' was deleted.
-                <a href="' . route('snapshots.restore', $snapshot) . '" class="block">Undo</a>');
+            ->with('message', $snapshot->name . ' was deleted.');
     }
 
     public function confirmDelete(Snapshot $snapshot)
@@ -109,16 +108,6 @@ class SnapshotController extends Controller
 
         return redirect()->action('SnapshotController@index')
             ->with('message', $snapshot->name . ' is queued.');
-    }
-
-    public function restore($id)
-    {
-        $snapshot = Snapshot::withTrashed()->find($id);
-
-        $snapshot->restore();
-
-        return redirect()->action('SnapshotController@index')
-            ->with('message', $snapshot->name . ' was restored.');
     }
 
     public function retry(Request $request, Snapshot $snapshot)

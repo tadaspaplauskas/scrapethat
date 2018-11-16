@@ -46,7 +46,7 @@ class SnapshotTest extends BrowserTestCase
             ->see($snapshot->name);
     }
 
-    public function testSnapshotDeleteAndRestore()
+    public function testSnapshotDelete()
     {
         $user = factory(User::class)->create();
 
@@ -57,9 +57,6 @@ class SnapshotTest extends BrowserTestCase
             ->click('Delete')
             ->press('Delete')
             ->see('was deleted')
-            ->dontSee('Most recent HN submisisons')
-            ->click('Undo')
-            ->see('restored')
-            ->see($snapshot->name);
+            ->dontSee('Most recent HN submisisons');
     }
 }
