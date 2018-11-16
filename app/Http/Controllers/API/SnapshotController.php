@@ -92,6 +92,10 @@ class SnapshotController extends Controller
             return Response::json(['error' => 'Snapshot is not available until it\'s completed.'], 423);
         }
 
+        if (!$snapshot->variables->filter(function ($v){return !$v->isCompleted();})->isEmpty()) {
+            return Response::json(['error' => 'Variables are being processed, please wait.'], 423);
+        }
+
         $dump = [];
 
         foreach ($snapshot->variables as $variable) {
