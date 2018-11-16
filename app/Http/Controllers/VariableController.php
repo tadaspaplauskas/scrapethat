@@ -27,9 +27,6 @@ class VariableController extends Controller
 
         $data = $request->validate(Variable::validator($snapshot));
 
-        // if name is not provided, make it the same as selector
-        $data['name'] = $data['name'] ?? $data['selector'];
-
         $data['name'] = snake_case($data['name']);
 
         $variable = $snapshot->variables()->create($data);
@@ -37,6 +34,19 @@ class VariableController extends Controller
         $variable->process();
 
         return redirect()->back()->with('message', $variable->name . ' was added.');
+    }
+
+    public function update(Request $request, Variable $variable)
+    {
+        $snapshot = $variable->snapshot;
+
+        $data = $request->validate(Variable::validator($snapshot));
+
+        $variable->update($data);
+
+        $variable->process();
+
+        return Response::json($variable, 200);
     }
 
     /**

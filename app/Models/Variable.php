@@ -29,6 +29,7 @@ class Variable extends Model
 
         return [
             'name' => [
+                'required',
                 'alpha_num',
                 $uniqueRule,
             ],

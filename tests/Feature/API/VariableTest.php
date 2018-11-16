@@ -28,7 +28,10 @@ class VariableTest extends TestCase
     public function testVariableStore()
     {
         $user = factory(User::class)->create();
-        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
+        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make([
+            'current' => 5,
+            'to' => 5,
+        ]));
         $snapshot->pages()->saveMany(factory(Page::class, 5)->make());
 
         $this->actingAs($user, 'api')
@@ -44,7 +47,10 @@ class VariableTest extends TestCase
     public function testVariableUpdate()
     {
         $user = factory(User::class)->create();
-        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
+        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make([
+            'current' => 5,
+            'to' => 5,
+        ]));
         $snapshot->pages()->saveMany(factory(Page::class, 5)->make());
         $variable = $snapshot->variables()->save(factory(Variable::class)->make());
 

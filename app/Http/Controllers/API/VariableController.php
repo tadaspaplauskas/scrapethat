@@ -31,7 +31,13 @@ class VariableController extends Controller
 
     public function store(Snapshot $snapshot, Request $request)
     {
+        if (!$snapshot->isCompleted()) {
+            return Response::json(['error' => 'Snapshot is not available until it\'s completed.'], 423);
+        }
+
         $data = $request->validate(Variable::validator($snapshot));
+
+        $data['name'] = snake_case($data['name']);
 
         $variable = $snapshot->variables()->create($data);
 
@@ -45,7 +51,13 @@ class VariableController extends Controller
     {
         $snapshot = $variable->snapshot;
 
+        if (!$snapshot->isCompleted()) {
+            return Response::json(['error' => 'Snapshot is not available until it\'s completed.'], 423);
+        }
+
         $data = $request->validate(Variable::validator($snapshot));
+
+        $data['name'] = snake_case($data['name']);
 
         $variable->update($data);
 
