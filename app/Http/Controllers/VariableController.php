@@ -36,6 +36,11 @@ class VariableController extends Controller
         return redirect()->back()->with('message', $variable->name . ' was added.');
     }
 
+    public function edit(Request $request, Snapshot $variable)
+    {
+        return view('variables.edit', compact('snapshot', 'notificationId'));
+    }
+
     public function update(Request $request, Variable $variable)
     {
         $snapshot = $variable->snapshot;
