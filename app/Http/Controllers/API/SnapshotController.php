@@ -97,22 +97,19 @@ class SnapshotController extends Controller
         }
 
         $dump = [];
+        $fields = [];
 
         foreach ($snapshot->variables as $variable) {
-            $counter = 0;
+            // decide column type
+            $fields[$variable->name] = $variable->isNumeric() ? 'double' : 'text';
 
+            $counter = 0;
             $variable->values()->chunk(1000, function ($values) use (&$variable, &$dump, &$counter) {
                 foreach ($values as $value) {
                     $dump[$counter][$variable->name] = $value->value;
                     $counter++;
                 }
             });
-        }
-
-        // decide column type
-        $fields = [];
-        foreach ($snapshot->variables as $variable) {
-            $fields[$variable->name] = $variable->isNumeric() ? 'double' : 'text';
         }
 
         $proxy = new QueryProxy($fields);
