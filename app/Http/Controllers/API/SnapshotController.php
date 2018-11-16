@@ -105,7 +105,13 @@ class SnapshotController extends Controller
             });
         }
 
-        $proxy = new QueryProxy($snapshot->variables->pluck('name'));
+        // decide column type
+        $fields = [];
+        foreach ($snapshot->variables as $variable) {
+            $fields[$variable->name] = $variable->isNumeric() ? 'double' : 'text';
+        }
+
+        $proxy = new QueryProxy($fields);
 
         foreach ($dump as $line) {
             $proxy->insert($line);

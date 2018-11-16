@@ -32,12 +32,12 @@ class QueryProxy {
         return $response->fetchAll(\PDO::FETCH_CLASS);
     }
 
-    protected function createTable($fields)
+    protected function createTable(array $fields)
     {
         $fieldDefinitions = [];
 
-        foreach ($fields as $field) {
-            $fieldDefinitions[] = $field . ' text default null';
+        foreach ($fields as $field => $type) {
+            $fieldDefinitions[] = $field . ' ' . $type . ' default null';
         }
 
         $db = $this->connection();
