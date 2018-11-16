@@ -114,4 +114,15 @@ class Snapshot extends Model
     {
         return $this->status === 'stopped';
     }
+
+    public function delete()
+    {
+        $this->pages()->delete();
+
+        foreach ($this->variables as $variable) {
+            $variable->values()->delete();
+        }
+
+        parent::delete();
+    }
 }
