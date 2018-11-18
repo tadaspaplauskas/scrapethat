@@ -32,8 +32,11 @@ Route::resource('snapshots', 'SnapshotController');
 Route::resource('snapshots/{snapshot}/variables', 'VariableController')
     ->only(['store']);
 
+Route::get('variables/{variable}/delete', 'VariableController@confirmDelete')->name('variables.delete.confirm');
+
 Route::resource('variables', 'VariableController')
     ->only(['edit', 'update', 'destroy']);
+
 
 Route::get('subscription', 'SubscriptionController@subscription')->name('subscription');
 Route::post('subscription', 'SubscriptionController@subscribe')->name('subscribe');

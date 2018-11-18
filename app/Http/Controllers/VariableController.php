@@ -36,9 +36,9 @@ class VariableController extends Controller
         return redirect()->back()->with('message', $variable->name . ' was added.');
     }
 
-    public function edit(Request $request, Snapshot $variable)
+    public function edit(Request $request, Variable $variable)
     {
-        return view('variables.edit', compact('snapshot', 'notificationId'));
+        return view('variables.edit', compact('variable'));
     }
 
     public function update(Request $request, Variable $variable)
@@ -51,15 +51,14 @@ class VariableController extends Controller
 
         $variable->process();
 
-        return Response::json($variable, 200);
+        return redirect()->back()->with('message', $variable->name . ' was updated.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    public function confirmDelete(Variable $variable)
+    {
+        return view('variables.delete', compact('variable'));
+    }
+
     public function destroy(Snapshot $snapshot, Variable $variable)
     {
         $variable->delete();

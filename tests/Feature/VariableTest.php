@@ -33,10 +33,7 @@ class VariableTest extends BrowserTestCase
     {
         $user = factory(User::class)->create();
 
-        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make([
-            'current' => 5,
-            'to' => 5,
-        ]));
+        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
 
         $snapshot->download();
 
@@ -49,8 +46,32 @@ class VariableTest extends BrowserTestCase
             ->type('Price', 'name')
             ->type('.price', 'selector')
             ->select('numeric', 'type')
-            ->press('Add')
+            ->press('Save')
             ->see('added')
+            ->see('.price');
+    }
+
+    public function testVariableEdit()
+    {
+        $user = factory(User::class)->create();
+
+        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
+        $variable = $snapshot->variables()->save(factory(Variable::class)->make());
+
+        $snapshot->download();
+
+        // mark as completed
+        $snapshot->current = $snapshot->to;
+        $snapshot->save();
+
+        $this->actingAs($user)
+            ->visitRoute('snapshots.show', $snapshot->id)
+            ->click('Edit')
+            ->type('Price', 'name updated')
+            ->type('.price', 'selector')
+            ->select('numeric', 'type')
+            ->press('Save')
+            ->see('name updated')
             ->see('.price');
     }
 

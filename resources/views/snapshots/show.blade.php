@@ -66,11 +66,9 @@
                         {{ $variable->updated_at->diffForHumans() }}
                     </td>
                     <td>
-                        <form method="POST" action="{{ route('variables.destroy', $variable) }}" class="m0">
-                            {{ csrf_field() }}
-                            {{ method_field('DELETE') }}
-                            <button>Delete</button>
-                        </form>
+                        <a href="{{ route('variables.edit', $variable) }}" class="mr1">Edit</a>
+
+                        <a href="{{ route('variables.delete.confirm', $variable) }}" class="mr1">Delete</a>
                     </td>
                 </tr>
             @endforeach

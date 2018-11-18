@@ -8,7 +8,7 @@
     </a>
 </p>
 
-<form method="POST" action="{{ route('variable.update', $variable) }}">
+<form method="POST" action="{{ route('variables.update', $variable) }}">
 
     {{ csrf_field() }}
 
