@@ -3,6 +3,12 @@
 @section('content')
 
 <p>
+    <a href="{{ route('variables.index', $variable->snapshot) }}">
+        Back to {{ $variable->snapshot->name }} variables
+    </a>
+</p>
+
+<p>
     Delete variable named <strong>{{ $variable->name }}</strong>.
 </p>
 

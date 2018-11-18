@@ -25,7 +25,8 @@ class VariableTest extends BrowserTestCase
         $variable = $snapshot->variables()->save(factory(Variable::class)->make());
 
         $this->actingAs($user)
-            ->visitRoute('snapshots.show', $snapshot->id)
+            ->visitRoute('snapshots.show', $snapshot)
+            ->click('Manage variables')
             ->see($variable->name);
     }
 
@@ -42,7 +43,7 @@ class VariableTest extends BrowserTestCase
         $snapshot->save();
 
         $this->actingAs($user)
-            ->visitRoute('snapshots.show', $snapshot->id)
+            ->visitRoute('variables.index', $snapshot)
             ->type('Price', 'name')
             ->type('.price', 'selector')
             ->select('numeric', 'type')
@@ -67,7 +68,7 @@ class VariableTest extends BrowserTestCase
         $snapshot->save();
 
         $this->actingAs($user)
-            ->visitRoute('snapshots.show', $snapshot->id)
+            ->visitRoute('variables.index', $snapshot)
             ->click('Edit')
             ->type('name updated', 'name')
             ->type('.price', 'selector')
@@ -91,7 +92,7 @@ class VariableTest extends BrowserTestCase
         ]));
 
         $this->actingAs($user)
-            ->visitRoute('snapshots.show', $snapshot->id)
+            ->visitRoute('variables.index', $snapshot)
             ->see($variable->name)
             ->click('Delete')
             ->press('Delete')

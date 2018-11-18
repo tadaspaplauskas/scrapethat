@@ -30,7 +30,7 @@ Route::any('snapshots/{snapshot}/query', 'SnapshotController@query')->name('snap
 Route::resource('snapshots', 'SnapshotController');
 
 Route::resource('snapshots/{snapshot}/variables', 'VariableController')
-    ->only(['store']);
+    ->only(['index', 'store']);
 
 Route::get('variables/{variable}/delete', 'VariableController@confirmDelete')->name('variables.delete.confirm');
 

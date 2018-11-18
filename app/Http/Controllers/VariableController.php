@@ -13,12 +13,13 @@ class VariableController extends Controller
         $this->middleware('auth');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    public function index(Snapshot $snapshot)
+    {
+        $variables = $snapshot->variables;
+
+        return view('variables.index', compact('snapshot', 'variables'));
+    }
+
     public function store(Request $request, Snapshot $snapshot)
     {
         if (!$snapshot->isCompleted()) {
@@ -59,10 +60,12 @@ class VariableController extends Controller
         return view('variables.delete', compact('variable'));
     }
 
-    public function destroy(Snapshot $snapshot, Variable $variable)
+    public function destroy(Variable $variable)
     {
+        $snapshot = $variable->snapshot;
+
         $variable->delete();
 
-        return redirect()->route('snapshots.show', $snapshot)->with('message', $variable->name . ' was deleted.');
+        return redirect()->route('variables.index', $snapshot)->with('message', $variable->name . ' was deleted.');
     }
 }

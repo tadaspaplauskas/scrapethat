@@ -3,8 +3,8 @@
 @section('content')
 
 <p>
-    <a href="{{ route('snapshots.show', $variable->snapshot) }}">
-        Back to {{ $variable->snapshot->name }}
+    <a href="{{ route('variables.index', $variable->snapshot) }}">
+        Back to {{ $variable->snapshot->name }} variables
     </a>
 </p>
 

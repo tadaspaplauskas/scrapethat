@@ -3,85 +3,37 @@
 @section('content')
 
 @if (!$snapshot->isCompleted())
+
     <h5 class="center">
         Snapshot is still in progress, please wait until it is completed.
     </h5>
-@elseif (!$snapshot->variables->filter(function ($v) { return !$v->isCompleted(); } )->isEmpty())
-    <h5 class="center">
-        Variables are being processed, please wait until it is completed.
-    </h5>
+
 @else
 
-    <h5>Variables</h5>
-
     <p>
-        Use CSS selectors to get data out of the pages. We will parse downloaded pages and fill the dataset.
+        <a href="{{ route('variables.index', $snapshot) }}">Manage variables</a>
     </p>
 
-        <form method="POST" action="{{ route('variables.store', $snapshot) }}">
-
-            {{ csrf_field() }}
-
-            @include('variables.form')
-
-            <div class="row">
-                <div class="six columns">
-                    <button type="submit">Save</button>
-                </div>
-            </div>
-
-        </form>
-
     @if ($variables->isEmpty())
+
         <p>
-            You have not yet defined any variables.
+            Please define some variables first.
         </p>
+
+    @elseif (!$snapshot->variables->filter(function ($v) { return !$v->isCompleted(); } )->isEmpty())
+
+        <h5 class="center">
+            Variables are being processed, please wait until it is completed.
+        </h5>
+
     @else
 
-        <table class="u-full-width">
-            <tr>
-                <th>Name</th>
-                <th>Selector</th>
-                <th>Type</th>
-                <th>Created</th>
-                <th>Last refresh</th>
-                <th>Actions</th>
-            </tr>
+        <h5 class="mt5">Chart</h5>
+        <canvas id="chart"></canvas>
 
-            @foreach ($variables as $variable)
-                <tr>
-                    <td>
-                        {{ $variable->name }}
-                    </td>
-                    <td>
-                        {{ $variable->selector }}
-                    </td>
-                    <td>
-                        {{ $variable->type }}
-                    </td>
-                    <td>
-                        {{ $variable->created_at->diffForHumans() }}
-                    </td>
-                    <td>
-                        {{ $variable->updated_at->diffForHumans() }}
-                    </td>
-                    <td>
-                        <a href="{{ route('variables.edit', $variable) }}" class="mr1">Edit</a>
+        <h5 class="mt5">Query</h5>
 
-                        <a href="{{ route('variables.delete.confirm', $variable) }}" class="mr1">Delete</a>
-                    </td>
-                </tr>
-            @endforeach
-
-        </table>
-
-
-    <h5 class="mt5">Chart</h5>
-    <canvas id="chart"></canvas>
-
-    <h5 class="mt5">Query</h5>
-
-    @include('snapshots/query_editor_component')
+        @include('snapshots/query_editor_component')
 
     @endif
 
