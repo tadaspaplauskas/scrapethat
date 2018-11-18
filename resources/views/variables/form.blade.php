@@ -29,8 +29,8 @@
         <label for="selector">Data type</label>
 
         <select name="type">
-            <option value="numeric" {{ old('type', $variable->type ?? null) === 'numeric' ? 'selected' : ''  }}">Numeric</option>
-            <option value="text">Text</option>
+            <option value="numeric" {{ old('type', $variable->type ?? null) === 'numeric' ? 'selected' : ''  }}>Numeric</option>
+            <option value="text" {{ old('type', $variable->type ?? null) === 'text' ? 'selected' : ''  }}>Text</option>
         </select>
 
         @if ($errors->has('type'))

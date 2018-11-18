@@ -23,23 +23,16 @@ class Variable extends Model
 
     public static function validator(Snapshot $snapshot)
     {
-        $uniqueRule = Rule::unique('variables')->where(function ($q) use ($snapshot) {
-            return $q->where('snapshot_id', $snapshot->id);
-        });
-
         return [
             'name' => [
                 'required',
                 'alpha_num',
-                $uniqueRule,
             ],
             'type' => [
                 'in:' . implode(',', static::TYPES),
             ],
             'selector' => [
                 'required',
-                $uniqueRule,
-
                 // verify that the selector is valid
                 function($attribute, $value, $fail) {
                     $converter = new CssSelectorConverter();
