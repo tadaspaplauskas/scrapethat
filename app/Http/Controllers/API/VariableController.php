@@ -35,7 +35,7 @@ class VariableController extends Controller
             return Response::json(['error' => 'Snapshot is not available until it\'s completed.'], 423);
         }
 
-        $data = $request->validate(Variable::validator());
+        $data = $request->validate(Variable::validator($snapshot));
 
         $data['name'] = snake_case($data['name']);
 
@@ -55,7 +55,7 @@ class VariableController extends Controller
             return Response::json(['error' => 'Snapshot is not available until it\'s completed.'], 423);
         }
 
-        $data = $request->validate(Variable::validator());
+        $data = $request->validate(Variable::validator($snapshot));
 
         $data['name'] = snake_case($data['name']);
 
