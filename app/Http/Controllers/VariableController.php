@@ -25,7 +25,7 @@ class VariableController extends Controller
             return redirect()->back()->withInput()->with('message', 'Snapshot is still in progress, please wait until it is completed');
         }
 
-        $data = $request->validate(Variable::validator($snapshot));
+        $data = $request->validate(Variable::validator());
 
         $data['name'] = snake_case($data['name']);
 
@@ -45,7 +45,7 @@ class VariableController extends Controller
     {
         $snapshot = $variable->snapshot;
 
-        $data = $request->validate(Variable::validator($snapshot));
+        $data = $request->validate(Variable::validator());
 
         $variable->update($data);
 
