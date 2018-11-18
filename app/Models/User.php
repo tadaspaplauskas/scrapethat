@@ -28,6 +28,7 @@ class User extends Authenticatable
         'email',
         'password',
         'api_token',
+        'trial_ends_at',
     ];
 
     /**
