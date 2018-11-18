@@ -2,6 +2,8 @@
 
 @section('content')
 
+    <h5>Snapshots</h5>
+
     <p>
         <a href="{{ route('snapshots.create') }}">Make a new one</a>
     </p>

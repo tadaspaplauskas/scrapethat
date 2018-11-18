@@ -22,7 +22,6 @@ class CreatevariablesTable extends Migration
             $table->timestamps();
 
             $table->unique(['snapshot_id', 'name']);
-            $table->unique(['snapshot_id', 'selector']);
         });
     }
 

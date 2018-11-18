@@ -20,6 +20,11 @@ class VariableController extends Controller
         return view('variables.index', compact('snapshot', 'variables'));
     }
 
+    public function create(Request $request, Snapshot $snapshot)
+    {
+        return view('variables.create', compact('snapshot'));
+    }
+
     public function store(Request $request, Snapshot $snapshot)
     {
         if (!$snapshot->isCompleted()) {
@@ -34,7 +39,7 @@ class VariableController extends Controller
 
         $variable->process();
 
-        return redirect()->back()->with('message', $variable->name . ' was added.');
+        return redirect()->route('variables.index', $snapshot)->with('message', $variable->name . ' was added.');
     }
 
     public function edit(Request $request, Variable $variable)
@@ -52,7 +57,7 @@ class VariableController extends Controller
 
         $variable->process();
 
-        return redirect()->back()->with('message', $variable->name . ' was updated.');
+        return redirect()->route('variables.index', $snapshot)->with('message', $variable->name . ' was updated.');
     }
 
     public function confirmDelete(Variable $variable)

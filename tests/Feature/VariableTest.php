@@ -44,6 +44,7 @@ class VariableTest extends BrowserTestCase
 
         $this->actingAs($user)
             ->visitRoute('variables.index', $snapshot)
+            ->click('Make a new one')
             ->type('Price', 'name')
             ->type('.price', 'selector')
             ->select('numeric', 'type')

@@ -8,6 +8,10 @@
     </a>
 </p>
 
+<p>
+    Use CSS selectors to get data out of the pages. We will parse downloaded pages and fill the dataset.
+</p>
+
 <form method="POST" action="{{ route('variables.update', $variable) }}">
 
     {{ csrf_field() }}

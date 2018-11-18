@@ -15,22 +15,8 @@
     <h5>Variables</h5>
 
     <p>
-        Use CSS selectors to get data out of the pages. We will parse downloaded pages and fill the dataset.
+        <a href="{{ route('variables.create', $snapshot) }}">Make a new one</a>
     </p>
-
-        <form method="POST" action="{{ route('variables.store', $snapshot) }}">
-
-            {{ csrf_field() }}
-
-            @include('variables.form')
-
-            <div class="row">
-                <div class="six columns">
-                    <button type="submit">Save</button>
-                </div>
-            </div>
-
-        </form>
 
     @if ($variables->isEmpty())
 
