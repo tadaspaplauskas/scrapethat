@@ -84,9 +84,15 @@ window.renderTable = function (results) {
     });
 };
 
-window.runQuery = function (query) {
+window.runQuery = function (query, button) {
     if (!query) {
         return;
+    }
+
+    if (button !== undefined) {
+        var buttonText = button.innerText;
+        button.innerText = 'Loading';
+        button.disabled = true;
     }
 
     var r = new XMLHttpRequest();
@@ -96,6 +102,11 @@ window.runQuery = function (query) {
     r.setRequestHeader('Authorization', 'Bearer ' + window.api_token);
 
     r.onload = function() {
+        if (button !== undefined) {
+            button.innerText = buttonText;
+            button.disabled = false;
+        }
+
         var results = JSON.parse(r.responseText);
 
         if (r.status === 200) {
