@@ -28,7 +28,7 @@
 
     @else
 
-        <h5 class="mt5">Chart</h5>
+        <h5>Chart</h5>
         <canvas id="chart"></canvas>
 
         <h5 class="mt5">Query</h5>
