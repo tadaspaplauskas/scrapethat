@@ -63,6 +63,6 @@ class VariableController extends Controller
     {
         $variable->delete();
 
-        return redirect()->back()->with('message', $variable->name . ' was deleted.');
+        return redirect()->route('snapshots.show', $snapshot)->with('message', $variable->name . ' was deleted.');
     }
 }
