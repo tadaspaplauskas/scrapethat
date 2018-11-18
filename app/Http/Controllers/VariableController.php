@@ -51,7 +51,7 @@ class VariableController extends Controller
     {
         $snapshot = $variable->snapshot;
 
-        $data = $request->validate(Variable::validator($snapshot));
+        $data = $request->validate(Variable::validator($snapshot, $variable));
 
         $variable->update($data);
 

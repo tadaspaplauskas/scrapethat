@@ -21,12 +21,23 @@ class Variable extends Model
 
     const TYPES = ['numeric', 'text'];
 
-    public static function validator(Snapshot $snapshot)
+    public static function validator(Snapshot $snapshot, Variable $variable = null)
     {
+        $uniqueRule = Rule::unique('variables')->where(function ($q) use ($snapshot, $variable) {
+            $q->where('snapshot_id', $snapshot->id);
+
+            if ($variable) {
+                $q->where('id', '!=', $variable->id);
+            }
+
+            return $q->where('snapshot_id', $snapshot->id);
+        });
+
         return [
             'name' => [
                 'required',
                 'alpha_num',
+                $uniqueRule,
             ],
             'type' => [
                 'in:' . implode(',', static::TYPES),
