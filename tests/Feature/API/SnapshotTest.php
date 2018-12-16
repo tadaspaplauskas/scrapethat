@@ -49,8 +49,8 @@ class SnapshotTest extends TestCase
                 'from' => 1,
                 'to' => 2,
             ])
-            ->assertStatus(200)
-            ->assertJson(['name' => 'Updated snapshot']);
+            ->assertJson(['name' => 'Updated snapshot'])
+            ->assertStatus(200);
     }
 
     public function testSnapshotShow()
