@@ -29,7 +29,7 @@ return [
     |
     */
 
-    'host' => env('MAILGUN_SMTP_SERVER', 'smtp.mailgun.org'),
+    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
 
     /*
     |--------------------------------------------------------------------------
@@ -84,9 +84,9 @@ return [
     |
     */
 
-    'username' => env('MAILGUN_SMTP_LOGIN'),
+    'username' => env('MAIL_USERNAME'),
 
-    'password' => env('MAILGUN_SMTP_PASSWORD'),
+    'password' => env('MAIL_PASSWORD'),
 
     /*
     |--------------------------------------------------------------------------
