@@ -56,7 +56,7 @@ return [
     */
 
     'from' => [
-        'address' => 'info@scrapethat.com',
+        'address' => 'noreply@mg.scrapethat.com',
         'name' => 'ScrapeThat',
     ],
 
