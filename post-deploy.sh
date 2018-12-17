@@ -1,6 +1,5 @@
 #!/bin/bash
 composer install
-npm install
 php artisan migrate
 php artisan route:cache
 php artisan cache:clear
