@@ -44,6 +44,10 @@ class RefreshSnapshots extends Command
         Snapshot::where('refresh_daily', 1)
             ->where('updated_at', '<', $yesterday)
             ->get()
-            ->each(function ($snapshot) { $snapshot->download(); });
+            ->each(function ($snapshot) {
+                if ($snapshot->isCompleted()) {
+                    $snapshot->download();
+                }
+            });
     }
 }
