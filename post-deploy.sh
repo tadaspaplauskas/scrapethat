@@ -1,6 +1,6 @@
 #!/bin/bash
 composer install
-php artisan migrate
+php artisan migrate --force
 php artisan route:cache
 php artisan cache:clear
 php artisan view:clear

@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 
 Route::prefix('v1')->as('api.')->group(function () {
 
-    Route::any('/', function () { return redirect()->route('api-docs'); })->name('index');
+    // Route::any('/', function () { return redirect()->route('api-docs'); })->name('index');
 
     Route::any('snapshots/{snapshot}/query', 'API\SnapshotController@query')->name('query');
 
