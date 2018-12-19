@@ -76,12 +76,9 @@ class SnapshotController extends Controller
         if ($snapshot->isStopped()) {
             $snapshot->retry();
         }
-        else {
-            $snapshot->download();
-        }
 
         return redirect()->action('SnapshotController@index')
-            ->with('message', $data['name'] . ' was updated successfully. Please wait while we crawl the pages.');
+            ->with('message', $data['name'] . ' was updated successfully.');
     }
 
     public function destroy(Snapshot $snapshot)
