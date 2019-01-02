@@ -16,7 +16,10 @@ class RefreshSnapshotTest extends TestCase
     public function testShouldRefreshSnapshot()
     {
         $user = factory(User::class)->create();
-        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make());
+        $snapshot = $user->snapshots()->save(factory(Snapshot::class)->make([
+            'current' => 2,
+            'to' => 2,
+        ]));
 
         $snapshot->refresh_daily = 1;
         $snapshot->updated_at = Carbon::yesterday();
@@ -31,6 +34,7 @@ class RefreshSnapshotTest extends TestCase
 
         // timestamp should be updated now
         $snapshot->refresh();
+
         $this->assertTrue($snapshot->updated_at > Carbon::today());
     }
 

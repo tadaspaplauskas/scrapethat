@@ -42,7 +42,7 @@ class RefreshSnapshots extends Command
         $yesterday = Carbon::now()->subDay();
 
         Snapshot::where('refresh_daily', 1)
-            ->where('updated_at', '<', $yesterday)
+            ->where('updated_at', '<=', $yesterday)
             ->get()
             ->each(function ($snapshot) {
                 if ($snapshot->isCompleted()) {
