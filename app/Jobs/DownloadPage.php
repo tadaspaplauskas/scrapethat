@@ -29,6 +29,7 @@ class DownloadPage implements ShouldQueue
     ];
 
     const CONNECT_TIMEOUT = 10;
+    const DELAY_MINUTES = 1;
 
     /**
      * Create a new job instance.
@@ -96,7 +97,7 @@ class DownloadPage implements ShouldQueue
         }
         // queue next page
         else {
-            static::dispatch($snapshot)->delay(now()->addMinutes(1));
+            static::dispatch($snapshot)->delay(now()->addMinutes(self::DELAY_MINUTES));
         }
     }
 
