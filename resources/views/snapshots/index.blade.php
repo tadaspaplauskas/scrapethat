@@ -20,7 +20,7 @@
                 <th>Name</th>
                 <th>Pages</th>
                 <th>Created</th>
-                <th>Last refresh</th>
+                <th>Last updated</th>
                 <th>Actions</th>
             </tr>
 
