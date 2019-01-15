@@ -49,7 +49,8 @@ class ProcessVariable implements ShouldQueue
 ;
             }
             else {
-                $value = $domElement->nodeValue;
+                // replace all whitespace with single space
+                $value = preg_replace('/\s+/', ' ', $domElement->nodeValue);
             }
 
             $values[] = [
