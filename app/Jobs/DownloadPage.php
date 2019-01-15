@@ -50,8 +50,8 @@ class DownloadPage implements ShouldQueue
     {
         $snapshot = $this->snapshot;
 
-        // forced stop or done
-        if ($snapshot->isStopped() || $snapshot->isCompleted()) {
+        // deleted, stopped or done
+        if (!$snapshot || $snapshot->isStopped() || $snapshot->isCompleted()) {
             return;
         }
 
