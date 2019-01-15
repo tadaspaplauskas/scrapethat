@@ -54,7 +54,7 @@ class ProcessVariable implements ShouldQueue
 
             $values[] = [
                 'page_id' => $page->id,
-                'value' => $value,
+                'value' => trim($value),
             ];
         }
 
