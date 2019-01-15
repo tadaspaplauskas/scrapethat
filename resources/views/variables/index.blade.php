@@ -4,7 +4,7 @@
 
 @if (!$snapshot->isCompleted())
     <h5 class="center">
-        Snapshot is still in progress, please wait until it is completed.
+        Snapshot is still in progress, please wait.
     </h5>
 @else
 

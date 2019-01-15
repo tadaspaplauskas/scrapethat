@@ -28,7 +28,7 @@ class VariableController extends Controller
     public function store(Request $request, Snapshot $snapshot)
     {
         if (!$snapshot->isCompleted()) {
-            return redirect()->back()->withInput()->with('message', 'Snapshot is still in progress, please wait until it is completed');
+            return redirect()->back()->withInput()->with('message', 'Snapshot is still in progress, please wait.');
         }
 
         $data = $request->validate(Variable::validator($snapshot));
