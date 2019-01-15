@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 use App\Models\Snapshot;
 use App\Jobs\DownloadPage;
-use App\Services\QueryProxy;
 use DB;
 use Auth;
 
