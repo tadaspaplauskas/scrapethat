@@ -101,6 +101,11 @@ class SnapshotController extends Controller
 
     public function refresh(Snapshot $snapshot)
     {
+        if ($snapshot->isInProgress()) {
+            return redirect()->action('SnapshotController@index')
+                ->with('message', $snapshot->name . ' refresh is already in progress.');
+        }
+
         $snapshot->download();
 
         return redirect()->action('SnapshotController@index')

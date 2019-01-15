@@ -115,6 +115,11 @@ class Snapshot extends Model
         return $this->status === 'stopped';
     }
 
+    public function isInProgress()
+    {
+        return $this->status === 'in_progress';
+    }
+
     public function delete()
     {
         $this->pages()->delete();
