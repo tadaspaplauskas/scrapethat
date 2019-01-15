@@ -24,9 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command(RefreshSnapshots::class)
-            ->everyMinute()
-            ->withoutOverlapping();
+        $schedule->command(RefreshSnapshots::class)->daily();
     }
 
     /**
