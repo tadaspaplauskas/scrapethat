@@ -20,7 +20,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    'default' => env('DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -83,7 +83,7 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
         ],
-        
+
         'testing' => [
             'driver' => 'sqlite',
             'database' => database_path('tests.sqlite'),
