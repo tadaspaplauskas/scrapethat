@@ -7,4 +7,3 @@ php artisan view:clear
 php artisan config:cache
 php artisan route:cache
 php artisan queue:restart
-nohup php artisan queue:work >/dev/null 2>&1 &
