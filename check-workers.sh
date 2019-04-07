@@ -1,6 +1,6 @@
 #! /bin/bash
 
-process="php /var/www/scrapethat.com/artisan queue:work"
+process="php /var/www/scrapethat.com/artisan queue:work --tries=3"
 
 case "$(ps aux | grep "$process" | wc -l)" in
 
