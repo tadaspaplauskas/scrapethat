@@ -40,9 +40,7 @@ class RefreshSnapshots extends Command
     public function handle()
     {
         foreach (Snapshot::where('refresh_daily', 1)->cursor() as $snapshot) {
-            if ($snapshot->isCompleted()) {
-                $snapshot->download();
-            }
+            $snapshot->download();
         }
     }
 }
