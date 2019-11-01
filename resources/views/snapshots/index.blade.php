@@ -21,7 +21,8 @@
                 <th>Key</th>
                 <th>Pages</th>
                 <th>Created</th>
-                <th>Last updated</th>
+                <th>Updated</th>
+                <th>Refreshed</th>
                 <th>Actions</th>
             </tr>
 
@@ -42,6 +43,9 @@
                     </td>
                     <td>
                         {{ $snapshot->updated_at->diffForHumans() }}
+                    </td>
+                    <td>
+                        {{ optional(optional($snapshot->pages()->latest()->first())->updated_at)->diffForHumans() }}
                     </td>
                     <td>
                         <a href="{{ route('snapshots.refresh.confirm', $snapshot) }}" title="Scans all the pages again" class="mr1">Refresh</a>

@@ -61,7 +61,7 @@ class Snapshot extends Model
 
         $nextPageUrl = str_replace('*', $this->current, $this->url);
 
-        $this->save();
+        $this->save(['timestamps' => false]);
 
         return $nextPageUrl;
     }
