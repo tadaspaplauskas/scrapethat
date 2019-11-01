@@ -12,6 +12,7 @@ class Snapshot extends Model
 
     protected $fillable = [
         'name',
+        'key',
         'url',
         'from',
         'to',
