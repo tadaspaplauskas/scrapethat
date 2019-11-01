@@ -18,6 +18,7 @@
         <table class="u-full-width">
             <tr>
                 <th>Name</th>
+                <th>Key</th>
                 <th>Pages</th>
                 <th>Created</th>
                 <th>Last updated</th>
@@ -29,6 +30,9 @@
                 <tr>
                     <td>
                         <a href="{{ route('snapshots.show', $snapshot) }}">{{ $snapshot->name }}</a>
+                    </td>
+                    <td>
+                        {{ $snapshot->key }}
                     </td>
                     <td>
                         {{ (int) $snapshot->pages()->count() }} pages

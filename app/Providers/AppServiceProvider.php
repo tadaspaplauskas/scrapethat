@@ -14,6 +14,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        \App\Models\Snapshot::observe(\App\Observers\SnapshotObserver::class);
+
         // fix for mariadb regarding default laravel charset
         # https://github.com/laravel/docs/blob/5.4/migrations.md#index-lengths--mysql--mariadb
         Schema::defaultStringLength(191);
