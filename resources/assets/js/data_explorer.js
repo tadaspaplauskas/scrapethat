@@ -97,7 +97,7 @@ window.runQuery = function (query, button) {
 
     var r = new XMLHttpRequest();
 
-    r.open('POST', '/api/v1/snapshots/' + window.snapshot_id + '/query');
+    r.open('POST', '/api/v1/query');
     r.setRequestHeader('Content-Type', 'application/json');
     r.setRequestHeader('Authorization', 'Bearer ' + window.api_token);
 

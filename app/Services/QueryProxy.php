@@ -7,17 +7,15 @@ class QueryProxy {
     protected $db;
     protected $cacheKey;
 
-    public function __construct($fields, $cacheKey = null) {
+    public function __construct($cacheKey = null) {
         $this->cacheKey;
-
-        $this->createTable($fields);
     }
 
-    public function insert($data)
+    public function insert($table, $data)
     {
         $db = $this->connection();
 
-        $query = 'INSERT INTO dataset VALUES ("' . implode('", "', (array) $data) . '")';
+        $query = 'INSERT INTO ' . $table . ' VALUES ("' . implode('", "', (array) $data) . '")';
 
         return $db->query($query);
     }
@@ -32,7 +30,7 @@ class QueryProxy {
         return $response->fetchAll(\PDO::FETCH_CLASS);
     }
 
-    protected function createTable(array $fields)
+    public function table(string $name, array $fields)
     {
         $fieldDefinitions = [];
 
@@ -42,7 +40,7 @@ class QueryProxy {
 
         $db = $this->connection();
 
-        $query = 'CREATE TABLE dataset (' . implode(',', $fieldDefinitions) . ')';
+        $query = 'CREATE TABLE ' . $name . ' (' . implode(',', $fieldDefinitions) . ')';
 
         $db->query($query);
     }

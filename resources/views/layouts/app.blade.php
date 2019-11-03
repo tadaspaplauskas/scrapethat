@@ -23,6 +23,7 @@
                 <li class="inline mr1"><a href="{{ route('register') }}">Sign up</a></li>
             @endguest
             @auth
+                <li class="inline mr1"><a href="{{ route('query_editor') }}">Query editor</a></li>
                 <li class="inline mr1"><a href="{{ route('snapshots.index') }}">Snapshots</a></li>
                 <li class="inline mr1"><a href="{{ route('api-docs') }}">API docs</a></li>
                 <li class="inline mr1"><a href="{{ route('subscription') }}">Subscription</a></li>

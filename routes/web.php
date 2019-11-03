@@ -25,12 +25,12 @@ Route::post('snapshots/{snapshot}/stop', 'SnapshotController@stop')->name('snaps
 
 Route::post('snapshots/{snapshot}/retry', 'SnapshotController@retry')->name('snapshots.retry');
 
-Route::any('snapshots/{snapshot}/query', 'SnapshotController@query')->name('snapshots.query');
+Route::get('query', 'QueryEditorController')->name('query_editor');
 
 Route::resource('snapshots', 'SnapshotController');
 
 Route::resource('snapshots/{snapshot}/variables', 'VariableController')
-    ->only(['index', 'create', 'store']);
+    ->only(['create', 'store']);
 
 Route::get('variables/{variable}/delete', 'VariableController@confirmDelete')->name('variables.delete.confirm');
 

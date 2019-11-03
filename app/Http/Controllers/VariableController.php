@@ -13,13 +13,6 @@ class VariableController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(Snapshot $snapshot)
-    {
-        $variables = $snapshot->variables;
-
-        return view('variables.index', compact('snapshot', 'variables'));
-    }
-
     public function create(Request $request, Snapshot $snapshot)
     {
         return view('variables.create', compact('snapshot'));
@@ -39,7 +32,7 @@ class VariableController extends Controller
 
         $variable->process();
 
-        return redirect()->route('variables.index', $snapshot)->with('message', $variable->name . ' was added.');
+        return redirect()->route('snapshots.show', $snapshot)->with('message', $variable->name . ' was added.');
     }
 
     public function edit(Request $request, Variable $variable)
@@ -57,7 +50,7 @@ class VariableController extends Controller
 
         $variable->process();
 
-        return redirect()->route('variables.index', $snapshot)->with('message', $variable->name . ' was updated.');
+        return redirect()->route('snapshots.show', $snapshot)->with('message', $variable->name . ' was updated.');
     }
 
     public function confirmDelete(Variable $variable)
@@ -71,6 +64,6 @@ class VariableController extends Controller
 
         $variable->delete();
 
-        return redirect()->route('variables.index', $snapshot)->with('message', $variable->name . ' was deleted.');
+        return redirect()->route('snapshots.show', $snapshot)->with('message', $variable->name . ' was deleted.');
     }
 }

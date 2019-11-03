@@ -2,41 +2,57 @@
 
 @section('content')
 
-@if (!$snapshot->isCompleted())
-
-    <h5 class="center">
-        Snapshot is still in progress, please wait.
-    </h5>
-
-@else
+<h5>Variables</h5>
 
     <p>
-        <a href="{{ route('variables.index', $snapshot) }}">Manage variables</a>
+        <a href="{{ route('variables.create', $snapshot) }}">Make a new one</a>
     </p>
 
     @if ($variables->isEmpty())
 
         <p>
-            Please define some variables first.
+            You have not yet defined any variables.
         </p>
-
-    @elseif (!$snapshot->variables->filter(function ($v) { return !$v->isCompleted(); } )->isEmpty())
-
-        <h5 class="center">
-            Variables are being processed, please wait.
-        </h5>
 
     @else
 
-        <h5>Chart</h5>
-        <canvas id="chart"></canvas>
+        <table class="u-full-width">
+            <tr>
+                <th>Name</th>
+                <th>Selector</th>
+                <th>Type</th>
+                <th>Created</th>
+                <th>Refreshed</th>
+                <th>Actions</th>
+            </tr>
 
-        <h5 class="mt5">Query</h5>
+            @foreach ($variables as $variable)
+                <tr>
+                    <td>
+                        {{ $variable->name }}
+                    </td>
+                    <td>
+                        {{ $variable->selector }}
+                    </td>
+                    <td>
+                        {{ $variable->type }}
+                    </td>
+                    <td>
+                        {{ $variable->created_at->diffForHumans() }}
+                    </td>
+                    <td>
+                        {{ $variable->updated_at->diffForHumans() }}
+                    </td>
+                    <td>
+                        <a href="{{ route('variables.edit', $variable) }}" class="mr1">Edit</a>
 
-        @include('snapshots/query_editor_component')
+                        <a href="{{ route('variables.delete.confirm', $variable) }}" class="mr1">Delete</a>
+                    </td>
+                </tr>
+            @endforeach
+
+        </table>
 
     @endif
-
-@endif
 
 @endsection
