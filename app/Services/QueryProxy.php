@@ -15,7 +15,7 @@ class QueryProxy {
     {
         $db = $this->connection();
 
-        $query = 'INSERT INTO ' . $table . ' VALUES ("' . implode('", "', (array) $data) . '")';
+        $query = 'INSERT INTO `' . $table . '` VALUES ("' . implode('", "', (array) $data) . '")';
 
         return $db->query($query);
     }
@@ -40,7 +40,7 @@ class QueryProxy {
 
         $db = $this->connection();
 
-        $query = 'CREATE TABLE ' . $name . ' (' . implode(',', $fieldDefinitions) . ')';
+        $query = 'CREATE TABLE `' . $name . '` (' . implode(',', $fieldDefinitions) . ')';
 
         $db->query($query);
     }
