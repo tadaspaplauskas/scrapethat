@@ -131,4 +131,10 @@ class Snapshot extends Model
 
         parent::delete();
     }
+
+    public function getRefreshedAtAttribute()
+    {
+        $lastPage = $this->pages()->latest()->first();
+        return $lastPage ? $lastPage->updated_at : null;
+    }
 }

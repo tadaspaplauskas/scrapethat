@@ -5,11 +5,6 @@ namespace App\Services;
 class QueryProxy {
 
     protected $db;
-    protected $cacheKey;
-
-    public function __construct($cacheKey = null) {
-        $this->cacheKey;
-    }
 
     public function insert($table, $data)
     {

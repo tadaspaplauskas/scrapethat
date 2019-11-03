@@ -45,7 +45,7 @@
                         {{ $snapshot->updated_at->diffForHumans() }}
                     </td>
                     <td>
-                        {{ optional(optional($snapshot->pages()->latest()->first())->updated_at)->diffForHumans() }}
+                        {{ $snapshot->refreshed_at->diffForHumans() }}
                     </td>
                     <td>
                         <a href="{{ route('query_editor', $snapshot) }}" title="Open in query editor" class="mr1">Query</a>

@@ -10,6 +10,7 @@ use App\Services\QueryProxy;
 use DB;
 use Auth;
 use Response;
+use Cache;
 
 class QueryController extends Controller
 {
@@ -30,24 +31,33 @@ class QueryController extends Controller
                 return Response::json(['error' => 'Snapshots are not available until they\'re completed.'], 423);
             }
 
-            $fields = [];
-            $dump = [];
+            $fieldsCacheKey = md5('f' . $snapshot->id . $snapshot->updated_at . $snapshot->refreshed_at);
+            $dumpCacheKey = md5('d' . $snapshot->id . $snapshot->updated_at . $snapshot->refreshed_at);
 
-            foreach ($snapshot->variables as $variable) {
-                if (!$variable->isCompleted()) {
-                    return Response::json(['error' => 'Variables are being processed, please wait.'], 423);
+            $fields = Cache::get($fieldsCacheKey) ?? [];
+            $dump = Cache::get($dumpCacheKey) ?? [];
+
+            if (empty($fields) || empty($dump)) {
+                foreach ($snapshot->variables as $variable) {
+
+                    if (!$variable->isCompleted()) {
+                        return Response::json(['error' => 'Variables are being processed, please wait.'], 423);
+                    }
+
+                    // decide column type
+                    $fields[$variable->name] = $variable->isNumeric() ? 'double' : 'text';
+
+                    $counter = 0;
+                    $variable->values()->chunk(1000, function ($values) use (&$variable, &$dump, &$counter) {
+                        foreach ($values as $value) {
+                            $dump[$counter][$variable->name] = $value->value;
+                            $counter++;
+                        }
+                    });
                 }
 
-                // decide column type
-                $fields[$variable->name] = $variable->isNumeric() ? 'double' : 'text';
-
-                $counter = 0;
-                $variable->values()->chunk(1000, function ($values) use (&$variable, &$dump, &$counter) {
-                    foreach ($values as $value) {
-                        $dump[$counter][$variable->name] = $value->value;
-                        $counter++;
-                    }
-                });
+                Cache::put($fieldsCacheKey, $fields, 60);
+                Cache::put($dumpCacheKey, $dump, 60);
             }
 
             $proxy->table($snapshot->key, $fields);
