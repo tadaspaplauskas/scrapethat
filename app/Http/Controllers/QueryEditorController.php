@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
+use App\Models\Snapshot;
 
 class QueryEditorController extends Controller
 {
@@ -13,14 +14,11 @@ class QueryEditorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request, Snapshot $snapshot)
     {
         $user = Auth::user();
 
-        $snapshot = $request->has('snapshot') ?
-            $user->snapshots()->whereKey($request->get('snapshot'))->first()
-            :
-            $user->snapshots()->latest()->first();
+        $snapshot = $snapshot->exists ? $snapshot : $user->snapshots()->latest()->first();
 
         return view('query_editor', compact('user', 'snapshot'));
     }

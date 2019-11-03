@@ -25,7 +25,7 @@ Route::post('snapshots/{snapshot}/stop', 'SnapshotController@stop')->name('snaps
 
 Route::post('snapshots/{snapshot}/retry', 'SnapshotController@retry')->name('snapshots.retry');
 
-Route::get('query', 'QueryEditorController')->name('query_editor');
+Route::get('query/{snapshot?}', 'QueryEditorController')->name('query_editor');
 
 Route::resource('snapshots', 'SnapshotController');
 
