@@ -24,7 +24,11 @@
 
     <h5>Export results</h5>
     <p>
-        <button onclick="exportTableToCSV(document.querySelector('#results'), 'query_results.csv')">
+        <button
+            onclick="exportTableToCSV(
+                document.querySelector('#results'),
+                'query_results.csv'
+            )">
             CSV file
         </button>
     </p>
