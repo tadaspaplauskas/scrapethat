@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Query;
 use Illuminate\Http\Request;
 use Auth;
+use App\Models\Query;
 
 class QueryController extends Controller
 {
@@ -45,53 +45,24 @@ class QueryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(QueryRequest $request)
     {
-        //
+        Auth::user()->queries()->create($request->all());
+
+        return redirect()->action('QueryController@index')
+            ->withMessage('Query was deleted');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Query  $query
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Query $query)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Query  $query
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Query $query)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Query  $query
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Query $query)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Query  $query
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Query $query)
     {
-        //
+        $query->delete();
+
+        return redirect()->action('QueryController@index')
+            ->withMessage('Query was deleted.');
+    }
+
+    public function confirmDelete(Snapshot $query)
+    {
+        return view('queries.delete', compact('query'));
     }
 }

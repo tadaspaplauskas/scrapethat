@@ -1,6 +1,15 @@
-@extends('layouts.app', ['title' => $snapshot->name])
+@extends('layouts.app', ['title' => optional($snapshot)->name])
 
 @section('content')
+
+@if (!$snapshot)
+
+<p>
+    No data yet.
+</p>
+
+
+@else
 
     <h5>Chart</h5>
     <canvas id="chart"></canvas>
@@ -45,5 +54,6 @@
         </button>
     </p>
 
+@endif
 
 @endsection

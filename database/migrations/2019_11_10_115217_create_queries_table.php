@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateQueryTable extends Migration
+class CreateQueriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class CreateQueryTable extends Migration
      */
     public function up()
     {
-        Schema::create('query', function (Blueprint $table) {
+        Schema::create('queries', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('user_id')->unsigned()->index();
             $table->string('name');
             $table->text('query');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
