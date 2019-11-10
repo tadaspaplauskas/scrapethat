@@ -26,7 +26,8 @@
 
         <button
             onclick="window.location=
-                '{{ route('query.create') }}' +
+                '{{ route('queries.create') }}' +
+                '?query=' +
                 encodeURIComponent(document.querySelector('#query').value)"
         >Save query</button>
     </div>

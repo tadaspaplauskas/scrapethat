@@ -49,7 +49,12 @@ class User extends Authenticatable
 
     public function snapshots()
     {
-        return $this->hasMany(Snapshot::class);
+        return $this->hasMany(Snapshot::class)->latest();
+    }
+
+    public function queries()
+    {
+        return $this->hasMany(Query::class)->latest();
     }
 
     public function withinLimits()

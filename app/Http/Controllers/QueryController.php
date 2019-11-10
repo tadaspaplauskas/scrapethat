@@ -4,9 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Query;
 use Illuminate\Http\Request;
+use Auth;
 
 class QueryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +20,11 @@ class QueryController extends Controller
      */
     public function index()
     {
-        //
+        $queries = Auth::user()->queries;
+
+        return view('queries.index', [
+            'queries' => $queries,
+        ]);
     }
 
     /**
@@ -22,9 +32,11 @@ class QueryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        return view('queries.create', [
+            'query' => $request->input('query'),
+        ]);
     }
 
     /**

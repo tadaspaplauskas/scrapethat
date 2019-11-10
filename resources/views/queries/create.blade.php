@@ -2,7 +2,7 @@
 
 @section('content')
 
-<form method="POST" action="{{ route('query.store') }}">
+<form method="POST" action="{{ route('queries.store') }}">
 
     {{ csrf_field() }}
 

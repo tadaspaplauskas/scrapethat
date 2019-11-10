@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 use App\Models\Snapshot;
 use App\Jobs\DownloadPage;
-use DB;
 use Auth;
 
 class SnapshotController extends Controller
@@ -18,7 +17,7 @@ class SnapshotController extends Controller
 
     public function index()
     {
-        $snapshots = Auth::user()->snapshots()->orderBy('created_at', 'desc')->get();
+        $snapshots = Auth::user()->snapshots;
 
         return view('snapshots.index', compact('snapshots'));
     }
