@@ -59,6 +59,9 @@ class RunQueryController extends Controller
                 Cache::put($fieldsCacheKey, $fields, 60);
                 Cache::put($dumpCacheKey, $dump, 60);
             }
+            if (empty($fields)) {
+                return Response::json(['error' => 'You haven\'t defined any variables.'], 423);
+            }
 
             $proxy->table($snapshot->key, $fields);
 

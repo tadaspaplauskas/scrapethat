@@ -113,8 +113,11 @@ window.runQuery = function (query, button) {
             renderChart(results.data);
             renderTable(results.data);
         }
-
-        // error
+        // our own exception
+        else if (results.error) {
+            renderError(results.error);
+        }
+        // sql error
         else if (results.errors) {
             renderError(results.errors[0]);
         }
