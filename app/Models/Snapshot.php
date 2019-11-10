@@ -8,8 +8,6 @@ use App\Jobs\DownloadPage;
 
 class Snapshot extends Model
 {
-    use SoftDeletes;
-
     protected $fillable = [
         'name',
         'key',
