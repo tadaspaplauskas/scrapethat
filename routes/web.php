@@ -37,7 +37,8 @@ Route::resource('variables', 'VariableController')
 
 Route::resource('queries', 'QueryController')
     ->only(['index', 'create', 'store', 'destroy']);
-Route::get('queries/{snapshot}/delete', 'QueryController@confirmDelete')->name('queries.delete.confirm');
+
+Route::get('queries/{query}/delete', 'QueryController@confirmDelete')->name('queries.delete.confirm');
 
 Route::get('query/{snapshot?}', 'QueryEditorController')->name('queries.editor');
 

@@ -15,19 +15,19 @@
             <tr>
                 <th>Name</th>
                 <th>Created</th>
-                <th>Actions</th>
+                <th class="right">Actions</th>
             </tr>
 
             @foreach ($queries as $query)
 
                 <tr>
                     <td>
-                        <a href="{{ route('queries.show', $query) }}">{{ $query->name }}</a>
+                        {{ $query->name }}
                     </td>
                     <td>
                         {{ $query->created_at->diffForHumans() }}
                     </td>
-                    <td>
+                    <td class="right">
                         <a href="{{ route('queries.editor', ['query' => $query]) }}" title="Open in query editor" class="mr1">Query Editor</a>
 
                         <a href="{{ route('queries.delete.confirm', $query) }}" class="mr1">Delete</a>

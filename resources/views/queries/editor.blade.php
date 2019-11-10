@@ -31,6 +31,7 @@
             onclick="runQuery(document.querySelector('#query').value, this)"
             accesskey="r"
             title="Keyboard shortcut: [Alt]+r or [Control]+[Alt]+r"
+            class="button-primary"
         >Run query</button>
 
         <button

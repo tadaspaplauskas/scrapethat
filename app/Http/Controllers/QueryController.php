@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Auth;
 use App\Models\Query;
+use App\Http\Requests\QueryRequest;
 
 class QueryController extends Controller
 {
@@ -61,7 +62,7 @@ class QueryController extends Controller
             ->withMessage('Query was deleted.');
     }
 
-    public function confirmDelete(Snapshot $query)
+    public function confirmDelete(Query $query)
     {
         return view('queries.delete', compact('query'));
     }

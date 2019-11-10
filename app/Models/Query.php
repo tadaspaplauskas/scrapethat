@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Query extends Model
 {
-    use SoftDeletes;
-
     protected $fillable = [
         'name',
         'query',
