@@ -25,8 +25,6 @@ Route::post('snapshots/{snapshot}/stop', 'SnapshotController@stop')->name('snaps
 
 Route::post('snapshots/{snapshot}/retry', 'SnapshotController@retry')->name('snapshots.retry');
 
-Route::get('query/{snapshot?}', 'QueryEditorController')->name('query_editor');
-
 Route::resource('snapshots', 'SnapshotController');
 
 Route::resource('snapshots/{snapshot}/variables', 'VariableController')
@@ -37,6 +35,10 @@ Route::get('variables/{variable}/delete', 'VariableController@confirmDelete')->n
 Route::resource('variables', 'VariableController')
     ->only(['edit', 'update', 'destroy']);
 
+Route::resource('queries', 'QueryController')
+    ->only(['index', 'create', 'store', 'destroy']);
+
+Route::get('query/{snapshot?}', 'QueryEditorController')->name('queries.editor');
 
 Route::get('subscription', 'SubscriptionController@subscription')->name('subscription');
 Route::post('subscription', 'SubscriptionController@subscribe')->name('subscribe');

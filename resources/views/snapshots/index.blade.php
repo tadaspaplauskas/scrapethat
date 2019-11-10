@@ -48,7 +48,7 @@
                         {{ optional($snapshot->refreshed_at)->diffForHumans() }}
                     </td>
                     <td>
-                        <a href="{{ route('query_editor', $snapshot) }}" title="Open in query editor" class="mr1">Query</a>
+                        <a href="{{ route('queries.editor', $snapshot) }}" title="Open in query editor" class="mr1">Query</a>
 
                         <a href="{{ route('snapshots.refresh.confirm', $snapshot) }}" title="Scans all the pages again" class="mr1">Refresh</a>
 

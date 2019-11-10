@@ -20,6 +20,6 @@ class QueryEditorController extends Controller
 
         $snapshot = $snapshot->exists ? $snapshot : $user->snapshots()->latest()->first();
 
-        return view('query_editor', compact('user', 'snapshot'));
+        return view('queries.editor', compact('user', 'snapshot'));
     }
 }
