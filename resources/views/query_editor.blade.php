@@ -17,7 +17,11 @@
     <div>
         <textarea id="query" class="u-full-width" style="height: 15rem">SELECT * FROM `{{ $snapshot->key }}`</textarea>
 
-        <button onclick="runQuery(document.querySelector('#query').value, this)" accesskey="r" title="Keyboard shortcut: [Alt]+r or [Control]+[Alt]+r">Run query</button>
+        <button
+            onclick="runQuery(document.querySelector('#query').value, this)"
+            accesskey="r"
+            title="Keyboard shortcut: [Alt]+r or [Control]+[Alt]+r"
+        >Run query</button>
     </div>
 
     <p id="sql-output"></p>

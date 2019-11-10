@@ -17,7 +17,7 @@ Route::prefix('v1')->as('api.')->group(function () {
 
     // Route::any('/', function () { return redirect()->route('api-docs'); })->name('index');
 
-    Route::any('query', 'API\QueryController')->name('query');
+    Route::any('query', 'API\RunQueryController')->name('query');
 
     Route::post('snapshots/{snapshot}/refresh', 'API\SnapshotController@refresh')->name('snapshots.refresh');
 

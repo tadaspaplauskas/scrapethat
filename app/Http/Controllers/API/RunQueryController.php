@@ -12,7 +12,7 @@ use Auth;
 use Response;
 use Cache;
 
-class QueryController extends Controller
+class RunQueryController extends Controller
 {
     public function __construct()
     {
