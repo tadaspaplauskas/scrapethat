@@ -1,11 +1,14 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+# Scrapethat
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+Turn any website into SQL database.
+
+![](screenshot.png)
+
+I made this one to scratch my own itch.
+The use-case was to scrape and parse classified advertisements websites into SQL database to run various queries against the data.
+
+I used it when I was looking for apartment or motorcycle to run analysis of specific year ranges, features, models, and such.
+Unfortunately it wasn't as useful as I expected to be.
 
 ## Setup
 
